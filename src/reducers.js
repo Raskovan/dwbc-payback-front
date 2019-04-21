@@ -1,27 +1,17 @@
 import { combineReducers } from "redux";
 import {
-  SELECT_SUBREDDIT,
-  INVALIDATE_SUBREDDIT,
-  REQUEST_POSTS,
-  RECEIVE_POSTS,
   SELECT_CITY,
   REQUEST_CITIES,
-  RECEIVE_CITIES
+  RECEIVE_CITIES,
+  INVALIDATE_CITY,
+  RECEIVE_CATEGORIES,
+  REQUEST_CATEGORIES
 } from "./actions";
 
 
-function selectedSubreddit(state = "reactjs", action) {
-  switch (action.type) {
-    case SELECT_SUBREDDIT:
-      return action.subreddit;
-    default:
-      return state;
-  }
-}
-
 function selectedCity(state = {
-  city_id: null,
-  city_name: ""
+  city_id: '5c99a5ec3ad97b001795d699',
+  city_name: "New York"
 }, action) {
   switch (action.type) {
     case SELECT_CITY:
@@ -34,30 +24,30 @@ function selectedCity(state = {
   }
 }
 
-function posts(
+function categories(
   state = {
-    isFetching: false,
-    didInvalidate: false,
-    items: []
+    isFetchingCategory: false,
+    didInvalidateCategory: false,
+    categories: []
   },
   action
 ) {
   switch (action.type) {
-    case INVALIDATE_SUBREDDIT:
+    case INVALIDATE_CITY:
       return Object.assign({}, state, {
-        didInvalidate: true
+        didInvalidateCategory: true
       });
-    case REQUEST_POSTS:
+    case REQUEST_CATEGORIES:
       return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false
+        isFetchingCategory: true,
+        didInvalidateCategory: false
       });
-    case RECEIVE_POSTS:
+    case RECEIVE_CATEGORIES:
       return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.posts,
-        lastUpdated: action.receivedAt
+        isFetchingCategory: false,
+        didInvalidateCategory: false,
+        categories: action.categories,
+        lastUpdatedCategory: action.receivedAt
       });
     default:
       return state;
@@ -91,13 +81,13 @@ function cities(
   }
 }
 
-function postsBySubreddit(state = {}, action) {
+function categoriesByCity(state = {}, action) {
   switch (action.type) {
-    case INVALIDATE_SUBREDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
+    case INVALIDATE_CITY:
+    case RECEIVE_CATEGORIES:
+    case REQUEST_CATEGORIES:
       return Object.assign({}, state, {
-        [action.subreddit]: posts(state[action.subreddit], action)
+        [action.cityId]: categories(state[action.cityId], action)
       });
     default:
       return state;
@@ -105,10 +95,9 @@ function postsBySubreddit(state = {}, action) {
 }
 
 const rootReducer = combineReducers({
-  postsBySubreddit,
-  selectedSubreddit,
   selectedCity,
-  cities
+  cities,
+  categoriesByCity
 });
 
 export default rootReducer;

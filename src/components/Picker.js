@@ -4,11 +4,10 @@ import PropTypes from "prop-types";
 export default class Picker extends Component {
   render() {
     const { value, onChange, options } = this.props;
-
     return (
       <span>
         <h1>{value.city_name}</h1>
-        <select onChange={e => onChange(e.target.value.city_id)} value={value.city_id}>
+        <select onChange={e => onChange(e.target.value)} >
           {options.map(option => (
             <option value={option.city_id} key={option._id}>
               {option.city_name}
