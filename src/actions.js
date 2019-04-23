@@ -10,6 +10,7 @@ export const SAVE_CATEGORY = "SAVE_CATEGORY";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const EDIT_CATEGORY = "EDIT_CATEGORY";
 export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
+export const ADD_CATEGORY = "ADD_CATEGORY";
 
 
 export function invalidateCity(cityId) {
@@ -218,5 +219,36 @@ export function updateCategory(cityId, category) {
       })
       .then(response => response.json())
       .then(json => dispatch(receiveCategories(cityId, json.categories)))
+  }
+}
+
+function addingItem(cityId, catName) {
+  return {
+    type: ADD_CATEGORY,
+    cityId,
+    catName
+  };
+}
+
+export function addItem(cityId, catId, itemObj) {
+  // let data = {
+  //   category_name: category.category_name,
+  //   category_price: category.category_price
+  // }
+  return dispatch => {
+    dispatch(addingItem(cityId, catId));
+    return fetch(
+      `https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}/items`,
+      {
+        method: "POST",
+        body: JSON.stringify(itemObj),
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": 1234
+        }
+      }
+    )
+      .then(response => response.json())
+      .then(json => dispatch(receiveCategories(cityId, json.categories)));
   }
 }
