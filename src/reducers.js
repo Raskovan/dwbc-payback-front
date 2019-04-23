@@ -43,12 +43,12 @@ function categories(
         didInvalidateCategory: false
       });
     case RECEIVE_CATEGORIES:
-      return Object.assign({}, state, {
-        isFetchingCategory: false,
-        didInvalidateCategory: false,
-        categories: action.categories,
-        lastUpdatedCategory: action.receivedAt
-      });
+    return Object.assign({}, state, {
+      isFetchingCategory: false,
+      didInvalidateCategory: false,
+      categories: action.categories,
+      lastUpdatedCategory: action.receivedAt
+    });
     default:
       return state;
   }

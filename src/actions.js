@@ -6,6 +6,10 @@ export const SELECT_CITY = "SELECT_CITY";
 export const INVALIDATE_CITY = "INVALIDATE_CITY";
 export const REQUEST_CATEGORIES = "REQUEST_CATEGORIES";
 export const RECEIVE_CATEGORIES = "RECEIVE_CATEGORIES";
+export const SAVE_CATEGORY = "SAVE_CATEGORY";
+export const DELETE_CATEGORY = "DELETE_CATEGORY";
+export const EDIT_CATEGORY = "EDIT_CATEGORY";
+export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 
 
 export function invalidateCity(cityId) {
@@ -65,6 +69,53 @@ export function fetchCategoriesForCityIfNeeded(cityId) {
   };
 }
 
+function savingCategory(cityId, catName) {
+  return {
+    type: SAVE_CATEGORY,
+    cityId,
+    catName
+  };
+}
+
+function saveCategory(cityId, catName, catPrice) {
+  let data = {
+    category_name: catName,
+    category_price: catPrice
+  }
+  return dispatch => {
+    dispatch(savingCategory(cityId, catName));
+    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": 1234
+        }
+      })
+      .then(response => response.json())
+      .then(json => dispatch(receiveCategories(cityId, json.categories)))
+  }
+}
+
+function shouldSaveCategory(state, cityId, catName) {
+  const categories = state.categoriesByCity[cityId].categories;
+  let match = categories.filter(category => category.category_name === catName)
+  if (match.length === 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export function addCategoryForCity(cityId, catName, catPrice) {
+  return (dispatch, getState) => {
+    if (shouldSaveCategory(getState(), cityId, catName)) {
+      return dispatch(saveCategory(cityId, catName, catPrice))
+    }
+  }
+}
+
 export function selectCity(cityObj) {
   return {
     type: SELECT_CITY,
@@ -117,4 +168,55 @@ export function fetchCitiesIfNeeded() {
       return dispatch(fetchCities());
     }
   };
+}
+
+function deletingCategory() {
+  return {
+    type: DELETE_CATEGORY
+  };
+}
+
+export function deleteCategory(cityId, catId) {
+  return dispatch => {
+    dispatch(deletingCategory());
+    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": 1234
+      }
+    })
+    .then(response => response.json())
+    .then(json => dispatch(receiveCategories(cityId, json.categories)))
+  }
+}
+
+function updatingCategory(cityId, catName) {
+  return {
+    type: UPDATE_CATEGORY,
+    cityId,
+    catName
+  };
+}
+
+export function updateCategory(cityId, category) {
+  let data = {
+    category_name: category.category_name,
+    category_price: category.category_price
+  }
+  return dispatch => {
+    dispatch(updatingCategory(cityId, category.category_name));
+    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${category._id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": 1234
+        }
+      })
+      .then(response => response.json())
+      .then(json => dispatch(receiveCategories(cityId, json.categories)))
+  }
 }
