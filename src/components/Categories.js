@@ -66,6 +66,7 @@ class Categories extends Component {
 	}
 
 	handleUpdateCategory = event => {
+    console.log('UPDATE', this.state.categoryToEdit)
     event.preventDefault()
 		this.props.updateCategory(this.props.cityId, this.state.categoryToEdit)
 		this.setState({ categoryToEdit: {} })
@@ -114,6 +115,7 @@ class Categories extends Component {
 								/>
 							</li>
 						)}
+						<Items category={category} />
 						{category._id === this.state.categoryToEdit._id &&
 						this.state.categoryToEdit.item ? (
 							<Form
@@ -123,7 +125,6 @@ class Categories extends Component {
 								cancel={this.handleEditAddToCategory}
 							/>
 						) : null}
-						<Items items={category.items} />
 					</div>
 				))}
 			</ul>

@@ -16,7 +16,7 @@ export default class Form extends Component {
 				{(this.props.category.items && this.props.category.items.length === 0) ||
 				'item_price' in this.props.category ? (
 					<input
-						name={this.props.category.category_price ? 'category_price' : 'item_price'}
+						name={'category_price' in this.props.category ? 'category_price' : 'item_price'}
 						type='text'
 						value={
 							this.props.category.item_price ||
