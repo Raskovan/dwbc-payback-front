@@ -79,6 +79,12 @@ class App extends Component {
 
   handleAddCategoryClick = (value) => {
     this.setState({showCategoryForm: value})
+    if (!value) {
+      this.setState({
+				category_name: '',
+				category_price: ''
+			})
+    }
   }
   
   render() {

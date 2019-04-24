@@ -2,30 +2,21 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Items from './Items'
+import Form from './Form'
 import { deleteCategory, updateCategory, addItem } from '../actions'
 
 class Categories extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			categoryToUpdate: {},
-			categoryToAddItem: {},
-			itemToAdd: { item_name: '', item_price: '' }
+			categoryToEdit: {},
+			itemToAdd: { item_name: ' ', item_price: ' ' }
 		}
+		this.handleEditAddToCategory = this.handleEditAddToCategory.bind(this)
 	}
 
 	handleDelete(category) {
 		this.props.deleteCategory(this.props.cityId, category._id)
-	}
-
-	handleAddItem(category) {
-		if (category) {
-			this.setState({ categoryToAddItem: category })
-		} else {
-			this.setState({
-				categoryToAddItem: {}
-			})
-		}
 	}
 
 	handleItemChange = event => {
@@ -34,40 +25,50 @@ class Categories extends Component {
 		this.setState({ itemToAdd: itemCopy })
 	}
 
+	handleCategoryChange = event => {
+		let catCopy = { ...this.state.categoryToEdit }
+    catCopy[event.target.name] = event.target.value
+		this.setState({ categoryToEdit: catCopy })
+	}
+
 	handleSaveItem = event => {
 		event.preventDefault()
 		this.props.addItem(
 			this.props.cityId,
-			this.state.categoryToAddItem._id,
+			this.state.categoryToEdit._id,
 			this.state.itemToAdd
 		)
 		this.setState({
-			itemToAdd: { item_name: '', item_price: '' },
-			categoryToAddItem: {}
+			itemToAdd: { item_name: ' ', item_price: ' ' },
+			categoryToEdit: {}
 		})
 	}
 
-	handleEdit(category) {
+	handleEditAddToCategory(category, value) {
+		if (value === 'category') {
+			category.category = true
+			category.item = false
+		} else if (value === 'item') {
+			category.item = true
+			category.category = false
+		}
 		if (category) {
-			if (!category.category_price) {
+			if (category.category_price === null) {
 				category.category_price = ''
 			}
-			this.setState({ categoryToUpdate: category })
+			this.setState({ categoryToEdit: category })
 		} else {
-			this.setState({ categoryToUpdate: {} })
+			this.setState({
+				categoryToEdit: {},
+				itemToAdd: { item_name: ' ', item_price: ' ' }
+			})
 		}
 	}
 
 	handleUpdateCategory = event => {
-		event.preventDefault()
-		this.props.updateCategory(this.props.cityId, this.state.categoryToUpdate)
-		this.setState({ categoryToUpdate: {} })
-	}
-
-	handleCategoryChange = event => {
-		let catCopy = { ...this.state.categoryToUpdate }
-		catCopy[event.target.name] = event.target.value
-		this.setState({ categoryToUpdate: catCopy })
+    event.preventDefault()
+		this.props.updateCategory(this.props.cityId, this.state.categoryToEdit)
+		this.setState({ categoryToEdit: {} })
 	}
 
 	render() {
@@ -75,12 +76,17 @@ class Categories extends Component {
 			<ul>
 				{this.props.categories.map((category, i) => (
 					<div key={i}>
-						{category._id !== this.state.categoryToUpdate._id ? (
+						{category._id !== this.state.categoryToEdit._id ||
+						!this.state.categoryToEdit.category ? (
 							<li>
 								{category.category_price
 									? `${category.category_name} - $${category.category_price}`
 									: `${category.category_name}`}
-								<button type='button' onClick={() => this.handleEdit(category)}>
+								<button
+									type='button'
+									onClick={() =>
+										this.handleEditAddToCategory(category, 'category')
+									}>
 									Edit
 								</button>
 								<button
@@ -91,54 +97,31 @@ class Categories extends Component {
 								{!category.category_price ? (
 									<button
 										type='button'
-										onClick={() => this.handleAddItem(category)}>
+										onClick={() =>
+											this.handleEditAddToCategory(category, 'item')
+										}>
 										Add Item
 									</button>
 								) : null}
 							</li>
 						) : (
 							<li>
-								<form onSubmit={this.handleUpdateCategory}>
-									<input
-										name='category_name'
-										type='text'
-										value={this.state.categoryToUpdate.category_name}
-										onChange={this.handleCategoryChange}
-									/>
-									{category.items.length === 0 ? (
-										<input
-											name='category_price'
-											type='number'
-											value={this.state.categoryToUpdate.category_price}
-											onChange={this.handleCategoryChange}
-										/>
-									) : null}
-									<input type='submit' value='Update' />
-									<button type='button' onClick={() => this.handleEdit(null)}>
-										Cancel
-									</button>
-								</form>
+								<Form
+									category={this.state.categoryToEdit}
+									submit={this.handleUpdateCategory}
+									change={this.handleCategoryChange}
+									cancel={this.handleEditAddToCategory}
+								/>
 							</li>
 						)}
-						{category._id === this.state.categoryToAddItem._id ? (
-							<form onSubmit={this.handleSaveItem}>
-								<input
-									name='item_name'
-									type='text'
-									value={this.state.itemToAdd.item_name}
-									onChange={this.handleItemChange}
-								/>
-								<input
-									name='item_price'
-									type='text'
-									value={this.state.itemToAdd.item_price}
-									onChange={this.handleItemChange}
-								/>
-								<input type='submit' value='Save' />
-								<button type='button' onClick={() => this.handleAddItem(null)}>
-									Cancel
-								</button>
-							</form>
+						{category._id === this.state.categoryToEdit._id &&
+						this.state.categoryToEdit.item ? (
+							<Form
+								category={this.state.itemToAdd}
+								submit={this.handleSaveItem}
+								change={this.handleItemChange}
+								cancel={this.handleEditAddToCategory}
+							/>
 						) : null}
 						<Items items={category.items} />
 					</div>
