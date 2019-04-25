@@ -1,18 +1,18 @@
 import fetch from "cross-fetch";
 
-export const REQUEST_CITIES = "REQUEST_CITIES";
-export const RECEIVE_CITIES = "RECEIVE_CITIES";
-export const SELECT_CITY = "SELECT_CITY";
-export const INVALIDATE_CITY = "INVALIDATE_CITY";
-export const REQUEST_CATEGORIES = "REQUEST_CATEGORIES";
-export const RECEIVE_CATEGORIES = "RECEIVE_CATEGORIES";
-export const SAVE_CATEGORY = "SAVE_CATEGORY";
-export const DELETE_CATEGORY = "DELETE_CATEGORY";
-export const EDIT_CATEGORY = "EDIT_CATEGORY";
-export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
-export const ADD_CATEGORY = "ADD_CATEGORY";
-export const DELETE_ITEM = "DELETE_ITEM";
-export const UPDATE_ITEM = "UPDATE_ITEM";
+export const REQUEST_CITIES = "REQUEST_CITIES",
+              RECEIVE_CITIES = "RECEIVE_CITIES",
+              SELECT_CITY = "SELECT_CITY",
+              INVALIDATE_CITY = "INVALIDATE_CITY",
+              REQUEST_CATEGORIES = "REQUEST_CATEGORIES",
+              RECEIVE_CATEGORIES = "RECEIVE_CATEGORIES",
+              SAVE_CATEGORY = "SAVE_CATEGORY",
+              DELETE_CATEGORY = "DELETE_CATEGORY",
+              EDIT_CATEGORY = "EDIT_CATEGORY",
+              UPDATE_CATEGORY = "UPDATE_CATEGORY",
+              ADD_CATEGORY = "ADD_CATEGORY",
+              DELETE_ITEM = "DELETE_ITEM",
+              UPDATE_ITEM = "UPDATE_ITEM";
 
 
 export function invalidateCity(cityId) {

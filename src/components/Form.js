@@ -1,26 +1,26 @@
 import React, { Component } from 'react'
 
 export default class Form extends Component {
-	render() {
+  render() {
 		return (
 			<form onSubmit={this.props.submit}>
 				<input
-					name={this.props.category.category_name ? 'category_name' : 'item_name'}
+					name={this.props.data.category_name ? 'category_name' : 'item_name'}
 					type='text'
 					value={
-						this.props.category.item_name ||
-						this.props.category.category_name
+						this.props.data.item_name ||
+						this.props.data.category_name
 					}
 					onChange={this.props.change}
 				/>
-				{(this.props.category.items && this.props.category.items.length === 0) ||
-				'item_price' in this.props.category ? (
+				{(this.props.data.items && this.props.data.items.length === 0) ||
+				'item_name' in this.props.data ? (
 					<input
-						name={'category_price' in this.props.category ? 'category_price' : 'item_price'}
+						name={'category_price' in this.props.data ? 'category_price' : 'item_price'}
 						type='text'
 						value={
-							this.props.category.item_price ||
-							this.props.category.category_price
+							this.props.data.item_price ||
+							this.props.data.category_price
 						}
 						onChange={this.props.change}
 					/>

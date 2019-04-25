@@ -44,7 +44,7 @@ class Items extends Component {
 					<ul key={i}>
 						{this.state.itemToEdit._id === item._id ? (
 							<Form
-								category={this.state.itemToEdit}
+								data={this.state.itemToEdit}
 								change={this.handleItemChange}
 								cancel={this.handleEdit}
 								submit={this.handleUpdateItem}

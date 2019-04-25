@@ -108,7 +108,7 @@ class Categories extends Component {
 						) : (
 							<li>
 								<Form
-									category={this.state.categoryToEdit}
+									data={this.state.categoryToEdit}
 									submit={this.handleUpdateCategory}
 									change={this.handleCategoryChange}
 									cancel={this.handleEditAddToCategory}
@@ -119,7 +119,7 @@ class Categories extends Component {
 						{category._id === this.state.categoryToEdit._id &&
 						this.state.categoryToEdit.item ? (
 							<Form
-								category={this.state.itemToAdd}
+								data={this.state.itemToAdd}
 								submit={this.handleSaveItem}
 								change={this.handleItemChange}
 								cancel={this.handleEditAddToCategory}
