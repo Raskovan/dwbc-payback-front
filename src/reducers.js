@@ -9,10 +9,7 @@ import {
 } from "./actions";
 
 
-function selectedCity(state = {
-  city_id: '5c99a5ec3ad97b001795d699',
-  city_name: "New York"
-}, action) {
+function selectedCity(state = {}, action) {
   switch (action.type) {
     case SELECT_CITY:
       return Object.assign({}, state, {
