@@ -41,15 +41,17 @@ function requestCategories(cityId) {
 function fetchCategories(cityId) {
   return dispatch => {
     dispatch(requestCategories(cityId));
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": 1234
-        }
-      })
-      .then(response => response.json())
-      .then(json => dispatch(receiveCategories(cityId, json)))
+    return fetch(
+			process.env.REACT_APP_API_HOST + `/api/v1/cities/${cityId}`,
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json)))
   };
 }
 
@@ -87,17 +89,20 @@ function saveCategory(cityId, catName, catPrice) {
   }
   return dispatch => {
     dispatch(savingCategory(cityId, catName));
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories`,
-      {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": 1234
-        }
-      })
-      .then(response => response.json())
-      .then(json => dispatch(receiveCategories(cityId, json.categories)))
+    return fetch(
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories`,
+			{
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
 
@@ -143,15 +148,15 @@ function receiveCities(allCities) {
 function fetchCities() {
   return dispatch => {
     dispatch(requestCities());
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/list`, {
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": 1234
-      }
-    })
-      .then(response => response.json())
-      .then(allCities => dispatch(receiveCities(allCities)))
-      .then(allCities => dispatch(selectCity(allCities.cityList[0])));
+    return fetch(process.env.REACT_APP_API_HOST + `/api/v1/cities/list`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'x-api-key': process.env.REACT_APP_API_KEY
+			}
+		})
+			.then(response => response.json())
+			.then(allCities => dispatch(receiveCities(allCities)))
+			.then(allCities => dispatch(selectCity(allCities.cityList[0])))
   };
 }
 
@@ -182,16 +187,19 @@ function deletingCategory() {
 export function deleteCategory(cityId, catId) {
   return dispatch => {
     dispatch(deletingCategory());
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}`,
-    {
-      method: 'DELETE',
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": 1234
-      }
-    })
-    .then(response => response.json())
-    .then(json => dispatch(receiveCategories(cityId, json.categories)))
+    return fetch(
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories/${catId}`,
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
 
@@ -210,17 +218,20 @@ export function updateCategory(cityId, category) {
   }
   return dispatch => {
     dispatch(updatingCategory(cityId, category.category_name));
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${category._id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": 1234
-        }
-      })
-      .then(response => response.json())
-      .then(json => dispatch(receiveCategories(cityId, json.categories)))
+    return fetch(
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories/${category._id}`,
+			{
+				method: 'PUT',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
 
@@ -236,18 +247,19 @@ export function addItem(cityId, catId, itemObj) {
   return dispatch => {
     dispatch(addingItem(cityId, catId));
     return fetch(
-      `https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}/items`,
-      {
-        method: "POST",
-        body: JSON.stringify(itemObj),
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": 1234
-        }
-      }
-    )
-      .then(response => response.json())
-      .then(json => dispatch(receiveCategories(cityId, json.categories)));
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories/${catId}/items`,
+			{
+				method: 'POST',
+				body: JSON.stringify(itemObj),
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
 
@@ -260,16 +272,19 @@ function deletingItem() {
 export function deleteItem(cityId, catId, itemId) {
   return dispatch => {
     dispatch(deletingItem());
-    return fetch(`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}/items/${itemId}`,
-    {
-      method: 'DELETE',
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": 1234
-      }
-    })
-    .then(response => response.json())
-    .then(json => dispatch(receiveCategories(cityId, json.categories)))
+    return fetch(
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories/${catId}/items/${itemId}`,
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					'x-api-key': process.env.REACT_APP_API_KEY
+				}
+			}
+		)
+			.then(response => response.json())
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
 
@@ -290,15 +305,14 @@ export function updateItem(cityId, catId, itemObj) {
   return dispatch => {
     dispatch(updatingItem(cityId, catId, itemObj));
     return fetch(
-			`https://dwbc-payback-api.herokuapp.com/api/v1/cities/${cityId}/categories/${catId}/items/${
-				itemObj._id
-			}`,
+			process.env.REACT_APP_API_HOST +
+				`/api/v1/cities/${cityId}/categories/${catId}/items/${itemObj._id}`,
 			{
 				method: 'PUT',
 				body: JSON.stringify(data),
 				headers: {
 					'Content-Type': 'application/json',
-					'x-api-key': 1234
+					'x-api-key': process.env.REACT_APP_API_KEY
 				}
 			}
 		)
