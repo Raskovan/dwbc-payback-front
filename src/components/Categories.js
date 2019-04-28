@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Items from './Items'
 import Form from './Form'
-import { deleteCategory, updateCategory, addItem, editCategory } from '../actions'
+import { deleteCategory, updateCategory, addItem, editData } from '../actions'
 
 class Categories extends Component {
 
@@ -23,7 +23,7 @@ class Categories extends Component {
 									: `${category.category_name}`}
 								<button
 									type='button'
-									onClick={() => dispatch(editCategory(Object.assign({}, category, {newCategory: false})))}>
+									onClick={() => dispatch(editData(Object.assign({}, category, {newCategory: false})))}>
 									Edit
 								</button>
 								<button
@@ -40,7 +40,7 @@ class Categories extends Component {
 										type='button'
 										onClick={() =>
 											dispatch(
-												editCategory({
+												editData({
                           newCategory: false,
 													cat_id: category._id,
 													item_name: ' ',
@@ -87,7 +87,7 @@ function mapStateToProps(state) {
 			deleteCategory,
 			updateCategory,
 			addItem,
-			editCategory
+			editData
 		}
 }
 

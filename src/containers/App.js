@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
 	invalidateCity,
 	fetchCitiesIfNeeded,
 	fetchCategoriesForCityIfNeeded,
 	selectCity,
-	addCategoryForCity,
-	editCategory
+	addData
 } from '../actions'
 import Picker from '../components/Picker'
 import Categories from '../components/Categories'
@@ -64,6 +64,7 @@ class App extends Component {
       dataToEdit
 		} = this.props
 		return (
+      <Route path='/city/:selectedCity.city_name'>
 			<div>
 				{isFetchingCities && selectedCity && allCities.length === 0 && (
 					<h2>Loading...</h2>
@@ -103,11 +104,12 @@ class App extends Component {
 				) : (
 					<button
 						type='button'
-						onClick={() => dispatch(editCategory({newCategory: true, category_name: ' ', category_price: ' '}))}>
+						onClick={() => dispatch(addData({newCategory: true, category_name: '', category_price: ''}))}>
 						Add Category
 					</button>
 				)}
 			</div>
+      </Route>
 		)
 	}
 }

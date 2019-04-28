@@ -8,12 +8,14 @@ export const REQUEST_CITIES = 'REQUEST_CITIES',
 					RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES',
 					SAVE_CATEGORY = 'SAVE_CATEGORY',
 					DELETE_CATEGORY = 'DELETE_CATEGORY',
-					EDIT_CATEGORY = 'EDIT_CATEGORY',
+					EDIT_DATA = 'EDIT_DATA',
+					CLEAR_DATA = 'CLEAR_DATA',
+					ADD_DATA = 'ADD_DATA',
 					UPDATE_CATEGORY = 'UPDATE_CATEGORY',
 					ADD_CATEGORY = 'ADD_CATEGORY',
 					DELETE_ITEM = 'DELETE_ITEM',
 					UPDATE_ITEM = 'UPDATE_ITEM',
-					ON_CHANGE_CATEGORY = 'ON_CHANGE_CATEGORY';
+					ON_CHANGE_DATA = 'ON_CHANGE_DATA';
 
 
 export function invalidateCity(cityId) {
@@ -125,16 +127,30 @@ export function addCategoryForCity(cityId, catName, catPrice) {
   }
 }
 
-export function editCategory(catObj) {
+export function editData(data) {
     return {
-			type: EDIT_CATEGORY,
-			catObj
+			type: EDIT_DATA,
+			data
 		}
 }
 
-export function editCategoryOnChange(event) {
+export function clearData(data) {
     return {
-			type: ON_CHANGE_CATEGORY,
+			type: CLEAR_DATA,
+			data
+		}
+}
+
+export function addData(data) {
+    return {
+			type: ADD_DATA,
+			data
+		}
+}
+
+export function editDataOnChange(event) {
+    return {
+			type: ON_CHANGE_DATA,
 			event
 		}
 }

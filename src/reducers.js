@@ -6,8 +6,10 @@ import {
 	INVALIDATE_CITY,
 	RECEIVE_CATEGORIES,
 	REQUEST_CATEGORIES,
-	EDIT_CATEGORY,
-	ON_CHANGE_CATEGORY
+  EDIT_DATA,
+  CLEAR_DATA,
+	ADD_DATA,
+	ON_CHANGE_DATA
 } from './actions'
 
 
@@ -98,10 +100,12 @@ function categoriesByCity(state = {}, action) {
 
 function dataToEdit(state = {}, action) {
   switch (action.type) {
-    case EDIT_CATEGORY:
+    case EDIT_DATA:
+    case ADD_DATA:
+    case CLEAR_DATA:
       state = {}
-      return Object.assign({}, state, action.catObj)
-    case ON_CHANGE_CATEGORY:
+      return Object.assign({}, state, action.data)
+    case ON_CHANGE_DATA:
       return Object.assign({}, state, {
         [action.event.target.name]: action.event.target.value
       })

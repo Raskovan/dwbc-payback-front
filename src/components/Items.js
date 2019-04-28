@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux'
-import { deleteItem, updateItem, editCategory } from '../actions'
+import { deleteItem, editData } from '../actions'
 import Form from './Form'
 
 class Items extends Component {
@@ -19,7 +19,7 @@ class Items extends Component {
 								{item.item_price
 									? item.item_name + ' - $' + item.item_price
 									: item.item_name}
-								<button onClick={() => dispatch(editCategory(item))}>
+								<button onClick={() => dispatch(editData(item))}>
 									Edit
 								</button>
 								<button

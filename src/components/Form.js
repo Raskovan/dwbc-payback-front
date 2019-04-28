@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-	editCategory,
-	editCategoryOnChange,
+  editData,
+  clearData,
+	editDataOnChange,
 	updateCategory,
 	updateItem,
 	addItem,
@@ -48,7 +49,7 @@ class Form extends Component {
 							)
 						)
 					}
-					dispatch(editCategory(null))
+					dispatch(clearData(null))
 				}}>
 				<input
 					name={
@@ -56,7 +57,7 @@ class Form extends Component {
 					}
 					type='text'
 					value={dataToEdit.item_name || dataToEdit.category_name}
-					onChange={e => dispatch(editCategoryOnChange(e))}
+					onChange={e => dispatch(editDataOnChange(e))}
 				/>
 				{(dataToEdit.items && dataToEdit.items.length === 0) ||
 				'item_name' in dataToEdit ||
@@ -69,11 +70,11 @@ class Form extends Component {
 						}
 						type='text'
 						value={dataToEdit.item_price || dataToEdit.category_price}
-						onChange={e => dispatch(editCategoryOnChange(e))}
+						onChange={e => dispatch(editDataOnChange(e))}
 					/>
 				) : null}
 				<input type='submit' value='Save' />
-				<button type='button' onClick={() => dispatch(editCategory(null))}>
+				<button type='button' onClick={() => dispatch(editData(null))}>
 					Cancel
 				</button>
 			</form>
