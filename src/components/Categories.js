@@ -3,103 +3,50 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Items from './Items'
 import Form from './Form'
-import { deleteCategory, updateCategory, addItem } from '../actions'
+import { deleteCategory, updateCategory, addItem, editCategory } from '../actions'
 
 class Categories extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			categoryToEdit: {},
-			itemToAdd: { item_name: ' ', item_price: ' ' }
-		}
-		this.handleEditAddToCategory = this.handleEditAddToCategory.bind(this)
-	}
-
-	handleDelete(category) {
-		this.props.deleteCategory(this.props.cityId, category._id)
-	}
-
-	handleItemChange = event => {
-		let itemCopy = { ...this.state.itemToAdd }
-		itemCopy[event.target.name] = event.target.value
-		this.setState({ itemToAdd: itemCopy })
-	}
-
-	handleCategoryChange = event => {
-		let catCopy = { ...this.state.categoryToEdit }
-    catCopy[event.target.name] = event.target.value
-		this.setState({ categoryToEdit: catCopy })
-	}
-
-	handleSaveItem = event => {
-		event.preventDefault()
-		this.props.addItem(
-			this.props.cityId,
-			this.state.categoryToEdit._id,
-			this.state.itemToAdd
-		)
-		this.setState({
-			itemToAdd: { item_name: ' ', item_price: ' ' },
-			categoryToEdit: {}
-		})
-	}
-
-	handleEditAddToCategory(category, value) {
-		if (value === 'category') {
-			category.category = true
-			category.item = false
-		} else if (value === 'item') {
-			category.item = true
-			category.category = false
-		}
-		if (category) {
-			if (category.category_price === null) {
-				category.category_price = ''
-			}
-			this.setState({ categoryToEdit: category })
-		} else {
-			this.setState({
-				categoryToEdit: {},
-				itemToAdd: { item_name: ' ', item_price: ' ' }
-			})
-		}
-	}
-
-	handleUpdateCategory = event => {
-    console.log('UPDATE', this.state.categoryToEdit)
-    event.preventDefault()
-		this.props.updateCategory(this.props.cityId, this.state.categoryToEdit)
-		this.setState({ categoryToEdit: {} })
-	}
 
 	render() {
+    const { dataToEdit, categories, dispatch } = this.props
 		return (
 			<ul>
-				{this.props.categories.map((category, i) => (
+				{categories.map((category, i) => (
 					<div key={i}>
-						{category._id !== this.state.categoryToEdit._id ||
-						!this.state.categoryToEdit.category ? (
+						{category._id !== dataToEdit._id ||
+						!dataToEdit.category_name || dataToEdit.newCategory  ? (
 							<li>
 								{category.category_price
-									? `${category.category_name} - $${category.category_price}`
+									? `${category.category_name} - $${
+											category.category_price
+									  }`
 									: `${category.category_name}`}
 								<button
 									type='button'
-									onClick={() =>
-										this.handleEditAddToCategory(category, 'category')
-									}>
+									onClick={() => dispatch(editCategory(Object.assign({}, category, {newCategory: false})))}>
 									Edit
 								</button>
 								<button
 									type='button'
-									onClick={() => this.handleDelete(category)}>
+									onClick={() =>
+										dispatch(
+											deleteCategory(this.props.cityId, category._id)
+										)
+									}>
 									Delete
 								</button>
 								{!category.category_price ? (
 									<button
 										type='button'
 										onClick={() =>
-											this.handleEditAddToCategory(category, 'item')
+											dispatch(
+												editCategory({
+                          newCategory: false,
+													cat_id: category._id,
+													item_name: ' ',
+													item_price: ' '
+												})
+											)
 										}>
 										Add Item
 									</button>
@@ -107,23 +54,12 @@ class Categories extends Component {
 							</li>
 						) : (
 							<li>
-								<Form
-									data={this.state.categoryToEdit}
-									submit={this.handleUpdateCategory}
-									change={this.handleCategoryChange}
-									cancel={this.handleEditAddToCategory}
-								/>
+								<Form />
 							</li>
 						)}
 						<Items category={category} />
-						{category._id === this.state.categoryToEdit._id &&
-						this.state.categoryToEdit.item ? (
-							<Form
-								data={this.state.itemToAdd}
-								submit={this.handleSaveItem}
-								change={this.handleItemChange}
-								cancel={this.handleEditAddToCategory}
-							/>
+						{category._id === dataToEdit.cat_id && !dataToEdit.newCategory ? (
+							<Form catId={dataToEdit.cat_id} />
 						) : null}
 					</div>
 				))}
@@ -133,16 +69,26 @@ class Categories extends Component {
 }
 
 Categories.propTypes = {
-	categories: PropTypes.array.isRequired
+	categories: PropTypes.array.isRequired,
+	dispatch: PropTypes.func.isRequired
 }
 
-const mapStateToProps = state => {
-	return {
-		cityId: state.selectedCity.city_id
-	}
+function mapStateToProps(state) {
+  const { selectedCity, categoriesByCity, dataToEdit } = state
+  const {
+    categories
+  } = categoriesByCity[selectedCity.city_id] || {
+    categories: []
+  }
+  	return {
+      dataToEdit,
+      categories,
+			cityId: selectedCity.city_id,
+			deleteCategory,
+			updateCategory,
+			addItem,
+			editCategory
+		}
 }
 
-export default connect(
-	mapStateToProps,
-	{ deleteCategory, updateCategory, addItem }
-)(Categories)
+export default connect(mapStateToProps)(Categories)

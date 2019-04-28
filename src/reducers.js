@@ -1,12 +1,14 @@
 import { combineReducers } from "redux";
 import {
-  SELECT_CITY,
-  REQUEST_CITIES,
-  RECEIVE_CITIES,
-  INVALIDATE_CITY,
-  RECEIVE_CATEGORIES,
-  REQUEST_CATEGORIES
-} from "./actions";
+	SELECT_CITY,
+	REQUEST_CITIES,
+	RECEIVE_CITIES,
+	INVALIDATE_CITY,
+	RECEIVE_CATEGORIES,
+	REQUEST_CATEGORIES,
+	EDIT_CATEGORY,
+	ON_CHANGE_CATEGORY
+} from './actions'
 
 
 function selectedCity(state = {
@@ -94,10 +96,25 @@ function categoriesByCity(state = {}, action) {
   }
 }
 
+function dataToEdit(state = {}, action) {
+  switch (action.type) {
+    case EDIT_CATEGORY:
+      state = {}
+      return Object.assign({}, state, action.catObj)
+    case ON_CHANGE_CATEGORY:
+      return Object.assign({}, state, {
+        [action.event.target.name]: action.event.target.value
+      })
+		default:
+			return state
+	}
+}
+
 const rootReducer = combineReducers({
-  selectedCity,
-  cities,
-  categoriesByCity
-});
+	selectedCity,
+	cities,
+	categoriesByCity,
+	dataToEdit
+})
 
 export default rootReducer;

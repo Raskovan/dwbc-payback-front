@@ -6,23 +6,18 @@ import {
 	fetchCitiesIfNeeded,
 	fetchCategoriesForCityIfNeeded,
 	selectCity,
-	addCategoryForCity
+	addCategoryForCity,
+	editCategory
 } from '../actions'
 import Picker from '../components/Picker'
 import Categories from '../components/Categories'
+import Form from '../components/Form'
 
 class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			category_name: '',
-			category_price: '',
-			showCategoryForm: false
-		}
 		this.handleChange = this.handleChange.bind(this)
 		this.handleRefreshClick = this.handleRefreshClick.bind(this)
-		this.handleCategory = this.handleCategory.bind(this)
-		this.handleSubmitCategory = this.handleSubmitCategory.bind(this)
 	}
 
 	componentDidMount() {
@@ -57,43 +52,6 @@ class App extends Component {
 		dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
 	}
 
-	handleCategory(event) {
-		const target = event.target
-		const name = target.name
-		this.setState({ [name]: event.target.value })
-	}
-
-	handleSubmitCategory(event) {
-		event.preventDefault()
-		const { dispatch, selectedCity } = this.props
-		if (this.state.category_name !== '') {
-			dispatch(
-				addCategoryForCity(
-					selectedCity.city_id,
-					this.state.category_name,
-					this.state.category_price
-				)
-			)
-			this.setState({
-				category_name: '',
-				category_price: '',
-				showCategoryForm: false
-			})
-		} else {
-			alert('You should enter a name for the category!')
-		}
-	}
-
-	handleAddCategoryClick = value => {
-		this.setState({ showCategoryForm: value })
-		if (!value) {
-			this.setState({
-				category_name: '',
-				category_price: ''
-			})
-		}
-	}
-
 	render() {
 		const {
 			selectedCity,
@@ -101,7 +59,9 @@ class App extends Component {
 			isFetchingCategory,
 			isFetchingCities,
 			lastUpdatedCategory,
-			allCities
+      allCities,
+      dispatch,
+      dataToEdit
 		} = this.props
 		return (
 			<div>
@@ -129,38 +89,21 @@ class App extends Component {
 						<button onClick={this.handleRefreshClick}>Refresh</button>
 					)}
 				</p>
-				{isFetchingCategory && categories.length === 0 && <h2>Loading...</h2>}
+				{isFetchingCategory && categories.length === 0 && (
+					<h2>Loading...</h2>
+				)}
 				{!isFetchingCategory && categories.length === 0 && <h2>Empty.</h2>}
 				{categories.length > 0 && (
 					<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
-						<Categories categories={categories} />
+						<Categories />
 					</div>
 				)}
-				{this.state.showCategoryForm ? (
-					<form onSubmit={this.handleSubmitCategory}>
-						<input
-							name='category_name'
-							type='text'
-							value={this.state.category_name}
-							onChange={this.handleCategory}
-						/>
-						<input
-							name='category_price'
-							type='number'
-							value={this.state.category_price}
-							onChange={this.handleCategory}
-						/>
-						<input type='submit' value='Save Category' />
-						<button
-							type='button'
-							onClick={() => this.handleAddCategoryClick(false)}>
-							Cancel
-						</button>
-					</form>
+				{dataToEdit.newCategory ? (
+          <Form />
 				) : (
 					<button
 						type='button'
-						onClick={() => this.handleAddCategoryClick(true)}>
+						onClick={() => dispatch(editCategory({newCategory: true, category_name: ' ', category_price: ' '}))}>
 						Add Category
 					</button>
 				)}
@@ -180,7 +123,7 @@ App.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { selectedCity, categoriesByCity } = state
+	const { selectedCity, categoriesByCity, dataToEdit } = state
 	const {
 		isFetchingCategory,
 		lastUpdatedCategory,
@@ -207,7 +150,8 @@ function mapStateToProps(state) {
 		lastUpdatedCategory,
 		allCities,
 		categories,
-		selectedCity
+    selectedCity,
+    dataToEdit
 	}
 }
 

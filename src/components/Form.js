@@ -1,35 +1,93 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import {
+	editCategory,
+	editCategoryOnChange,
+	updateCategory,
+	updateItem,
+	addItem,
+	addCategoryForCity
+} from '../actions'
 
-export default class Form extends Component {
+
+class Form extends Component {
   render() {
+    const {
+			dataToEdit,
+			dispatch,
+			selectedCity
+		} = this.props
 		return (
-			<form onSubmit={this.props.submit}>
-				<input
-					name={this.props.data.category_name ? 'category_name' : 'item_name'}
-					type='text'
-					value={
-						this.props.data.item_name ||
-						this.props.data.category_name
+			<form
+				onSubmit={e => {
+          e.preventDefault()
+					if (dataToEdit.category_name && !dataToEdit.newCategory) {
+						dispatch(updateCategory(selectedCity.city_id, dataToEdit))
+					} else if (dataToEdit.item_name && !dataToEdit.cat_id) {
+						dispatch(
+							updateItem(
+								selectedCity.city_id,
+								this.props.catId,
+								dataToEdit
+							)
+						)
+					} else if (this.props.catId) {
+						dispatch(
+							addItem(
+								selectedCity.city_id,
+								this.props.catId,
+								dataToEdit
+							)
+						)
+					} else if (dataToEdit.newCategory) {
+						dispatch(
+							addCategoryForCity(
+								selectedCity.city_id,
+								dataToEdit.category_name,
+								dataToEdit.category_price
+							)
+						)
 					}
-					onChange={this.props.change}
+					dispatch(editCategory(null))
+				}}>
+				<input
+					name={
+						'category_name' in dataToEdit ? 'category_name' : 'item_name'
+					}
+					type='text'
+					value={dataToEdit.item_name || dataToEdit.category_name}
+					onChange={e => dispatch(editCategoryOnChange(e))}
 				/>
-				{(this.props.data.items && this.props.data.items.length === 0) ||
-				'item_name' in this.props.data ? (
+				{(dataToEdit.items && dataToEdit.items.length === 0) ||
+				'item_name' in dataToEdit ||
+				dataToEdit.newCategory ? (
 					<input
-						name={'category_price' in this.props.data ? 'category_price' : 'item_price'}
-						type='text'
-						value={
-							this.props.data.item_price ||
-							this.props.data.category_price
+						name={
+							'category_price' in dataToEdit
+								? 'category_price'
+								: 'item_price'
 						}
-						onChange={this.props.change}
+						type='text'
+						value={dataToEdit.item_price || dataToEdit.category_price}
+						onChange={e => dispatch(editCategoryOnChange(e))}
 					/>
 				) : null}
 				<input type='submit' value='Save' />
-				<button type='button' onClick={() => this.props.cancel(null, '')}>
+				<button type='button' onClick={() => dispatch(editCategory(null))}>
 					Cancel
 				</button>
 			</form>
 		)
 	}
 }
+
+function mapStateToProps(state) {
+	const { dataToEdit, selectedCity } = state
+
+	return {
+    selectedCity,
+		dataToEdit
+	}
+}
+
+export default connect(mapStateToProps)(Form)

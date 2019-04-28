@@ -1,18 +1,19 @@
 import fetch from "cross-fetch";
 
-export const REQUEST_CITIES = "REQUEST_CITIES",
-              RECEIVE_CITIES = "RECEIVE_CITIES",
-              SELECT_CITY = "SELECT_CITY",
-              INVALIDATE_CITY = "INVALIDATE_CITY",
-              REQUEST_CATEGORIES = "REQUEST_CATEGORIES",
-              RECEIVE_CATEGORIES = "RECEIVE_CATEGORIES",
-              SAVE_CATEGORY = "SAVE_CATEGORY",
-              DELETE_CATEGORY = "DELETE_CATEGORY",
-              EDIT_CATEGORY = "EDIT_CATEGORY",
-              UPDATE_CATEGORY = "UPDATE_CATEGORY",
-              ADD_CATEGORY = "ADD_CATEGORY",
-              DELETE_ITEM = "DELETE_ITEM",
-              UPDATE_ITEM = "UPDATE_ITEM";
+export const REQUEST_CITIES = 'REQUEST_CITIES',
+					RECEIVE_CITIES = 'RECEIVE_CITIES',
+					SELECT_CITY = 'SELECT_CITY',
+					INVALIDATE_CITY = 'INVALIDATE_CITY',
+					REQUEST_CATEGORIES = 'REQUEST_CATEGORIES',
+					RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES',
+					SAVE_CATEGORY = 'SAVE_CATEGORY',
+					DELETE_CATEGORY = 'DELETE_CATEGORY',
+					EDIT_CATEGORY = 'EDIT_CATEGORY',
+					UPDATE_CATEGORY = 'UPDATE_CATEGORY',
+					ADD_CATEGORY = 'ADD_CATEGORY',
+					DELETE_ITEM = 'DELETE_ITEM',
+					UPDATE_ITEM = 'UPDATE_ITEM',
+					ON_CHANGE_CATEGORY = 'ON_CHANGE_CATEGORY';
 
 
 export function invalidateCity(cityId) {
@@ -122,6 +123,20 @@ export function addCategoryForCity(cityId, catName, catPrice) {
       return dispatch(saveCategory(cityId, catName, catPrice))
     }
   }
+}
+
+export function editCategory(catObj) {
+    return {
+			type: EDIT_CATEGORY,
+			catObj
+		}
+}
+
+export function editCategoryOnChange(event) {
+    return {
+			type: ON_CHANGE_CATEGORY,
+			event
+		}
 }
 
 export function selectCity(cityObj) {
@@ -298,6 +313,7 @@ function updatingItem(cityId, catId, itemObj) {
 }
 
 export function updateItem(cityId, catId, itemObj) {
+  console.log('SAVE ITEM', cityId, catId, itemObj)
   let data = {
     item_name: itemObj.item_name,
     item_price: itemObj.item_price
@@ -316,7 +332,8 @@ export function updateItem(cityId, catId, itemObj) {
 				}
 			}
 		)
-			.then(response => response.json())
+      .then(response => response.json())
+      .then(json => console.log("RESPONSE", json))
 			.then(json => dispatch(fetchCategories(cityId)))
   }
 }
