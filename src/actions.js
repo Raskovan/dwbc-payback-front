@@ -187,7 +187,6 @@ function fetchCities() {
 		})
 			.then(response => response.json())
 			.then(allCities => dispatch(receiveCities(allCities)))
-			.then(allCities => dispatch(selectCity(allCities.cityList[0])))
   };
 }
 
