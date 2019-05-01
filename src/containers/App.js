@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Route, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
 	invalidateCity,
 	fetchCitiesIfNeeded,
 	fetchCategoriesForCityIfNeeded,
 	selectCity,
-	addData
+	addData,
+	shouldSelectCity
 } from '../actions'
 import Picker from '../components/Picker'
 import Categories from '../components/Categories'
@@ -20,15 +21,41 @@ class App extends Component {
 		this.handleRefreshClick = this.handleRefreshClick.bind(this)
 	}
 
+	componentWillMount() {
+		console.log("WillMount", this.props)
+	}
+
+	componentWillReceiveProps(nextProps) {
+		console.log("Will Props", nextProps.match.params.name)
+		console.log("This Props", this.props.match.params.name)
+				if (
+					nextProps.match.params.name !== this.props.match.params.name
+				) {
+					const { dispatch, selectedCity } = this.props
+		dispatch(fetchCitiesIfNeeded(nextProps.match.params.name))
+				}
+				// const { dispatch, selectedCity, match, cities } = this.props
+				// dispatch(fetchCitiesIfNeeded(match.params.name))
+	}
+
 	componentDidMount() {
-		const { dispatch, selectedCity } = this.props
-		dispatch(fetchCitiesIfNeeded())
-      dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
-      if ('city_id' in selectedCity){
-        this.props.history.push(`/${selectedCity.city_id}`)
-      } else {
-        this.props.history.push('/')
-      }
+		const { dispatch, selectedCity, match, cities } = this.props
+		console.log('PROPS', this.props)
+		dispatch(fetchCitiesIfNeeded(match.params.name))
+		// if (cities && cities.cityList && match.params.name){
+		// 	console.log("CITIES", cities)
+		// 	let matchCity = cities.cityList.find(city => {
+		// 		return city.city_name === match.params.name
+		// 	})
+		// 	// dispatch(shouldSelectCity(this.props.match.name))
+		// 	// this.props.dispatch(selectCity(matchCity))
+		// 	dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
+		// }
+		if (match.params.name) {
+			this.props.history.push(`/${match.params.name}`)
+		} else {
+			this.props.history.push('/')
+		}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -38,16 +65,18 @@ class App extends Component {
 		}
 	}
 
-	handleChange(nextCityId) {
+	handleChange(event) {
 		let nextCity
 		for (let i = 0; i < this.props.allCities.length; i++) {
-			if (this.props.allCities[i].city_id === nextCityId) {
+			if (this.props.allCities[i].city_id === event.target.value) {
 				nextCity = this.props.allCities[i]
 			}
 		}
+		// if (nextCity) {
 		this.props.dispatch(selectCity(nextCity))
-    this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
-    this.props.history.push(`/${nextCity.city_id}`)
+		this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+		this.props.history.push(`/${nextCity.city_name}`)
+		// }
 	}
 
 	handleRefreshClick(e) {
@@ -65,71 +94,66 @@ class App extends Component {
 			isFetchingCategory,
 			isFetchingCities,
 			lastUpdatedCategory,
-      allCities,
-      dispatch,
-      dataToEdit
+			allCities,
+			dispatch,
+			dataToEdit
 		} = this.props
 		return (
-      <div>
+			<div>
 				{isFetchingCities && selectedCity && allCities.length === 0 && (
-          <h2>Loading...</h2>
+					<h2>Loading...</h2>
 				)}
 				{!isFetchingCities && allCities.length === 0 && <h2>Empty.</h2>}
-					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-                <Picker
-                  value={selectedCity}
-                  onChange={this.handleChange}
-                  options={allCities}
-                />
-					</div>
+				<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
+					<Picker
+						city={selectedCity || ''}
+						onChange={this.handleChange}
+						options={allCities}
+					/>
+				</div>
+
 				<p>
 					{lastUpdatedCategory && (
-            <span>
+						<span>
 							Last updated at{' '}
 							{new Date(lastUpdatedCategory).toLocaleTimeString()}.{' '}
 						</span>
 					)}
 					{!isFetchingCategory && (
-            <button onClick={this.handleRefreshClick}>Refresh</button>
+						<button onClick={this.handleRefreshClick}>Refresh</button>
 					)}
 				</p>
-        <Route
-          path='/:id'
-          render={ renderProps => {
-            let cityId = renderProps.match.params.id
-            let pathCity = allCities.find(city => {
-              return city.city_id === cityId
-            })
-            dispatch(fetchCategoriesForCityIfNeeded(pathCity.city_id))
-          }}>
 
-				{isFetchingCategory && categories.length === 0 && (
-					<h2>Loading...</h2>
-				)}
-				{!isFetchingCategory && categories.length === 0 && <h2>Empty.</h2>}
-				{categories.length > 0 && (
-					<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
-						<Categories />
+				{selectedCity.city_id && (
+					<div>
+						{isFetchingCategory && categories.length === 0 && (
+							<h2>Loading...</h2>
+						)}
+						{!isFetchingCategory && categories.length === 0 && <h2>Empty.</h2>}
+						{categories.length > 0 && (
+							<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
+								<Categories />
+							</div>
+						)}
+						{dataToEdit.newCategory ? (
+							<Form />
+						) : (
+							<button
+								type='button'
+								onClick={() =>
+									dispatch(
+										addData({
+											newCategory: true,
+											category_name: '',
+											category_price: ''
+										})
+									)
+								}>
+								Add Category
+							</button>
+						)}
 					</div>
 				)}
-				{dataToEdit.newCategory ? (
-					<Form />
-				) : (
-					<button
-						type='button'
-						onClick={() =>
-							dispatch(
-								addData({
-									newCategory: true,
-									category_name: '',
-									category_price: ''
-								})
-							)
-						}>
-						Add Category
-					</button>
-				)}
-      </Route>
 			</div>
 		)
 	}

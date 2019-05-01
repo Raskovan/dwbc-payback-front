@@ -19,9 +19,9 @@ function selectedCity(state = {}, action) {
       return Object.assign({}, state, {
         city_id: action.cityObj.city_id,
         city_name: action.cityObj.city_name
-      });
+      })
     default:
-      return state;
+      return state
   }
 }
 

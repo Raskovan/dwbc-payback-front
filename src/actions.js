@@ -60,7 +60,10 @@ function fetchCategories(cityId) {
 
 function shouldFetchCategories(state, cityId) {
   const categories = state.categoriesByCity[cityId];
-  if (!categories) {
+  const city = state.selectedCity.city_name
+  if (!city){
+    return false
+  } else if (!categories) {
     return true;
   } else if (categories.isFetchingCategory) {
     return false;
@@ -162,6 +165,28 @@ export function selectCity(cityObj) {
   };
 }
 
+export function canSelectCity(state, cityName) {
+  const cities = state.cities.cityList
+  if (cities.length){
+    let match = cities.filter(
+      city => city.city_name === cityName
+    )
+    if (match.length === 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+export function shouldSelectCity(cityName) {
+  return (dispatch, getState) => {
+		if (canSelectCity(getState(), cityName)) {
+			return dispatch(selectCity(cityName))
+		}
+	}
+}
+
 function requestCities() {
   return {
     type: REQUEST_CITIES
@@ -176,7 +201,7 @@ function receiveCities(allCities) {
   };
 }
 
-function fetchCities() {
+function fetchCities(matchName) {
   return dispatch => {
     dispatch(requestCities());
     return fetch(process.env.REACT_APP_API_HOST + `/api/v1/cities/list`, {
@@ -187,7 +212,20 @@ function fetchCities() {
 		})
 			.then(response => response.json())
 			.then(allCities => dispatch(receiveCities(allCities)))
+			.then(allCities => dispatch(selectingCity(allCities, matchName)))
   };
+}
+
+function selectingCity(allCities, matchName) {
+  console.log('SELECTING', matchName)
+  return dispatch => {
+    if (matchName){
+      for (let i=0; i < allCities.cityList.length; i++){
+        if (allCities.cityList[i].city_name === matchName)
+          dispatch(selectCity(allCities.cityList[i]))
+      }
+    }
+  }
 }
 
 function shouldFetchCities(state) {
@@ -200,10 +238,10 @@ function shouldFetchCities(state) {
   }
 }
 
-export function fetchCitiesIfNeeded() {
+export function fetchCitiesIfNeeded(matchName) {
   return (dispatch, getState) => {
     if (shouldFetchCities(getState())) {
-      return dispatch(fetchCities());
+      return dispatch(fetchCities(matchName))
     }
   };
 }
@@ -328,7 +366,6 @@ function updatingItem(cityId, catId, itemObj) {
 }
 
 export function updateItem(cityId, catId, itemObj) {
-  console.log('SAVE ITEM', cityId, catId, itemObj)
   let data = {
     item_name: itemObj.item_name,
     item_price: itemObj.item_price

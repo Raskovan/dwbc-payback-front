@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from "react-redux";
 import configureStore from "../configureStore";
 import App from "./App";
@@ -11,7 +11,10 @@ export default class Root extends Component {
     return (
 				<Provider store={store}>
 					<Router>
-						<Route path='/' component={App} />
+						<Switch>
+							<Route path='/:name' component={App} />
+							<Route exact path='/' component={App} />
+						</Switch>
 					</Router>
 				</Provider>
 		)
