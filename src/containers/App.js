@@ -7,8 +7,7 @@ import {
 	fetchCitiesIfNeeded,
 	fetchCategoriesForCityIfNeeded,
 	selectCity,
-	addData,
-	shouldSelectCity
+	addData
 } from '../actions'
 import Picker from '../components/Picker'
 import Categories from '../components/Categories'
@@ -21,36 +20,9 @@ class App extends Component {
 		this.handleRefreshClick = this.handleRefreshClick.bind(this)
 	}
 
-	componentWillMount() {
-		console.log("WillMount", this.props)
-	}
-
-	componentWillReceiveProps(nextProps) {
-		console.log("Will Props", nextProps.match.params.name)
-		console.log("This Props", this.props.match.params.name)
-				if (
-					nextProps.match.params.name !== this.props.match.params.name
-				) {
-					const { dispatch, selectedCity } = this.props
-		dispatch(fetchCitiesIfNeeded(nextProps.match.params.name))
-				}
-				// const { dispatch, selectedCity, match, cities } = this.props
-				// dispatch(fetchCitiesIfNeeded(match.params.name))
-	}
-
 	componentDidMount() {
-		const { dispatch, selectedCity, match, cities } = this.props
-		console.log('PROPS', this.props)
+		const { dispatch, match } = this.props
 		dispatch(fetchCitiesIfNeeded(match.params.name))
-		// if (cities && cities.cityList && match.params.name){
-		// 	console.log("CITIES", cities)
-		// 	let matchCity = cities.cityList.find(city => {
-		// 		return city.city_name === match.params.name
-		// 	})
-		// 	// dispatch(shouldSelectCity(this.props.match.name))
-		// 	// this.props.dispatch(selectCity(matchCity))
-		// 	dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
-		// }
 		if (match.params.name) {
 			this.props.history.push(`/${match.params.name}`)
 		} else {
@@ -59,9 +31,17 @@ class App extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		const { dispatch, selectedCity, cities } = this.props
+
 		if (this.props.selectedCity !== prevProps.selectedCity) {
-			const { dispatch, selectedCity } = this.props
 			dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
+		} else if (this.props.match.params.name !== prevProps.match.params.name) {
+			let newCity = cities.cityList.find(city => {
+				return this.props.match.params.name === city.city_name
+			})
+			dispatch(selectCity(newCity))
+			if (newCity) dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+
 		}
 	}
 
@@ -72,16 +52,15 @@ class App extends Component {
 				nextCity = this.props.allCities[i]
 			}
 		}
-		// if (nextCity) {
 		this.props.dispatch(selectCity(nextCity))
-		this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
-		this.props.history.push(`/${nextCity.city_name}`)
-		// }
+		if (nextCity) {
+			this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+			this.props.history.push(`/${nextCity.city_name}`)
+		} else this.props.history.push(`/`)
 	}
 
 	handleRefreshClick(e) {
 		e.preventDefault()
-
 		const { dispatch, selectedCity } = this.props
 		dispatch(invalidateCity(selectedCity.city_id))
 		dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
@@ -198,7 +177,8 @@ function mapStateToProps(state) {
 		allCities,
 		categories,
     selectedCity,
-    dataToEdit
+		dataToEdit,
+		cities
 	}
 }
 
