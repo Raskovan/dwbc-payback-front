@@ -41,7 +41,6 @@ class App extends Component {
 			})
 			dispatch(selectCity(newCity))
 			if (newCity) dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
-
 		}
 	}
 
