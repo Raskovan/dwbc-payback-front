@@ -1,26 +1,32 @@
 import { combineReducers } from "redux";
 import {
-  SELECT_CITY,
-  REQUEST_CITIES,
-  RECEIVE_CITIES,
-  INVALIDATE_CITY,
-  RECEIVE_CATEGORIES,
-  REQUEST_CATEGORIES
-} from "./actions";
+	SELECT_CITY,
+	REQUEST_CITIES,
+	RECEIVE_CITIES,
+	INVALIDATE_CITY,
+	RECEIVE_CATEGORIES,
+	REQUEST_CATEGORIES,
+  EDIT_DATA,
+  CLEAR_DATA,
+	ADD_DATA,
+	ON_CHANGE_DATA
+} from './actions'
 
 
-function selectedCity(state = {
-  city_id: '5c99a5ec3ad97b001795d699',
-  city_name: "New York"
-}, action) {
+function selectedCity(state = {}, action) {
   switch (action.type) {
     case SELECT_CITY:
       return Object.assign({}, state, {
-        city_id: action.cityObj.city_id,
-        city_name: action.cityObj.city_name
-      });
+				city_id:
+					action.cityObj && action.cityObj.city_id
+						? action.cityObj.city_id
+						: '',
+				city_name: action.cityObj && action.cityObj.city_name
+					? action.cityObj.city_name
+					: ''
+			})
     default:
-      return state;
+      return state
   }
 }
 
@@ -74,7 +80,6 @@ function cities(
         didInvalidateCities: false,
         cityList: action.cityList,
         lastUpdatedCities: action.receivedAt,
-        selectedCity: action.cityList[0].city_name
       });
     default:
       return state;
@@ -94,10 +99,27 @@ function categoriesByCity(state = {}, action) {
   }
 }
 
+function dataToEdit(state = {}, action) {
+  switch (action.type) {
+    case EDIT_DATA:
+    case ADD_DATA:
+    case CLEAR_DATA:
+      state = {}
+      return Object.assign({}, state, action.data)
+    case ON_CHANGE_DATA:
+      return Object.assign({}, state, {
+        [action.event.target.name]: action.event.target.value
+      })
+		default:
+			return state
+	}
+}
+
 const rootReducer = combineReducers({
-  selectedCity,
-  cities,
-  categoriesByCity
-});
+	selectedCity,
+	cities,
+	categoriesByCity,
+	dataToEdit
+})
 
 export default rootReducer;

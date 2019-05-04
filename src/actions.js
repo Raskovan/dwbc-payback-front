@@ -1,18 +1,30 @@
-import fetch from "cross-fetch";
+import {
+	fetchCategoryFromApi,
+	saveCategoryToApi,
+	fetchCityListFromApi,
+	deleteCategoryFromApi,
+	updateCategoryToApi,
+	addItemToCategoryInApi,
+	deleteItemInCategoryInApi,
+	updateItemInCategoryInApi
+} from './api'
 
-export const REQUEST_CITIES = "REQUEST_CITIES",
-              RECEIVE_CITIES = "RECEIVE_CITIES",
-              SELECT_CITY = "SELECT_CITY",
-              INVALIDATE_CITY = "INVALIDATE_CITY",
-              REQUEST_CATEGORIES = "REQUEST_CATEGORIES",
-              RECEIVE_CATEGORIES = "RECEIVE_CATEGORIES",
-              SAVE_CATEGORY = "SAVE_CATEGORY",
-              DELETE_CATEGORY = "DELETE_CATEGORY",
-              EDIT_CATEGORY = "EDIT_CATEGORY",
-              UPDATE_CATEGORY = "UPDATE_CATEGORY",
-              ADD_CATEGORY = "ADD_CATEGORY",
-              DELETE_ITEM = "DELETE_ITEM",
-              UPDATE_ITEM = "UPDATE_ITEM";
+export const REQUEST_CITIES = 'REQUEST_CITIES',
+					RECEIVE_CITIES = 'RECEIVE_CITIES',
+					SELECT_CITY = 'SELECT_CITY',
+					INVALIDATE_CITY = 'INVALIDATE_CITY',
+					REQUEST_CATEGORIES = 'REQUEST_CATEGORIES',
+					RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES',
+					SAVE_CATEGORY = 'SAVE_CATEGORY',
+					DELETE_CATEGORY = 'DELETE_CATEGORY',
+					EDIT_DATA = 'EDIT_DATA',
+					CLEAR_DATA = 'CLEAR_DATA',
+					ADD_DATA = 'ADD_DATA',
+					UPDATE_CATEGORY = 'UPDATE_CATEGORY',
+					ADD_CATEGORY = 'ADD_CATEGORY',
+					DELETE_ITEM = 'DELETE_ITEM',
+					UPDATE_ITEM = 'UPDATE_ITEM',
+					ON_CHANGE_DATA = 'ON_CHANGE_DATA';
 
 
 export function invalidateCity(cityId) {
@@ -41,23 +53,17 @@ function requestCategories(cityId) {
 function fetchCategories(cityId) {
   return dispatch => {
     dispatch(requestCategories(cityId));
-    return fetch(
-			process.env.REACT_APP_API_HOST + `/api/v1/cities/${cityId}`,
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    fetchCategoryFromApi(cityId)
 			.then(json => dispatch(receiveCategories(cityId, json)))
   };
 }
 
 function shouldFetchCategories(state, cityId) {
   const categories = state.categoriesByCity[cityId];
-  if (!categories) {
+  const city = state.selectedCity.city_name
+  if (!city){
+    return false
+  } else if (!categories) {
     return true;
   } else if (categories.isFetchingCategory) {
     return false;
@@ -89,19 +95,7 @@ function saveCategory(cityId, catName, catPrice) {
   }
   return dispatch => {
     dispatch(savingCategory(cityId, catName));
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories`,
-			{
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    saveCategoryToApi(cityId, data)
 			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
@@ -122,6 +116,34 @@ export function addCategoryForCity(cityId, catName, catPrice) {
       return dispatch(saveCategory(cityId, catName, catPrice))
     }
   }
+}
+
+export function editData(data) {
+    return {
+			type: EDIT_DATA,
+			data
+		}
+}
+
+export function clearData(data) {
+    return {
+			type: CLEAR_DATA,
+			data
+		}
+}
+
+export function addData(data) {
+    return {
+			type: ADD_DATA,
+			data
+		}
+}
+
+export function editDataOnChange(event) {
+    return {
+			type: ON_CHANGE_DATA,
+			event
+		}
 }
 
 export function selectCity(cityObj) {
@@ -145,19 +167,24 @@ function receiveCities(allCities) {
   };
 }
 
-function fetchCities() {
+function fetchCities(matchName) {
   return dispatch => {
     dispatch(requestCities());
-    return fetch(process.env.REACT_APP_API_HOST + `/api/v1/cities/list`, {
-			headers: {
-				'Content-Type': 'application/json',
-				'x-api-key': process.env.REACT_APP_API_KEY
-			}
-		})
-			.then(response => response.json())
+    fetchCityListFromApi()
 			.then(allCities => dispatch(receiveCities(allCities)))
-			.then(allCities => dispatch(selectCity(allCities.cityList[0])))
+			.then(allCities => dispatch(selectingCity(allCities, matchName)))
   };
+}
+
+function selectingCity(allCities, matchName) {
+  return dispatch => {
+    if (matchName){
+      for (let i=0; i < allCities.cityList.length; i++){
+        if (allCities.cityList[i].city_name === matchName)
+          dispatch(selectCity(allCities.cityList[i]))
+      }
+    }
+  }
 }
 
 function shouldFetchCities(state) {
@@ -170,10 +197,10 @@ function shouldFetchCities(state) {
   }
 }
 
-export function fetchCitiesIfNeeded() {
+export function fetchCitiesIfNeeded(matchName) {
   return (dispatch, getState) => {
     if (shouldFetchCities(getState())) {
-      return dispatch(fetchCities());
+      return dispatch(fetchCities(matchName))
     }
   };
 }
@@ -187,18 +214,7 @@ function deletingCategory() {
 export function deleteCategory(cityId, catId) {
   return dispatch => {
     dispatch(deletingCategory());
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories/${catId}`,
-			{
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    deleteCategoryFromApi(cityId, catId)
 			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
@@ -218,19 +234,7 @@ export function updateCategory(cityId, category) {
   }
   return dispatch => {
     dispatch(updatingCategory(cityId, category.category_name));
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories/${category._id}`,
-			{
-				method: 'PUT',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    updateCategoryToApi(cityId, category, data)
 			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
@@ -246,19 +250,7 @@ function addingItem(cityId, catName) {
 export function addItem(cityId, catId, itemObj) {
   return dispatch => {
     dispatch(addingItem(cityId, catId));
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories/${catId}/items`,
-			{
-				method: 'POST',
-				body: JSON.stringify(itemObj),
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    addItemToCategoryInApi(cityId, catId, itemObj)
 			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
@@ -272,18 +264,7 @@ function deletingItem() {
 export function deleteItem(cityId, catId, itemId) {
   return dispatch => {
     dispatch(deletingItem());
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories/${catId}/items/${itemId}`,
-			{
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    deleteItemInCategoryInApi(cityId, catId, itemId)
 			.then(json => dispatch(receiveCategories(cityId, json.categories)))
   }
 }
@@ -304,19 +285,7 @@ export function updateItem(cityId, catId, itemObj) {
   }
   return dispatch => {
     dispatch(updatingItem(cityId, catId, itemObj));
-    return fetch(
-			process.env.REACT_APP_API_HOST +
-				`/api/v1/cities/${cityId}/categories/${catId}/items/${itemObj._id}`,
-			{
-				method: 'PUT',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': process.env.REACT_APP_API_KEY
-				}
-			}
-		)
-			.then(response => response.json())
+    updateItemInCategoryInApi(cityId, catId, itemObj, data)
 			.then(json => dispatch(fetchCategories(cityId)))
   }
 }

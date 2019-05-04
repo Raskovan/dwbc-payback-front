@@ -1,97 +1,68 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
 	invalidateCity,
 	fetchCitiesIfNeeded,
 	fetchCategoriesForCityIfNeeded,
 	selectCity,
-	addCategoryForCity
+	addData
 } from '../actions'
 import Picker from '../components/Picker'
 import Categories from '../components/Categories'
+import Form from '../components/Form'
 
 class App extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			category_name: '',
-			category_price: '',
-			showCategoryForm: false
-		}
 		this.handleChange = this.handleChange.bind(this)
 		this.handleRefreshClick = this.handleRefreshClick.bind(this)
-		this.handleCategory = this.handleCategory.bind(this)
-		this.handleSubmitCategory = this.handleSubmitCategory.bind(this)
 	}
 
 	componentDidMount() {
-		const { dispatch, selectedCity } = this.props
-		dispatch(fetchCitiesIfNeeded())
-		dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
-	}
-
-	componentDidUpdate(prevProps) {
-		if (this.props.selectedCity !== prevProps.selectedCity) {
-			const { dispatch, selectedCity } = this.props
-			dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
+		const { dispatch, match } = this.props
+		dispatch(fetchCitiesIfNeeded(match.params.name))
+		if (match.params.name) {
+			this.props.history.push(`/${match.params.name}`)
+		} else {
+			this.props.history.push('/')
 		}
 	}
 
-	handleChange(nextCityId) {
+	componentDidUpdate(prevProps) {
+		const { dispatch, selectedCity, cities } = this.props
+
+		if (this.props.selectedCity !== prevProps.selectedCity) {
+			dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
+		} else if (this.props.match.params.name !== prevProps.match.params.name) {
+			let newCity = cities.cityList.find(city => {
+				return this.props.match.params.name === city.city_name
+			})
+			dispatch(selectCity(newCity))
+			if (newCity) dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+		}
+	}
+
+	handleChange(event) {
 		let nextCity
 		for (let i = 0; i < this.props.allCities.length; i++) {
-			if (this.props.allCities[i].city_id === nextCityId) {
+			if (this.props.allCities[i].city_id === event.target.value) {
 				nextCity = this.props.allCities[i]
 			}
 		}
 		this.props.dispatch(selectCity(nextCity))
-		this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+		if (nextCity) {
+			this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+			this.props.history.push(`/${nextCity.city_name}`)
+		} else this.props.history.push(`/`)
 	}
 
 	handleRefreshClick(e) {
 		e.preventDefault()
-
 		const { dispatch, selectedCity } = this.props
 		dispatch(invalidateCity(selectedCity.city_id))
 		dispatch(fetchCategoriesForCityIfNeeded(selectedCity.city_id))
-	}
-
-	handleCategory(event) {
-		const target = event.target
-		const name = target.name
-		this.setState({ [name]: event.target.value })
-	}
-
-	handleSubmitCategory(event) {
-		event.preventDefault()
-		const { dispatch, selectedCity } = this.props
-		if (this.state.category_name !== '') {
-			dispatch(
-				addCategoryForCity(
-					selectedCity.city_id,
-					this.state.category_name,
-					this.state.category_price
-				)
-			)
-			this.setState({
-				category_name: '',
-				category_price: '',
-				showCategoryForm: false
-			})
-		} else {
-			alert('You should enter a name for the category!')
-		}
-	}
-
-	handleAddCategoryClick = value => {
-		this.setState({ showCategoryForm: value })
-		if (!value) {
-			this.setState({
-				category_name: '',
-				category_price: ''
-			})
-		}
 	}
 
 	render() {
@@ -101,7 +72,9 @@ class App extends Component {
 			isFetchingCategory,
 			isFetchingCities,
 			lastUpdatedCategory,
-			allCities
+			allCities,
+			dispatch,
+			dataToEdit
 		} = this.props
 		return (
 			<div>
@@ -109,15 +82,14 @@ class App extends Component {
 					<h2>Loading...</h2>
 				)}
 				{!isFetchingCities && allCities.length === 0 && <h2>Empty.</h2>}
-				{selectedCity.city_id && allCities.length > 0 && (
-					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-						<Picker
-							value={selectedCity}
-							onChange={this.handleChange}
-							options={allCities}
-						/>
-					</div>
-				)}
+				<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
+					<Picker
+						city={selectedCity || ''}
+						onChange={this.handleChange}
+						options={allCities}
+					/>
+				</div>
+
 				<p>
 					{lastUpdatedCategory && (
 						<span>
@@ -129,40 +101,36 @@ class App extends Component {
 						<button onClick={this.handleRefreshClick}>Refresh</button>
 					)}
 				</p>
-				{isFetchingCategory && categories.length === 0 && <h2>Loading...</h2>}
-				{!isFetchingCategory && categories.length === 0 && <h2>Empty.</h2>}
-				{categories.length > 0 && (
-					<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
-						<Categories categories={categories} />
+
+				{selectedCity.city_id && (
+					<div>
+						{isFetchingCategory && categories.length === 0 && (
+							<h2>Loading...</h2>
+						)}
+						{!isFetchingCategory && categories.length === 0 && <h2>Empty.</h2>}
+						{categories.length > 0 && (
+							<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
+								<Categories />
+							</div>
+						)}
+						{dataToEdit.newCategory ? (
+							<Form />
+						) : (
+							<button
+								type='button'
+								onClick={() =>
+									dispatch(
+										addData({
+											newCategory: true,
+											category_name: '',
+											category_price: ''
+										})
+									)
+								}>
+								Add Category
+							</button>
+						)}
 					</div>
-				)}
-				{this.state.showCategoryForm ? (
-					<form onSubmit={this.handleSubmitCategory}>
-						<input
-							name='category_name'
-							type='text'
-							value={this.state.category_name}
-							onChange={this.handleCategory}
-						/>
-						<input
-							name='category_price'
-							type='number'
-							value={this.state.category_price}
-							onChange={this.handleCategory}
-						/>
-						<input type='submit' value='Save Category' />
-						<button
-							type='button'
-							onClick={() => this.handleAddCategoryClick(false)}>
-							Cancel
-						</button>
-					</form>
-				) : (
-					<button
-						type='button'
-						onClick={() => this.handleAddCategoryClick(true)}>
-						Add Category
-					</button>
 				)}
 			</div>
 		)
@@ -180,7 +148,7 @@ App.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { selectedCity, categoriesByCity } = state
+	const { selectedCity, categoriesByCity, dataToEdit } = state
 	const {
 		isFetchingCategory,
 		lastUpdatedCategory,
@@ -207,8 +175,10 @@ function mapStateToProps(state) {
 		lastUpdatedCategory,
 		allCities,
 		categories,
-		selectedCity
+    selectedCity,
+		dataToEdit,
+		cities
 	}
 }
 
-export default connect(mapStateToProps)(App)
+export default withRouter(connect(mapStateToProps)(App))
