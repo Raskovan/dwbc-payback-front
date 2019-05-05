@@ -1,21 +1,8 @@
 import { combineReducers } from "redux";
-import {
-	SELECT_CITY,
-	REQUEST_CITIES,
-	RECEIVE_CITIES,
-	INVALIDATE_CITY,
-	RECEIVE_CATEGORIES,
-	REQUEST_CATEGORIES,
-  EDIT_DATA,
-  CLEAR_DATA,
-	ADD_DATA,
-	ON_CHANGE_DATA
-} from './actions'
-
 
 function selectedCity(state = {}, action) {
   switch (action.type) {
-    case SELECT_CITY:
+    case 'SELECT_CITY':
       return Object.assign({}, state, {
 				city_id:
 					action.cityObj && action.cityObj.city_id
@@ -39,16 +26,16 @@ function categories(
   action
 ) {
   switch (action.type) {
-    case INVALIDATE_CITY:
+    case 'INVALIDATE_CITY':
       return Object.assign({}, state, {
         didInvalidateCategory: true
       });
-    case REQUEST_CATEGORIES:
+    case 'REQUEST_CATEGORIES':
       return Object.assign({}, state, {
         isFetchingCategory: true,
         didInvalidateCategory: false
       });
-    case RECEIVE_CATEGORIES:
+    case 'RECEIVE_CATEGORIES':
     return Object.assign({}, state, {
       isFetchingCategory: false,
       didInvalidateCategory: false,
@@ -69,12 +56,12 @@ function cities(
   action
 ) {
   switch (action.type) {
-    case REQUEST_CITIES:
+    case 'REQUEST_CITIES':
       return Object.assign({}, state, {
         isFetchingCities: true,
         didInvalidateCities: false
       });
-    case RECEIVE_CITIES:
+    case 'RECEIVE_CITIES':
       return Object.assign({}, state, {
         isFetchingCities: false,
         didInvalidateCities: false,
@@ -88,9 +75,9 @@ function cities(
 
 function categoriesByCity(state = {}, action) {
   switch (action.type) {
-    case INVALIDATE_CITY:
-    case RECEIVE_CATEGORIES:
-    case REQUEST_CATEGORIES:
+    case 'INVALIDATE_CITY':
+    case 'RECEIVE_CATEGORIES':
+    case 'REQUEST_CATEGORIES':
       return Object.assign({}, state, {
         [action.cityId]: categories(state[action.cityId], action)
       });
@@ -101,12 +88,12 @@ function categoriesByCity(state = {}, action) {
 
 function dataToEdit(state = {}, action) {
   switch (action.type) {
-    case EDIT_DATA:
-    case ADD_DATA:
-    case CLEAR_DATA:
+    case 'EDIT_DATA':
+    case 'ADD_DATA':
+    case 'CLEAR_DATA':
       state = {}
       return Object.assign({}, state, action.data)
-    case ON_CHANGE_DATA:
+    case 'ON_CHANGE_DATA':
       return Object.assign({}, state, {
         [action.event.target.name]: action.event.target.value
       })

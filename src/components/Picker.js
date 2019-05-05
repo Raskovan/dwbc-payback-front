@@ -25,7 +25,6 @@ class Picker extends Component {
 
 Picker.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  // value: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired
 };
 
