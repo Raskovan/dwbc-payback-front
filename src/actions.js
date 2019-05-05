@@ -9,34 +9,16 @@ import {
 	updateItemInCategoryInApi
 } from './api'
 
-export const REQUEST_CITIES = 'REQUEST_CITIES',
-					RECEIVE_CITIES = 'RECEIVE_CITIES',
-					SELECT_CITY = 'SELECT_CITY',
-					INVALIDATE_CITY = 'INVALIDATE_CITY',
-					REQUEST_CATEGORIES = 'REQUEST_CATEGORIES',
-					RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES',
-					SAVE_CATEGORY = 'SAVE_CATEGORY',
-					DELETE_CATEGORY = 'DELETE_CATEGORY',
-					EDIT_DATA = 'EDIT_DATA',
-					CLEAR_DATA = 'CLEAR_DATA',
-					ADD_DATA = 'ADD_DATA',
-					UPDATE_CATEGORY = 'UPDATE_CATEGORY',
-					ADD_CATEGORY = 'ADD_CATEGORY',
-					DELETE_ITEM = 'DELETE_ITEM',
-					UPDATE_ITEM = 'UPDATE_ITEM',
-					ON_CHANGE_DATA = 'ON_CHANGE_DATA';
-
-
 export function invalidateCity(cityId) {
   return {
-    type: INVALIDATE_CITY,
+    type: 'INVALIDATE_CITY',
     cityId
   };
 }
 
 function receiveCategories(cityId, json) {
   return {
-    type: RECEIVE_CATEGORIES,
+    type: 'RECEIVE_CATEGORIES',
     cityId,
     categories: json,
     receivedAt: Date.now()
@@ -45,7 +27,7 @@ function receiveCategories(cityId, json) {
 
 function requestCategories(cityId) {
   return {
-    type: REQUEST_CATEGORIES,
+    type: 'REQUEST_CATEGORIES',
     cityId
   };
 }
@@ -82,7 +64,7 @@ export function fetchCategoriesForCityIfNeeded(cityId) {
 
 function savingCategory(cityId, catName) {
   return {
-    type: SAVE_CATEGORY,
+    type: 'SAVE_CATEGORY',
     cityId,
     catName
   };
@@ -120,48 +102,48 @@ export function addCategoryForCity(cityId, catName, catPrice) {
 
 export function editData(data) {
     return {
-			type: EDIT_DATA,
+			type: 'EDIT_DATA',
 			data
 		}
 }
 
 export function clearData(data) {
     return {
-			type: CLEAR_DATA,
+			type: 'CLEAR_DATA',
 			data
 		}
 }
 
 export function addData(data) {
     return {
-			type: ADD_DATA,
+			type: 'ADD_DATA',
 			data
 		}
 }
 
 export function editDataOnChange(event) {
     return {
-			type: ON_CHANGE_DATA,
+			type: 'ON_CHANGE_DATA',
 			event
 		}
 }
 
 export function selectCity(cityObj) {
   return {
-    type: SELECT_CITY,
+    type: 'SELECT_CITY',
     cityObj
   };
 }
 
 function requestCities() {
   return {
-    type: REQUEST_CITIES
+    type: 'REQUEST_CITIES'
   };
 }
 
 function receiveCities(allCities) {
   return {
-    type: RECEIVE_CITIES,
+    type: 'RECEIVE_CITIES',
     cityList: allCities,
     receivedAt: Date.now()
   };
@@ -207,7 +189,7 @@ export function fetchCitiesIfNeeded(matchName) {
 
 function deletingCategory() {
   return {
-    type: DELETE_CATEGORY
+    type: 'DELETE_CATEGORY'
   };
 }
 
@@ -221,7 +203,7 @@ export function deleteCategory(cityId, catId) {
 
 function updatingCategory(cityId, catName) {
   return {
-    type: UPDATE_CATEGORY,
+    type: 'UPDATE_CATEGORY',
     cityId,
     catName
   };
@@ -241,7 +223,7 @@ export function updateCategory(cityId, category) {
 
 function addingItem(cityId, catName) {
   return {
-    type: ADD_CATEGORY,
+    type: 'ADD_CATEGORY',
     cityId,
     catName
   };
@@ -257,7 +239,7 @@ export function addItem(cityId, catId, itemObj) {
 
 function deletingItem() {
 	return {
-		type: DELETE_ITEM
+		type: 'DELETE_ITEM'
 	}
 }
 
@@ -271,7 +253,7 @@ export function deleteItem(cityId, catId, itemId) {
 
 function updatingItem(cityId, catId, itemObj) {
 	return {
-		type: UPDATE_ITEM,
+		type: 'UPDATE_ITEM',
 		cityId,
     catId,
     itemObj
