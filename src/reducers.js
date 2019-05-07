@@ -102,11 +102,65 @@ function dataToEdit(state = {}, action) {
 	}
 }
 
+function auth(
+	state = {
+      loading: false,
+			loggedIn: false,
+      currentUser: null
+	}, action) {
+	switch (action.type) {
+		case 'LOGED_IN':
+      localStorage.setItem('token', action.userObj.token)
+			return {
+				...state,
+				loading: false,
+				loggedIn: true,
+				currentUser: action.userObj.user.username,
+				token: action.userObj.token
+			}
+
+      case 'LOGOUT_USER':
+      localStorage.removeItem('token')
+      return {
+				...state,
+				loading: false,
+				loggedIn: false,
+				currentUser: null,
+				token: undefined
+			}
+
+      case 'SIGNUP_USER':
+      localStorage.setItem('token', action.payload.token)
+      return {
+				...state,
+				auth: {
+					loading: false,
+					loggedIn: true,
+					currentUser: action.payload.user,
+					token: action.payload.token
+				}
+      }
+      
+      case 'GETTING_USER':
+      return {
+        ...state,
+        loading: true
+      }
+
+
+		default:
+			return state
+
+	}
+}
+
+
 const rootReducer = combineReducers({
 	selectedCity,
 	cities,
 	categoriesByCity,
-	dataToEdit
+  dataToEdit,
+  auth
 })
 
 export default rootReducer;

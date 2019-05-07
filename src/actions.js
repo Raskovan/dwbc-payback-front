@@ -6,7 +6,9 @@ import {
 	updateCategoryToApi,
 	addItemToCategoryInApi,
 	deleteItemInCategoryInApi,
-	updateItemInCategoryInApi
+	updateItemInCategoryInApi,
+	sendLoginDetails,
+	getUserFromApi
 } from './api'
 
 export function invalidateCity(cityId) {
@@ -269,5 +271,56 @@ export function updateItem(cityId, catId, itemObj) {
     dispatch(updatingItem(cityId, catId, itemObj));
     updateItemInCategoryInApi(cityId, catId, itemObj, data)
 			.then(json => dispatch(fetchCategories(cityId)))
+  }
+}
+
+// LOGIN
+export function handleLogin(loginObj, history) {
+  let data = {
+    username: loginObj.email,
+    password: loginObj.password
+  }
+  return dispatch => {
+    dispatch(loggingIn(loginObj.email))
+    sendLoginDetails(data)
+      .then(json => {
+        dispatch(logedIn(json))
+        history.push('/')
+      })
+  }
+}
+
+function loggingIn(username) {
+	return {
+		type: 'LOG_IN',
+		username
+	}
+}
+
+function logedIn(userObj, history) {
+	return {
+		type: 'LOGED_IN',
+    userObj,
+    history
+	}
+}
+
+export function getUser(token) {
+  return dispatch => {
+    dispatch(gettingUser())
+    getUserFromApi(token)
+      .then(res => {
+        let userObj = {
+          user: {username: res.username},
+          token: token
+        }
+        dispatch(logedIn(userObj))
+      })
+  }
+}
+
+function gettingUser(){
+  return {
+    type: 'GETTING_USER'
   }
 }
