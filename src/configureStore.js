@@ -7,9 +7,9 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 const loggerMiddleware = createLogger();
 
 export default function configureStore(preloadedState) {
+	const composeEnhancers = composeWithDevTools({ trace: true, traceLimit: 25 });
   return createStore(
 		rootReducer,
 		preloadedState,
-		composeWithDevTools(applyMiddleware(thunkMiddleware, loggerMiddleware))
-	)
-}
+		composeEnhancers(applyMiddleware(thunkMiddleware, loggerMiddleware))
+	)}

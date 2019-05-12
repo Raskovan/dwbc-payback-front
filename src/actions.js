@@ -6,7 +6,13 @@ import {
 	updateCategoryToApi,
 	addItemToCategoryInApi,
 	deleteItemInCategoryInApi,
-	updateItemInCategoryInApi
+	updateItemInCategoryInApi,
+	sendLoginDetails,
+	getUserFromApi,
+	sendSignUpDetails,
+	getAllUsers,
+	updateUserToApi,
+	deleteUserFromApi
 } from './api'
 
 export function invalidateCity(cityId) {
@@ -161,6 +167,7 @@ function fetchCities(matchName) {
 function selectingCity(allCities, matchName) {
   return dispatch => {
     if (matchName){
+      console.log('object', allCities)
       for (let i=0; i < allCities.cityList.length; i++){
         if (allCities.cityList[i].city_name === matchName)
           dispatch(selectCity(allCities.cityList[i]))
@@ -270,4 +277,210 @@ export function updateItem(cityId, catId, itemObj) {
     updateItemInCategoryInApi(cityId, catId, itemObj, data)
 			.then(json => dispatch(fetchCategories(cityId)))
   }
+}
+
+// LOGIN
+export function handleLogin(loginObj, history) {
+  let data = {
+    username: loginObj.email,
+    password: loginObj.password
+  }
+  return (dispatch, getState) => {
+    dispatch(loggingIn(loginObj.email))
+    sendLoginDetails(data)
+			.then(data => {
+        if (data.message) {
+					dispatch(errorHandling(data.message))
+					dispatch(clearError())
+				} else if (data.user.is_approved) {
+					dispatch(findCityForUser(data, history))
+				} else {
+          dispatch(errorHandling('Sorry, but your account wasn\'t approved yet! Meditate!'))
+          dispatch(clearError())
+        }
+			})
+			.catch(err => console.log('ERROR FROM API', err))
+
+  }
+}
+
+function findCityForUser(userData, history){
+  const cityToSelect = {
+    city_name: userData.user.city_name,
+    city_id: userData.user.city_id
+  }
+  return dispatch => {
+    dispatch(canLogin(userData, history, cityToSelect))
+    dispatch(selectCity(cityToSelect))
+    dispatch(fetchCategoriesForCityIfNeeded(cityToSelect.city_id))
+    history.push(`/${cityToSelect.city_name}`)
+  }
+}
+
+function loggingIn(username) {
+	return {
+		type: 'LOG_IN',
+		username
+	}
+}
+
+function isApproved(userObj) {
+  if (userObj.user.is_approved){
+    return userObj.user.is_approved
+  } else {
+    return false
+  }
+}
+
+function canLogin(userObj, history, city) {
+    return (dispatch, getState) => {
+			if (isApproved(userObj)) {
+				return dispatch(logedIn(userObj, history, city))
+			}
+    }
+  }
+
+  function logedIn(userObj, history, city) {
+		return {
+			type: 'LOGED_IN',
+			userObj,
+			history,
+			city
+		}
+	}
+
+export function getUser(token) {
+  return dispatch => {
+    dispatch(gettingUser())
+    getUserFromApi(token)
+      .then(res => {
+        let userObj = {
+          user: {
+            username: res.username, 
+            city_id: res.city_id,
+            city_name: res.city_name,
+            is_approved: res.is_approved,
+            is_admin: res.is_admin,
+          },
+          token: token
+        }
+        dispatch(logedIn(userObj))
+      })
+  }
+}
+
+function gettingUser(){
+  return {
+    type: 'GETTING_USER'
+  }
+}
+
+export function logOut(){
+  return {
+    type: 'LOG_OUT'
+  }
+}
+
+export function handleSignUp(loginObj, history){
+  if (loginObj.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)){
+    let data = {
+      username: loginObj.email,
+      password: loginObj.password,
+      city: loginObj.city ? loginObj.city : loginObj.cityId
+    }
+    return dispatch => {
+      dispatch(signingUp(loginObj))
+      sendSignUpDetails(data)
+        .then(json => {
+          if (json.message) {
+            dispatch(errorHandling(json.message))
+            dispatch(clearError())
+          }})
+          history.push('/login')
+        }
+  } else {
+    return dispatch => {
+      dispatch(errorHandling('Enter the correct email!'))
+      setTimeout(() => {
+        dispatch(clearError())
+			}, 1000)
+    }
+  }
+  }
+
+
+function errorHandling(message) {
+  return {
+    type: 'API_ERROR',
+    message
+  }
+}
+
+export function clearError() {
+  return {
+    type: 'CLEAR_ERROR'
+  }
+}
+
+function signingUp(user){
+  return {
+    type: 'SIGN_UP',
+    user
+  }
+}
+
+export function fetchUsersIfNeeded(){
+  return dispatch => {
+    dispatch(fetchingUsers())
+    getAllUsers()
+    .then(users => {
+      dispatch(recievedAllUsers(users))
+    })
+  }
+}
+
+function fetchingUsers(){
+  return {
+    type: 'FETCHING_USERS'
+  }
+}
+
+function recievedAllUsers(users) {
+  return {
+    type: 'RECIEVE_USERS',
+    users
+  }
+}
+
+export function userUpdate(user, action){
+  return dispatch => {
+    if (action === 'update'){
+      let data = {
+        is_approved: !user.is_approved,
+      }
+      dispatch(updatingUser(user.username))
+      updateUserToApi(user._id, data).then(json =>
+        dispatch(fetchUsersIfNeeded())
+      )
+    } else if (action === 'delete') {
+      dispatch(deletingUser(user.username))
+      deleteUserFromApi(user._id).then(json =>
+        dispatch(fetchUsersIfNeeded())
+      )
+    }
+  }
+}
+    
+function updatingUser(username){
+  return {
+    type: 'UPDATE_USER',
+    username
+  }
+}
+
+function deletingUser(username) {
+	return {
+		type: 'DELETE_USER',
+		username
+	}
 }

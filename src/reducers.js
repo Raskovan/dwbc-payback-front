@@ -94,19 +94,116 @@ function dataToEdit(state = {}, action) {
       state = {}
       return Object.assign({}, state, action.data)
     case 'ON_CHANGE_DATA':
-      return Object.assign({}, state, {
-        [action.event.target.name]: action.event.target.value
-      })
+      if (!action.event.target.value) {
+        let deletedKey = Object.assign({}, state)
+        delete deletedKey[action.event.target.name]
+        return deletedKey
+      } else {
+				return Object.assign({}, state, {
+					[action.event.target.name]: action.event.target.value
+				})
+      }
+    case 'LOG_IN':
+      return Object.assign({})
+    case 'SIGN_UP':
+      return Object.assign({})
 		default:
 			return state
 	}
 }
 
+function user(
+	state = {
+      loading: false,
+      loggedIn: false,
+      is_approved: false
+	}, action) {
+	switch (action.type) {
+
+    case 'LOGED_IN':
+    localStorage.setItem('token', action.userObj.token)
+    return {
+				...state,
+				loading: false,
+				loggedIn: true,
+				username: action.userObj.user.username,
+				token: action.userObj.token,
+				city_id: action.userObj.user.city_id,
+				city_name: action.userObj.user.city_name,
+				is_approved: action.userObj.user.is_approved,
+				is_admin: action.userObj.user.is_admin
+			}
+
+      case 'LOG_OUT':
+      localStorage.removeItem('token')
+      return {
+				...state,
+				loading: false,
+				loggedIn: false,
+				username: null,
+				token: undefined
+			}
+
+      case 'SIGNUP_USER':
+      localStorage.setItem('token', action.payload.token)
+      return {
+				...state,
+				user: {
+					loading: false,
+					loggedIn: true,
+					username: action.payload.user,
+					token: action.payload.token
+				}
+      }
+      
+      case 'GETTING_USER':
+      return {
+        ...state,
+        loading: true
+      }
+		default:
+			return state
+	}
+}
+
+function allUsers(state=[], action) {
+  switch(action.type) {
+    case 'RECIEVE_USERS':
+    return {
+      ...state,
+      users: action.users
+    }
+    default:
+    return state
+  }
+}
+
+function error(state={}, action){
+  switch(action.type) {
+    case 'API_ERROR':
+      return {
+        ...state,
+        message: action.message
+      }
+    case 'CLEAR_ERROR':
+      return {
+        ...state,
+        message: ''
+      }
+    default:
+      return state
+  }
+}
+
+
 const rootReducer = combineReducers({
 	selectedCity,
 	cities,
 	categoriesByCity,
-	dataToEdit
+	dataToEdit,
+	user,
+	allUsers,
+	error
 })
 
 export default rootReducer;
