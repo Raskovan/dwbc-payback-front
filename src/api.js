@@ -93,7 +93,8 @@ export function sendLoginDetails(data) {
 		method: 'POST',
 		body: JSON.stringify(data),
 		headers: header
-	}).then(response => response.json())
+	})
+		.then(response => response.json())
 }
 
 export function getUserFromApi(token) {
@@ -101,6 +102,35 @@ export function getUserFromApi(token) {
 	return fetch(process.env.REACT_APP_API_HOST + `/api/v1/getuser`, {
 		method: 'POST',
 		body: JSON.stringify(data),
+		headers: header
+	}).then(response => response.json())
+}
+
+export function sendSignUpDetails(data) {
+	return fetch(process.env.REACT_APP_API_HOST + `/api/v1/signup`, {
+		method: 'POST',
+		body: JSON.stringify(data),
+		headers: header
+	}).then(response => response.json())
+}
+
+export function getAllUsers() {
+		return fetch(process.env.REACT_APP_API_HOST + `/api/v1/users`, {
+			headers: header
+		}).then(response => response.json())
+}
+
+export function updateUserToApi(userId, data){
+	return fetch(process.env.REACT_APP_API_HOST + `/api/v1/users/${userId}`, {
+		method: 'PUT',
+		body: JSON.stringify(data),
+		headers: header
+	}).then(response => response.json())
+}
+
+export function deleteUserFromApi(userId){
+	return fetch(process.env.REACT_APP_API_HOST + `/api/v1/users/${userId}`, {
+		method: 'DELETE',
 		headers: header
 	}).then(response => response.json())
 }

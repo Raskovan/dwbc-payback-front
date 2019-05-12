@@ -5,27 +5,33 @@ import { getUser } from '../actions'
 
 export default function(ComposedComponent) {
 	class Authentication extends Component {
-		componentWillMount() {
+    
+    componentWillMount() {
 			const token = localStorage.getItem('token')
+      const { dispatch } = this.props
 			if (!this.props.authenticated && !token) {
 				this.props.history.push('/login')
 			}
-		}
-
-		componentWillUpdate(nextProps) {
-			const { dispatch } = this.props
-			const token = localStorage.getItem('token')
-			if (!nextProps.authenticated && !token) {
-				this.props.history.push('/login')
-			}
-			if (token && !nextProps.authenticated) {
+      if (token && !this.props.authenticated) {
 				dispatch(getUser(token))
 			}
 		}
 
-		render() {
+		componentWillUpdate(nextProps) {
 			const token = localStorage.getItem('token')
-			return <div>{token && <ComposedComponent {...this.props} />}</div>
+			if (!nextProps.authenticated && !token) {
+				this.props.history.push('/login')
+			}
+    }
+
+		render() {
+			return (
+				<div>
+					{this.props.authenticated && (
+						<ComposedComponent {...this.props} />
+					)}
+				</div>
+			)
 		}
 
 		PropTypes = {
@@ -35,8 +41,10 @@ export default function(ComposedComponent) {
 
 	function mapStateToProps(state) {
 		return {
-			authenticated: state.auth.loggedIn,
-			loading: state.auth.loading
+      authenticated: state.user.loggedIn,
+      isApproved: state.user.is_approved,
+      loading: state.user.loading,
+      city_id: state.user.city_allowed
 		}
 	}
 	return connect(mapStateToProps)(Authentication)

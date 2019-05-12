@@ -1,9 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { editDataOnChange, handleLogin } from '../actions'
+import { Link } from 'react-router-dom'
+import {
+	fetchCitiesIfNeeded
+} from '../actions'
 
 class LogIn extends Component {
 	componentDidMount() {
+    const { dispatch } = this.props
+
+    dispatch(fetchCitiesIfNeeded())
 		const token = localStorage.getItem('token')
 		if (token) {
 			this.props.history.push('/')
@@ -11,9 +18,10 @@ class LogIn extends Component {
 	}
 
 	render() {
-		const { dispatch, dataToEdit, history } = this.props
+		const { dispatch, dataToEdit, history, error } = this.props
 		return (
 			<div>
+				{error.message && alert(error.message)}
 				<h2>Sign In</h2>
 				<form
 					onSubmit={e => {
@@ -36,16 +44,20 @@ class LogIn extends Component {
 					/>
 					<input type='submit' value='Sign In' />
 				</form>
+				<div>
+					<Link to='/signup'>Request Access</Link>
+				</div>
 			</div>
 		)
 	}
 }
 
 function mapStateToProps(state) {
-	const { dataToEdit } = state
+	const { dataToEdit, error } = state
 
 	return {
-		dataToEdit
+		dataToEdit,
+		error
 	}
 }
 
