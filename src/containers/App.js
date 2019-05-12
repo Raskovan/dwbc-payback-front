@@ -7,9 +7,8 @@ import {
 	fetchCategoriesForCityIfNeeded,
 	selectCity
 } from '../actions'
-import Picker from '../components/Picker'
-import Categories from '../components/Categories'
 import Header from '../components/Header'
+import CityView from '../components/CityView';
 
 class App extends Component {
 	componentDidMount() {
@@ -66,13 +65,14 @@ class App extends Component {
 	}
 
 	render() {
-		const { selectedCity, user } = this.props
+		// const { selectedCity, user } = this.props
 		return (
 			<div>
 				<Header />
-				<h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
+				<CityView/>
+				{/* <h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
 				<Picker />
-				<Categories />
+				<Categories /> */}
 			</div>
 		)
 	}

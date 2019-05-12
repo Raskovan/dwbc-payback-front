@@ -2,7 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchCategoriesForCityIfNeeded, selectCity } from '../actions'
+import {
+	fetchCategoriesForCityIfNeeded,
+	selectCity,
+	editDataOnChange
+} from '../actions'
 
 class Picker extends Component {
 	constructor(props) {
@@ -11,26 +15,30 @@ class Picker extends Component {
 	}
 
 	handleChange(event) {
-		let nextCity
-		for (let i = 0; i < this.props.allCities.length; i++) {
-			if (this.props.allCities[i].city_id === event.target.value) {
-				nextCity = this.props.allCities[i]
+		if (this.props.match.path === '/signup'){
+			const { dispatch } = this.props
+			dispatch(editDataOnChange(event))
+		} else {
+			let nextCity
+			for (let i = 0; i < this.props.allCities.length; i++) {
+				if (this.props.allCities[i].city_id === event.target.value) {
+					nextCity = this.props.allCities[i]
+				}
 			}
+			this.props.dispatch(selectCity(nextCity))
+			if (nextCity) {
+				this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+				this.props.history.push(
+					`/${nextCity.city_name.replace(' ', '_').toLowerCase()}`
+				)
+			} else this.props.history.push(`/`)
 		}
-		this.props.dispatch(selectCity(nextCity))
-		if (nextCity) {
-			this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
-			this.props.history.push(
-				`/${nextCity.city_name.replace(' ', '_').toLowerCase()}`
-			)
-		} else this.props.history.push(`/`)
 	}
 
 	render() {
-		const { isFetchingCities, allCities, selectedCity, user } = this.props
+		const { isFetchingCities, allCities, selectedCity } = this.props
 		return (
 			<div>
-				{user.is_admin ? (
 					<div>
 						{isFetchingCities && selectedCity && allCities.length === 0 && (
 							<h2>Loading...</h2>
@@ -50,7 +58,6 @@ class Picker extends Component {
 							</select>
 						</div>
 					</div>
-				) : null}
 			</div>
 		)
 	}
@@ -63,7 +70,7 @@ Picker.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { cities, selectedCity, user } = state
+	const { cities, selectedCity } = state
 
 	const { isFetchingCities, cityList: allCities } = cities || {
 		isFetchingCities: true,
@@ -74,8 +81,7 @@ function mapStateToProps(state) {
 		isFetchingCities,
 		allCities,
 		cities,
-		selectedCity,
-		user
+		selectedCity
 	}
 }
 

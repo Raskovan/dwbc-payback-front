@@ -382,21 +382,30 @@ export function logOut(){
 }
 
 export function handleSignUp(loginObj, history){
-  let data = {
-		username: loginObj.email,
-		password: loginObj.password,
-		city: loginObj.city ? loginObj.city : loginObj.cityId
-	}
-  return dispatch => {
-    dispatch(signingUp(loginObj))
-    sendSignUpDetails(data)
-      .then(json => {
-        if (json.message) {
-          dispatch(errorHandling(json.message))
-          dispatch(clearError())
-        }})
-        history.push('/login')
-      }
+  if (loginObj.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)){
+    let data = {
+      username: loginObj.email,
+      password: loginObj.password,
+      city: loginObj.city ? loginObj.city : loginObj.cityId
+    }
+    return dispatch => {
+      dispatch(signingUp(loginObj))
+      sendSignUpDetails(data)
+        .then(json => {
+          if (json.message) {
+            dispatch(errorHandling(json.message))
+            dispatch(clearError())
+          }})
+          history.push('/login')
+        }
+  } else {
+    return dispatch => {
+      dispatch(errorHandling('Enter the correct email!'))
+      setTimeout(() => {
+        dispatch(clearError())
+			}, 1000)
+    }
+  }
   }
 
 
@@ -407,7 +416,7 @@ function errorHandling(message) {
   }
 }
 
-function clearError() {
+export function clearError() {
   return {
     type: 'CLEAR_ERROR'
   }

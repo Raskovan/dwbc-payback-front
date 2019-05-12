@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Picker from '../components/Picker'
-import { editDataOnChange, handleSignUp, fetchCitiesIfNeeded } from '../actions'
+import {
+	editDataOnChange,
+	handleSignUp,
+	fetchCitiesIfNeeded
+} from '../actions'
 import Header from './Header';
 
 class SignUp extends Component {
@@ -9,22 +13,18 @@ class SignUp extends Component {
 	componentDidMount() {
 		const { dispatch, match } = this.props
 		dispatch(fetchCitiesIfNeeded(match.params.name))
-  }
+	}
   
   handlePickerChange(event) {
     console.log(event.target.value)
   }
 
 	render() {
-    const { dispatch, dataToEdit, history } = this.props
-    const {
-			selectedCity,
-			isFetchingCities,
-			allCities
-		} = this.props
+    const { dispatch, dataToEdit, history, error } = this.props
 		return (
 			<div>
-				<Header/>
+				{error.message && alert(error.message)}
+				<Header />
 				<h2>Request Access</h2>
 				<form
 					onSubmit={e => {
@@ -50,27 +50,19 @@ class SignUp extends Component {
 						value={dataToEdit.password ? dataToEdit.password : ''}
 						onChange={e => dispatch(editDataOnChange(e))}
 					/>
-					{isFetchingCities && allCities.length === 0 && (
-						<h2>Loading...</h2>
-					)}
-					{!isFetchingCities && allCities.length === 0 && <h2>Empty.</h2>}
-					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-						Select City:
-						<Picker
-							city={selectedCity || ''}
-							onChange={e => dispatch(editDataOnChange(e))}
-							options={allCities}
-						/>
-						<br />
-						...or add a new city: <br />
-						<input
-							name='city'
-							type='city'
-							placeholder='City'
-							value={dataToEdit.city ? dataToEdit.city : ''}
-							onChange={e => dispatch(editDataOnChange(e))}
-						/>
-					</div><br/>
+					<br />
+					Select City:
+					<Picker />
+					<br />
+					...or add a new city: <br />
+					<input
+						name='city'
+						type='city'
+						placeholder='City'
+						value={dataToEdit.city ? dataToEdit.city : ''}
+						onChange={e => dispatch(editDataOnChange(e))}
+					/>
+					<br />
 					<input type='submit' value='Request' />
 				</form>
 			</div>
@@ -79,7 +71,7 @@ class SignUp extends Component {
 }
 
 function mapStateToProps(state) {
-  const { dataToEdit } = state
+  const { dataToEdit, error } = state
   const { cities } = state
   const {
     isFetchingCities,
@@ -94,7 +86,8 @@ function mapStateToProps(state) {
 		dataToEdit,
 		isFetchingCities,
 		lastUpdatedCities,
-		allCities
+		allCities,
+		error
 	}
 }
 

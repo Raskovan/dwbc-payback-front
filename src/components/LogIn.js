@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import {
 	fetchCitiesIfNeeded
 } from '../actions'
+import Header from './Header'
 
 class LogIn extends Component {
 	componentDidMount() {
@@ -21,6 +22,7 @@ class LogIn extends Component {
 		const { dispatch, dataToEdit, history, error } = this.props
 		return (
 			<div>
+				<Header />
 				{error.message && alert(error.message)}
 				<h2>Sign In</h2>
 				<form
