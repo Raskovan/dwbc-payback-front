@@ -12,11 +12,6 @@ import Categories from '../components/Categories'
 import Header from '../components/Header'
 
 class App extends Component {
-	constructor(props) {
-		super(props)
-		this.handleChange = this.handleChange.bind(this)
-	}
-
 	componentDidMount() {
 		const { dispatch, match, user } = this.props
 		if (user.is_admin) {
@@ -70,37 +65,13 @@ class App extends Component {
 		return (decodedName = decodedName.join(' '))
 	}
 
-	handleChange(event) {
-		let nextCity
-		for (let i = 0; i < this.props.allCities.length; i++) {
-			if (this.props.allCities[i].city_id === event.target.value) {
-				nextCity = this.props.allCities[i]
-			}
-		}
-		this.props.dispatch(selectCity(nextCity))
-		if (nextCity) {
-			this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
-			this.props.history.push(
-				`/${nextCity.city_name.replace(' ', '_').toLowerCase()}`
-			)
-		} else this.props.history.push(`/`)
-	}
-
 	render() {
-		const { selectedCity, allCities, user } = this.props
+		const { selectedCity, user } = this.props
 		return (
 			<div>
 				<Header />
-
 				<h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
-
-				{user.is_admin ? (
-					<Picker
-						city={selectedCity || ''}
-						onChange={this.handleChange}
-						options={allCities}
-					/>
-				) : null}
+				<Picker />
 				<Categories />
 			</div>
 		)
@@ -109,28 +80,17 @@ class App extends Component {
 
 App.propTypes = {
 	selectedCity: PropTypes.object.isRequired,
-	allCities: PropTypes.array.isRequired,
 	lastUpdatedCategory: PropTypes.number,
 	dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
-	const { selectedCity, dataToEdit, user } = state
+	const { selectedCity, user } = state
 
 	const { cities } = state
-	const {
-		isFetchingCities,
-		cityList: allCities
-	} = cities || {
-		isFetchingCities: true,
-		cityList: []
-	}
 
 	return {
-		isFetchingCities,
-		allCities,
 		selectedCity,
-		dataToEdit,
 		cities,
 		user
 	}
