@@ -400,7 +400,7 @@ export function handleSignUp(loginObj, history){
         }
   } else {
     return dispatch => {
-      dispatch(errorHandling('Enter the correct email!'))
+      dispatch(errorHandling('Something is missing or incorrect!'))
       setTimeout(() => {
         dispatch(clearError())
 			}, 1000)

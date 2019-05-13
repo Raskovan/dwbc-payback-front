@@ -22,12 +22,13 @@ class HeaderMenu extends Component {
 			<Menu
 				attached='top'
 				borderless
-				size='huge'
+				fluid
+				size='large'
 				style={{ background: '#e6e6e6' }}>
 				<Menu.Item disabled as={Link} to='/'>
 					<img src={logo} alt='Logo' />
 				</Menu.Item>
-				<Menu.Header as='h2' style={{ marginTop: '18px' }}>
+				<Menu.Header as='h2' style={{ marginTop: '15px', fontWeight: '300' }}>
 					PaiBack
 				</Menu.Header>
 				{user.loggedIn && (
@@ -35,7 +36,7 @@ class HeaderMenu extends Component {
 						<Menu.Item>Hi, {user.username}</Menu.Item>
 						{user.is_admin && (
 							<Menu.Item>
-								<Button as={Link} to={headerLink} color='teal'>
+								<Button as={Link} to={headerLink} color='blue'>
 									{headerText}
 								</Button>
 							</Menu.Item>

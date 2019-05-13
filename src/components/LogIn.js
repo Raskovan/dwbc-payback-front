@@ -31,7 +31,7 @@ class LogIn extends Component {
 	render() {
 		const { dispatch, dataToEdit, history, error } = this.props
 		return (
-			<Container fluid style={{ height: '100%' }}>
+			<div style={{ height: '100%' }}>
 				{error.message && alert(error.message)}
 				<Grid
 					style={{ height: '100%' }}
@@ -41,7 +41,7 @@ class LogIn extends Component {
 					columns={3}>
 					<Grid.Row>
 						<Grid.Column textAlign='center'>
-							<Image fluid size='small' src={logo} centered />
+							<Image size='small' src={logo} centered />
 							<Header as='h2' color='grey' style={{margin: '20px'}}>
 								Sign in to PaiBack
 							</Header>
@@ -84,7 +84,7 @@ class LogIn extends Component {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Container>
+			</div>
 		)
 	}
 }

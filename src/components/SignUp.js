@@ -23,7 +23,7 @@ class SignUp extends Component {
 	render() {
     const { dispatch, dataToEdit, history, error } = this.props
 		return (
-			<Container fluid style={{ height: '100%' }}>
+			<div style={{ height: '100%' }}>
 				<HeaderMenu />
 				{error.message && alert(error.message)}
 				<Grid
@@ -84,7 +84,7 @@ class SignUp extends Component {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Container>
+			</div>
 		)
 	}
 }

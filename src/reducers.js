@@ -106,7 +106,7 @@ function dataToEdit(state = {}, action) {
     case 'LOG_IN':
       return Object.assign({})
     case 'SIGN_UP':
-      return Object.assign({})
+      return Object.assign({}, state)
 		default:
 			return state
 	}
