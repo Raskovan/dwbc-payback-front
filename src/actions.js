@@ -382,7 +382,7 @@ export function logOut(){
 }
 
 export function handleSignUp(loginObj, history){
-  if (loginObj.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)){
+  if (loginObj.email && loginObj.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) && loginObj.password && (loginObj.city || loginObj.cityId)){
     let data = {
       username: loginObj.email,
       password: loginObj.password,

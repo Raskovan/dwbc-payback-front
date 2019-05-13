@@ -7,7 +7,7 @@ import {
 	fetchCategoriesForCityIfNeeded,
 	selectCity
 } from '../actions'
-import Header from '../components/Header'
+import HeaderMenu from '../components/HeaderMenu'
 import CityView from '../components/CityView';
 
 class App extends Component {
@@ -68,7 +68,7 @@ class App extends Component {
 		// const { selectedCity, user } = this.props
 		return (
 			<div>
-				<Header />
+				<HeaderMenu />
 				<CityView/>
 				{/* <h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
 				<Picker />

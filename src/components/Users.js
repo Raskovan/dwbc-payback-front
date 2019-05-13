@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchUsersIfNeeded } from '../actions'
 import UserCard from './UserCard'
-import Header from './Header'
+import HeaderMenu from './HeaderMenu'
 
 class Users extends Component {
 	componentDidMount() {
@@ -22,7 +22,7 @@ class Users extends Component {
 		console.log('AllUsers', allUsers)
 		return (
 			<div>
-				<Header />
+				<HeaderMenu />
 				{userElements.length && (
 					<div>
 						<h1>Users: </h1>
