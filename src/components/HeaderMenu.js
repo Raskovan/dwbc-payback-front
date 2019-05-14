@@ -36,7 +36,7 @@ class HeaderMenu extends Component {
 						<Menu.Item>Hi, {user.username}</Menu.Item>
 						{user.is_admin && (
 							<Menu.Item>
-								<Button as={Link} to={headerLink} color='blue'>
+								<Button as={Link} to={headerLink} color='blue' style={{marginRight: '-25px'}}>
 									{headerText}
 								</Button>
 							</Menu.Item>

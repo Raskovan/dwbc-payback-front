@@ -9,7 +9,7 @@ class CityView extends Component {
 	render() {
 		const { user, selectedCity } = this.props
 		return (
-			<div>
+			<div style={{height: '100%'}}>
 				<h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
 				{user.is_admin && <Picker />}
 				<Categories />

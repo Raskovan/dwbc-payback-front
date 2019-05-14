@@ -7,7 +7,7 @@ import {
 	fetchCitiesIfNeeded
 } from '../actions'
 import HeaderMenu from './HeaderMenu';
-import { Container, Grid, Form, Header, Button } from 'semantic-ui-react'
+import { Grid, Form, Header, Button } from 'semantic-ui-react'
 
 class SignUp extends Component {
 

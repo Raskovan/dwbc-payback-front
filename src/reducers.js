@@ -2,19 +2,25 @@ import { combineReducers } from "redux";
 
 function selectedCity(state = {}, action) {
   switch (action.type) {
-    case 'SELECT_CITY':
-      return Object.assign({}, state, {
+		case 'SELECT_CITY':
+			return Object.assign({}, state, {
 				city_id:
 					action.cityObj && action.cityObj.city_id
 						? action.cityObj.city_id
 						: '',
-				city_name: action.cityObj && action.cityObj.city_name
-					? action.cityObj.city_name
-					: ''
+				city_name:
+					action.cityObj && action.cityObj.city_name
+						? action.cityObj.city_name
+						: ''
 			})
-    default:
-      return state
-  }
+    case 'LOG_OUT':
+      return Object.assign({}, state, {
+        city_id: '',
+        city_name: ''
+      })
+		default:
+			return state
+	}
 }
 
 function categories(

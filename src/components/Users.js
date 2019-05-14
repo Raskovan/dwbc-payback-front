@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { fetchUsersIfNeeded } from '../actions'
 import UserCard from './UserCard'
 import HeaderMenu from './HeaderMenu'
+import { Grid, Header, Card, Container, Segment } from 'semantic-ui-react'
+
 
 class Users extends Component {
 	componentDidMount() {
@@ -16,19 +18,26 @@ class Users extends Component {
     const userElements = []
     if (allUsers.users) {
 			allUsers.users.forEach((user, index) =>
-				userElements.push(<UserCard user={user} key={index}/>)
+				userElements.push(
+						<UserCard user={user} key={index} />
+				)
 			)
 		}
 		console.log('AllUsers', allUsers)
 		return (
-			<div>
+			<div style={{ height: '100%' }}>
 				<HeaderMenu />
-				{userElements.length && (
-					<div>
-						<h1>Users: </h1>
-						<div>{userElements}</div>
-					</div>
-				)}
+				<Segment basic/>
+				<Container>
+					{/* <Container style={{ height: '100%' }}> */}
+					<Header as='h2' color='grey' content='Users' centered />
+					{userElements.length && (
+						<Card.Group doubling stackable itemsPerRow={3}>
+							{userElements}
+						</Card.Group>
+					)}
+					{/* </Container> */}
+				</Container>
 			</div>
 		)
 	}

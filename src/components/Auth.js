@@ -26,7 +26,7 @@ export default function(ComposedComponent) {
 
 		render() {
 			return (
-				<div>
+				<div style={{height: '70%'}}>
 					{this.props.authenticated && (
 						<ComposedComponent {...this.props} />
 					)}

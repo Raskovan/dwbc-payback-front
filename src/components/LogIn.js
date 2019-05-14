@@ -3,17 +3,13 @@ import { connect } from 'react-redux'
 import { editDataOnChange, handleLogin } from '../actions'
 import { Link } from 'react-router-dom'
 import { fetchCitiesIfNeeded } from '../actions'
-import HeaderMenu from './HeaderMenu'
 import logo from '../assets/logo.svg'
 import {
 	Grid,
 	Form,
 	Button,
 	Input,
-	Container,
 	Image,
-	Item,
-	Segment,
 	Header
 } from 'semantic-ui-react'
 
