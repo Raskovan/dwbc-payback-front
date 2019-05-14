@@ -12,7 +12,7 @@ class UserCard extends Component {
 
 	render() {
 		const { user } = this.props
-		let approveButtonColor = user.is_approved ? 'green' : 'yellow'
+		let approveButtonColor = user.is_approved ? 'red' : 'green'
 		return (
 			<Card>
 				<Card.Content>
@@ -28,7 +28,7 @@ class UserCard extends Component {
 							value={user}
 							type='button'
 							onClick={() => this.handleClick(user, 'update')}>
-							{user.is_approved ? 'Revoke' : 'Approve'}
+							{user.is_approved ? 'Revoke Access' : 'Approve'}
 						</Button>
 						<Button
 							basic
@@ -36,7 +36,7 @@ class UserCard extends Component {
 							value={user}
 							type='button'
 							onClick={() => this.handleClick(user, 'delete')}>
-							Delete
+							Delete User
 						</Button>
 					</div>
 				</Card.Content>

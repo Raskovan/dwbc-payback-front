@@ -78,7 +78,7 @@ class SignUp extends Component {
 									/>
 								</Form.Field>
 								<Button fluid size='big' type='submit' value='Request'>
-									Request
+									Request Access
 								</Button>
 							</Form>
 						</Grid.Column>
