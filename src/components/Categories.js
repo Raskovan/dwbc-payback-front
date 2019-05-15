@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import Items from './Items'
-import Form from './Form'
+import FormEdit from './FormEdit'
+import CategoryCard from './CategoryCard'
 import {
 	deleteCategory,
 	updateCategory,
@@ -10,8 +10,17 @@ import {
 	editData,
 	addData
 } from '../actions'
+import { Card, Button, Container } from 'semantic-ui-react'
 
 class Categories extends Component {
+	chunkArray(myArray, size) {
+		var results = []
+		while (myArray.length) {
+			results.push(myArray.splice(0, size))
+		}
+		return results
+	}
+
 	render() {
 		const {
 			dataToEdit,
@@ -20,89 +29,43 @@ class Categories extends Component {
 			isFetchingCategory,
 			selectedCity
 		} = this.props
+		
+		// let oneArray
+		// let splitedArray = this.chunkArray(categories, 2).map(each => {
+		// 	return each
+		// })
+		// // let eachColumn = splitedArray.map((columnCat, i) => {
+		// // 		return <CategoryCard category={columnCat} i={i} />
+		// // 	}
+		// // 	)
+		
+
 		return (
 			<div>
 				{selectedCity.city_id && (
-					<div>
+					<Container>
 						{isFetchingCategory && categories.length === 0 && (
 							<h2>Loading...</h2>
 						)}
+
 						{!isFetchingCategory && categories.length === 0 && (
 							<h2>Empty.</h2>
 						)}
-						<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
-							<ul>
-								{categories.map((category, i) => (
-									<div key={i}>
-										{category._id !== dataToEdit._id ||
-										!dataToEdit.category_name ||
-										dataToEdit.newCategory ? (
-											<li>
-												{category.category_price
-													? `${category.category_name} - $${
-															category.category_price
-													  }`
-													: `${category.category_name}`}
-												<button
-													type='button'
-													onClick={() =>
-														dispatch(
-															editData(
-																Object.assign({}, category, {
-																	newCategory: false
-																})
-															)
-														)
-													}>
-													Edit
-												</button>
-												<button
-													type='button'
-													onClick={() =>
-														dispatch(
-															deleteCategory(
-																this.props.cityId,
-																category._id
-															)
-														)
-													}>
-													Delete
-												</button>
-												{!category.category_price ? (
-													<button
-														type='button'
-														onClick={() =>
-															dispatch(
-																editData({
-																	newCategory: false,
-																	cat_id: category._id,
-																	item_name: ' ',
-																	item_price: ' '
-																})
-															)
-														}>
-														Add Item
-													</button>
-												) : null}
-											</li>
-										) : (
-											<li>
-												<Form />
-											</li>
-										)}
-										<Items category={category} />
-										{category._id === dataToEdit.cat_id &&
-										!dataToEdit.newCategory ? (
-											<Form catId={dataToEdit.cat_id} />
-										) : null}
-									</div>
-								))}
-							</ul>
-						</div>
+
+						{/* <div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}> */}
+
+						{categories.map((category, i) => (
+							<CategoryCard key={i} category={category} i={i} />
+						))} 
+
 						{dataToEdit.newCategory ? (
-							<Form />
+							<Card>
+								<Card.Content>
+									<FormEdit />
+								</Card.Content>
+							</Card>
 						) : (
-							<button
+							<Button
 								type='button'
 								onClick={() =>
 									dispatch(
@@ -114,9 +77,9 @@ class Categories extends Component {
 									)
 								}>
 								Add Category
-							</button>
+							</Button>
 						)}
-					</div>
+					</Container>
 				)}
 			</div>
 		)
@@ -130,13 +93,12 @@ Categories.propTypes = {
 
 function mapStateToProps(state) {
 	const { selectedCity, categoriesByCity, dataToEdit } = state
-		const {
-			isFetchingCategory,
-			categories
-		} = categoriesByCity[selectedCity.city_id] || {
-			isFetchingCategory: true,
-			categories: []
-		}
+	const { isFetchingCategory, categories } = categoriesByCity[
+		selectedCity.city_id
+	] || {
+		isFetchingCategory: true,
+		categories: []
+	}
 	return {
 		dataToEdit,
 		categories,

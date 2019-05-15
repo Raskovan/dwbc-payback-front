@@ -100,15 +100,15 @@ function dataToEdit(state = {}, action) {
       state = {}
       return Object.assign({}, state, action.data)
     case 'ON_CHANGE_DATA':
-      if (!action.event.target.value) {
-        let deletedKey = Object.assign({}, state)
-        delete deletedKey[action.event.target.name]
-        return deletedKey
-      } else {
+      // if (!action.event.target.value) {
+      //   let deletedKey = Object.assign({}, state)
+      //   delete deletedKey[action.event.target.name]
+      //   return deletedKey
+      // } else {
 				return Object.assign({}, state, {
 					[action.event.target.name]: action.event.target.value
 				})
-      }
+      // }
     case 'LOG_IN':
       return Object.assign({})
     case 'SIGN_UP':
