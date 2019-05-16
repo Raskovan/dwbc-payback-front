@@ -11,7 +11,7 @@ class Items extends Component {
 		return (
 			<div>
 				{this.props.category.items.map((item, i) => (
-					<Card key={i}>
+					<Card key={i} fluid>
 						{dataToEdit._id === item._id && !dataToEdit.newCategory ? (
 							<Card.Content>
 								<FormEdit catId={this.props.category._id} />

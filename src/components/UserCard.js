@@ -16,7 +16,15 @@ class UserCard extends Component {
 		return (
 			<Card>
 				<Card.Content>
-					{user.is_admin && <Label color='grey' content="Admin" style={{float: 'right'}}/>}
+						<Button
+							basic = {!user.is_admin}
+							size='mini'
+							color='grey'
+							content='Admin'
+							style={{ float: 'right' }}
+							value={user}
+							onClick={() => this.handleClick(user, 'admin')}
+						/>
 					<Card.Header>{user.username}</Card.Header>
 					<Card.Meta>{user.city_name}</Card.Meta>
 				</Card.Content>

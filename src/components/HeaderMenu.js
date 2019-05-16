@@ -4,7 +4,8 @@ import logo from '../assets/logo.svg'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { Menu, Button } from 'semantic-ui-react'
+import Picker from '../components/Picker'
+import { Menu, Button, Header, Segment, Image } from 'semantic-ui-react'
 
 class HeaderMenu extends Component {
 	render() {
@@ -19,40 +20,58 @@ class HeaderMenu extends Component {
 			headerText = 'Manage Users'
 		}
 		return (
-			<Menu
-				attached='top'
-				borderless
-				fluid
-				size='large'
-				style={{ background: '#e6e6e6' }}>
-				<Menu.Item disabled as={Link} to='/'>
-					<img src={logo} alt='Logo' />
-				</Menu.Item>
-				<Menu.Header as='h2' style={{ marginTop: '15px', fontWeight: '300' }}>
-					PaiBack
-				</Menu.Header>
-				{user.loggedIn && (
-					<Menu.Menu position='right'>
-						<Menu.Item>Hi, {user.username}</Menu.Item>
-						{user.is_admin && (
+			<div>
+				<Menu
+					attached='top'
+					borderless
+					fluid
+					style={{ background: '#e6e6e6' }}>
+					<Menu.Item disabled as={Link} to='/'>
+						<Image src={logo} alt='Logo' />
+					</Menu.Item>
+					<Menu.Header
+						as='h1'
+						style={{ fontWeight: '300' }}
+						content='PaiBack'
+					/>
+					{user.loggedIn && (
+						<Menu.Menu position='right'>
+							<Menu.Item>{user.is_admin && <Picker />}</Menu.Item>
+							{user.is_admin && (
+								<Menu.Item>
+									<Button
+										size='tiny'
+										as={Link}
+										to={headerLink}
+										color='blue'
+										style={{ marginRight: '-25px' }}>
+										{headerText}
+									</Button>
+								</Menu.Item>
+							)}
 							<Menu.Item>
-								<Button as={Link} to={headerLink} color='blue' style={{marginRight: '-25px'}}>
-									{headerText}
+								<Button
+									size='tiny'
+									type='button'
+									color='grey'
+									onClick={() => dispatch(logOut())}>
+									Log Out
 								</Button>
 							</Menu.Item>
-						)}
-						<Menu.Item>
-							<Button
-							size='small'
-								type='button'
-								color='grey'
-								onClick={() => dispatch(logOut())}>
-								Log Out
-							</Button>
-						</Menu.Item>
-					</Menu.Menu>
+						</Menu.Menu>
+					)}
+				</Menu>
+				{user.username && (
+					<Segment
+						basic
+						size='tiny'
+						style={{ paddingTop: '0', marginTop: '5px' }}>
+						<Header as='h5' floated='right' style={{ fontWeight: '300' }}>
+							Logged in as {user.username}
+						</Header>
+					</Segment>
 				)}
-			</Menu>
+			</div>
 		)
 	}
 }

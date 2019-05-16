@@ -25,9 +25,9 @@ class Users extends Component {
 		}
 		console.log('AllUsers', allUsers)
 		return (
-			<div style={{ height: '100%' }}>
+			<div>
 				<HeaderMenu />
-				<Segment basic/>
+				<Segment basic style={{ height: '100%' }}>
 				<Container>
 					{/* <Container style={{ height: '100%' }}> */}
 					<Header as='h2' color='grey' content='Users' centered />
@@ -38,6 +38,7 @@ class Users extends Component {
 					)}
 					{/* </Container> */}
 				</Container>
+				</Segment>
 			</div>
 		)
 	}

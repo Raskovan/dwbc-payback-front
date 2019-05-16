@@ -10,7 +10,7 @@ import {
 	editData,
 	addData
 } from '../actions'
-import { Card, Button, Container } from 'semantic-ui-react'
+import { Card, Button, Container, Grid } from 'semantic-ui-react'
 
 class Categories extends Component {
 	chunkArray(myArray, size) {
@@ -30,56 +30,78 @@ class Categories extends Component {
 			selectedCity
 		} = this.props
 		
-		// let oneArray
-		// let splitedArray = this.chunkArray(categories, 2).map(each => {
-		// 	return each
-		// })
-		// // let eachColumn = splitedArray.map((columnCat, i) => {
-		// // 		return <CategoryCard category={columnCat} i={i} />
-		// // 	}
-		// // 	)
-		
+		let addCatButton
+		if (dataToEdit.newCategory) {
+			addCatButton = (
+				<Card fluid>
+					<Card.Content>
+						<FormEdit />
+					</Card.Content>
+				</Card>
+			)
+		} else {
+			addCatButton = (
+				<Button
+					basic
+					fluid
+					type='button'
+					onClick={() =>
+						dispatch(
+							addData({
+								newCategory: true,
+								category_name: '',
+								category_price: ''
+							})
+						)
+					}>
+					Add Category
+				</Button>
+			)
+		}
+
+		let copyArray = [...categories]
+		let splitedArray = this.chunkArray(copyArray, 3)
+		let eachColumn = splitedArray.map((columnCat, index) => {
+			return columnCat.map((eachCat, i) => {
+				if (index === splitedArray.length - 1 && i === columnCat.length - 1) {
+					return (
+						<div>
+							<CategoryCard category={eachCat} i={i} key={i} />
+							{dataToEdit.newCategory ? (
+								<Card fluid>
+									<Card.Content>
+										<FormEdit />
+									</Card.Content>
+								</Card>
+							) : (
+								addCatButton
+							)}
+						</div>
+					)
+				} else {
+					return <CategoryCard category={eachCat} i={i} key={i} />
+				}
+			})
+		})
 
 		return (
 			<div>
 				{selectedCity.city_id && (
-					<Container>
+					<div>
 						{isFetchingCategory && categories.length === 0 && (
 							<h2>Loading...</h2>
 						)}
-
-						{!isFetchingCategory && categories.length === 0 && (
-							<h2>Empty.</h2>
-						)}
-
-						{/* <div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}> */}
-
-						{categories.map((category, i) => (
-							<CategoryCard key={i} category={category} i={i} />
-						))} 
-
-						{dataToEdit.newCategory ? (
-							<Card>
-								<Card.Content>
-									<FormEdit />
-								</Card.Content>
-							</Card>
-						) : (
-							<Button
-								type='button'
-								onClick={() =>
-									dispatch(
-										addData({
-											newCategory: true,
-											category_name: '',
-											category_price: ''
-										})
-									)
-								}>
-								Add Category
-							</Button>
-						)}
-					</Container>
+						<Grid columns={3} stackable padded='vertically'>
+							<Grid.Row style={{paddingTop: '0'}}>
+								{!isFetchingCategory && categories.length === 0 && (
+									<Grid.Column>{addCatButton}</Grid.Column>
+								)}
+								{eachColumn.map((column, i) => (
+									<Grid.Column key={i}>{column}</Grid.Column>
+								))}
+							</Grid.Row>
+						</Grid>
+					</div>
 				)}
 			</div>
 		)

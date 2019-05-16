@@ -47,37 +47,27 @@ class Picker extends Component {
 			key: city._id,
 			text: city.city_name
 		}))
+		let fluidValue = false
+		if (this.props.match.path === '/signup') {
+			fluidValue = true
+		}
 		return (
 			<div>
 				<div>
 					{isFetchingCities && selectedCity && allCities.length === 0 && (
 						<h2>Loading...</h2>
 					)}
-					{!isFetchingCities && allCities.length === 0 && <h2>Empty.</h2>}
 					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
 						<Dropdown
 							name='cityId'
-							placeholder='Select a city to manage'
-							fluid
+							placeholder={!isFetchingCities && allCities.length === 0 ? 'Empty' : 'Select a city to manage'}
+							fluid={fluidValue}
 							selection
 							clearable
 							value={selectedCity.city_id}
 							onChange={this.handleChange}
 							options={cityOptions}
 						/>
-						{/* 
-						<select
-							name='cityId'
-							value={selectedCity.city_id}
-							onChange={this.handleChange}
-							placeholder='Select a city...'>
-							<option value=''>Select a city...</option>
-							{allCities.map(city => (
-								<option value={city.city_id} key={city._id}>
-									{city.city_name}
-								</option>
-							))}
-						</select> */}
 					</div>
 				</div>
 			</div>

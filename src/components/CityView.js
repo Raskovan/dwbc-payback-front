@@ -2,18 +2,21 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import Picker from '../components/Picker'
 import Categories from '../components/Categories'
+import { Segment, Container, Header } from 'semantic-ui-react';
 
 class CityView extends Component {
 	render() {
 		const { user, selectedCity } = this.props
 		return (
-			<div style={{height: '100%'}}>
-				<h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
-				{user.is_admin && <Picker />}
-				<Categories />
-			</div>
+			<Segment basic style={{ height: '100%' }}>
+				<Container>
+					<Header as='h2' color='grey'>
+						{user.city_name ? user.city_name : selectedCity.city_name}
+					</Header>
+					<Categories />
+				</Container>
+			</Segment>
 		)
 	}
 }
