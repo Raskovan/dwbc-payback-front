@@ -15,10 +15,6 @@ class SignUp extends Component {
 		const { dispatch, match } = this.props
 		dispatch(fetchCitiesIfNeeded(match.params.name))
 	}
-  
-  handlePickerChange(event) {
-    console.log(event.target.value)
-  }
 
 	render() {
     const { dispatch, dataToEdit, history, error } = this.props
