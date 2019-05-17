@@ -27,7 +27,8 @@ class SignUp extends Component {
 				<HeaderMenu />
 				{error.message && alert(error.message)}
 				<Grid
-					style={{ height: '100%' }}
+					stackable
+					style={{ height: '90%' }}
 					verticalAlign='middle'
 					centered
 					doubling

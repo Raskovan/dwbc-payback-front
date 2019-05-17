@@ -34,11 +34,12 @@ class LogIn extends Component {
 					verticalAlign='middle'
 					centered
 					doubling
+					stackable
 					columns={3}>
 					<Grid.Row>
 						<Grid.Column textAlign='center'>
 							<Image size='small' src={logo} centered />
-							<Header as='h2' color='grey' style={{margin: '20px'}}>
+							<Header as='h2' color='grey' style={{ margin: '20px' }}>
 								Sign in to PaiBack
 							</Header>
 

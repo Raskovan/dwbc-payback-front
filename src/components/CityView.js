@@ -7,7 +7,7 @@ import { Segment, Container, Header } from 'semantic-ui-react';
 
 class CityView extends Component {
 	render() {
-		const { user, selectedCity } = this.props
+		const { selectedCity } = this.props
 		return (
 			<Segment basic style={{ height: '100%' }}>
 				<Container>
@@ -29,10 +29,9 @@ CityView.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { user, selectedCity } = state
+	const { selectedCity } = state
 
 	return {
-		user,
 		selectedCity
 	}
 }

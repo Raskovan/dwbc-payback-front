@@ -60,8 +60,9 @@ class Categories extends Component {
 		}
 
 		let countIndex = 0
+		let cardInRow = Math.ceil(categories.length / 3)
 		let copyArray = [...categories]
-		let splitedArray = this.chunkArray(copyArray, 3)
+		let splitedArray = this.chunkArray(copyArray, cardInRow)
 		let eachColumn = splitedArray.map((columnCat, index) => {
 			return columnCat.map((eachCat, i) => {
 				countIndex++

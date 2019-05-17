@@ -29,7 +29,7 @@ class Users extends Component {
 				<HeaderMenu />
 				<Segment basic style={{ height: '100%' }}>
 				<Container>
-					<Header as='h2' color='grey' content='Users' centered />
+					<Header as='h2' color='grey' content='Users' />
 					{userElements.length && (
 						<Card.Group doubling stackable itemsPerRow={3}>
 							{userElements}

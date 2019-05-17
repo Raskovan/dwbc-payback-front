@@ -26,14 +26,14 @@ class HeaderMenu extends Component {
 					borderless
 					fluid
 					style={{ background: '#e6e6e6' }}>
-					<Menu.Item disabled as={Link} to='/'>
-						<Image src={logo} alt='Logo' />
-					</Menu.Item>
-					<Menu.Header
-						as='h1'
-						style={{ fontWeight: '300' }}
-						content='PaiBack'
-					/>
+					<Menu.Menu position='left'>
+						<Menu.Item as={Link} to='/'>
+							<Image src={logo} alt='Logo' />
+						</Menu.Item>
+						<Menu.Item>
+							<Header as='h1' style={{ fontWeight: '300' }} content='PaiBack' />
+						</Menu.Item>
+					</Menu.Menu>
 					{user.loggedIn && (
 						<Menu.Menu position='right'>
 							<Menu.Item>{user.is_admin && <Picker />}</Menu.Item>
