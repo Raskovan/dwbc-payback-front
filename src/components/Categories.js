@@ -10,7 +10,7 @@ import {
 	editData,
 	addData
 } from '../actions'
-import { Card, Button, Container, Grid } from 'semantic-ui-react'
+import { Card, Button, Grid } from 'semantic-ui-react'
 
 class Categories extends Component {
 	chunkArray(myArray, size) {
@@ -59,14 +59,16 @@ class Categories extends Component {
 			)
 		}
 
+		let countIndex = 0
 		let copyArray = [...categories]
 		let splitedArray = this.chunkArray(copyArray, 3)
 		let eachColumn = splitedArray.map((columnCat, index) => {
 			return columnCat.map((eachCat, i) => {
+				countIndex++
 				if (index === splitedArray.length - 1 && i === columnCat.length - 1) {
 					return (
-						<div>
-							<CategoryCard category={eachCat} i={i} key={i} />
+						<div key={i}>
+							<CategoryCard category={eachCat} i={countIndex} />
 							{dataToEdit.newCategory ? (
 								<Card fluid>
 									<Card.Content>
@@ -79,7 +81,9 @@ class Categories extends Component {
 						</div>
 					)
 				} else {
-					return <CategoryCard category={eachCat} i={i} key={i} />
+					return (
+						<CategoryCard category={eachCat} i={countIndex} key={i} />
+					)
 				}
 			})
 		})

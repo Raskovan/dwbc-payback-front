@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { fetchUsersIfNeeded } from '../actions'
 import UserCard from './UserCard'
 import HeaderMenu from './HeaderMenu'
-import { Grid, Header, Card, Container, Segment } from 'semantic-ui-react'
+import { Header, Card, Container, Segment } from 'semantic-ui-react'
 
 
 class Users extends Component {
@@ -29,14 +29,12 @@ class Users extends Component {
 				<HeaderMenu />
 				<Segment basic style={{ height: '100%' }}>
 				<Container>
-					{/* <Container style={{ height: '100%' }}> */}
 					<Header as='h2' color='grey' content='Users' centered />
 					{userElements.length && (
 						<Card.Group doubling stackable itemsPerRow={3}>
 							{userElements}
 						</Card.Group>
 					)}
-					{/* </Container> */}
 				</Container>
 				</Segment>
 			</div>

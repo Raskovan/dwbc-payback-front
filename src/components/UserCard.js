@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { userUpdate } from '../actions'
-import { Card, Button, Label } from 'semantic-ui-react';
+import { Card, Button } from 'semantic-ui-react';
 
 class UserCard extends Component {
 	handleClick(user, action) {
@@ -40,7 +40,7 @@ class UserCard extends Component {
 						</Button>
 						<Button
 							basic
-							color='red'
+							color='black'
 							value={user}
 							type='button'
 							onClick={() => this.handleClick(user, 'delete')}>

@@ -57,10 +57,10 @@ class CategoryCard extends Component {
 						</Button.Group>
 						<Card.Header>
 							{category.category_price
-								? `${category.order}. ${category.category_name} - $${
+								? `${i}. ${category.category_name} - $${
 										category.category_price
 								  }`
-								: `${category.order}. ${category.category_name}`}
+								: `${i}. ${category.category_name}`}
 						</Card.Header>
 					</Card.Content>
 				) : (

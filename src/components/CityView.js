@@ -12,7 +12,9 @@ class CityView extends Component {
 			<Segment basic style={{ height: '100%' }}>
 				<Container>
 					<Header as='h2' color='grey'>
-						{user.city_name ? user.city_name : selectedCity.city_name}
+						{selectedCity.city_name
+							? selectedCity.city_name
+							: 'Pick a City...'}
 					</Header>
 					<Categories />
 				</Container>
