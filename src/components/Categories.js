@@ -101,7 +101,7 @@ class Categories extends Component {
 		return (
 			<Container style={{ margin: '0!important' }}>
 				{isFetchingCategory && categories.length === 0 && <Loader />}
-				<Grid columns={3} stackable>
+				<Grid columns={3} stackable style={{ margin: '0' }}>
 					<Grid.Row>
 						<Grid.Column>
 							<Header as='h2' color='grey'>

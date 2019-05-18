@@ -6,7 +6,6 @@ import {
 	handleSignUp,
 	fetchCitiesIfNeeded
 } from '../actions'
-import HeaderMenu from './HeaderMenu';
 import { Grid, Form, Header, Button } from 'semantic-ui-react'
 
 class SignUp extends Component {
@@ -20,7 +19,6 @@ class SignUp extends Component {
     const { dispatch, dataToEdit, history, error } = this.props
 		return (
 			<div style={{ height: '100%' }}>
-				<HeaderMenu />
 				{error.message && alert(error.message)}
 				<Grid
 					stackable

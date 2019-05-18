@@ -11,7 +11,8 @@ import {
 	Input,
 	Image,
 	Header,
-	Loader
+	Loader,
+	Transition
 } from 'semantic-ui-react'
 
 class LogIn extends Component {
@@ -38,54 +39,60 @@ class LogIn extends Component {
 					stackable
 					columns={3}>
 					<Grid.Row>
-						{cities.cityList.length > 0 ? (
-							<Grid.Column textAlign='center'>
-								<Image size='small' src={logo} centered />
-								<Header as='h2' color='grey' style={{ margin: '20px' }}>
-									Sign in to PaiBack
-								</Header>
+						<Grid.Column textAlign='center'>
+							<Transition
+								visible={this.props.cities.cityList.length > 0}
+								animation='scale'
+								duration={500}>
+								<div>
+									<Image size='small' src={logo} centered />
+									<Header as='h2' color='grey' style={{ margin: '20px' }}>
+										Sign in to PaiBack
+									</Header>
 
-								<Form
-									size='big'
-									onSubmit={e => {
-										e.preventDefault()
-										dispatch(handleLogin(dataToEdit, history))
-									}}>
-									<Form.Field>
-										<Input
-											fluid
-											name='email'
-											type='text'
-											placeholder='Email'
-											// style={{ paddingBottom: '5px' }}
-											value={dataToEdit.email ? dataToEdit.email : ''}
-											onChange={e => dispatch(editDataOnChange(e))}
-										/>
-									</Form.Field>
-									<Form.Field>
-										<Input
-											fluid
-											name='password'
-											type='password'
-											placeholder='Password'
-											// style={{ paddingBottom: '5px' }}
-											value={dataToEdit.password ? dataToEdit.password : ''}
-											onChange={e => dispatch(editDataOnChange(e))}
-										/>
-									</Form.Field>
-									<Button fluid size='big' type='submit' value='Sign In'>
-										Sign In
-									</Button>
-								</Form>
-								<br />
+									<Form
+										size='big'
+										onSubmit={e => {
+											e.preventDefault()
+											dispatch(handleLogin(dataToEdit, history))
+										}}>
+										<Form.Field>
+											<Input
+												fluid
+												name='email'
+												type='text'
+												placeholder='Email'
+												// style={{ paddingBottom: '5px' }}
+												value={dataToEdit.email ? dataToEdit.email : ''}
+												onChange={e => dispatch(editDataOnChange(e))}
+											/>
+										</Form.Field>
+										<Form.Field>
+											<Input
+												fluid
+												name='password'
+												type='password'
+												placeholder='Password'
+												// style={{ paddingBottom: '5px' }}
+												value={dataToEdit.password ? dataToEdit.password : ''}
+												onChange={e => dispatch(editDataOnChange(e))}
+											/>
+										</Form.Field>
+										<Button fluid size='big' type='submit' value='Sign In'>
+											Sign In
+										</Button>
+									</Form>
+									<br />
+									<Link to='/signup'>Request Access</Link>
+								</div>
+							</Transition>
 
-								<Link to='/signup'>Request Access</Link>
-							</Grid.Column>
-						) : (
-							<Grid.Column>
-								<Loader active />
-							</Grid.Column>
-						)}
+							{cities.cityList.length === 0 && (
+								<Grid.Column>
+									<Loader active />
+								</Grid.Column>
+							)}
+						</Grid.Column>
 					</Grid.Row>
 				</Grid>
 			</div>

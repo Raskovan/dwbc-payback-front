@@ -7,9 +7,8 @@ import {
 	fetchCategoriesForCityIfNeeded,
 	selectCity
 } from '../actions'
-import HeaderMenu from '../components/HeaderMenu'
-import CityView from '../components/CityView';
-import { Menu } from 'semantic-ui-react';
+import Categories from '../components/Categories'
+import { Segment } from 'semantic-ui-react'
 
 class App extends Component {
 	componentDidMount() {
@@ -67,20 +66,10 @@ class App extends Component {
 
 	render() {
 		return (
-			<div>
-				<HeaderMenu />
-				<CityView />
-				<Menu
-					borderless
-					fixed='bottom'
-					widths={3}
-					style={{
-						borderTopColor: 'white',
-						borderBottomColor: 'white'
-					}}>
-					<Menu.Item style={{color: 'red'}}>ཀ</Menu.Item>
-				</Menu>
-			</div>
+			<Segment basic style={{ height: '100%' }}>
+				<Categories />
+				<Segment basic />
+			</Segment>
 		)
 	}
 }
