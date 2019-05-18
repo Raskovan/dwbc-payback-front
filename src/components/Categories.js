@@ -10,7 +10,14 @@ import {
 	editData,
 	addData
 } from '../actions'
-import { Card, Button, Grid } from 'semantic-ui-react'
+import {
+	Card,
+	Button,
+	Grid,
+	Header,
+	Container,
+	Loader
+} from 'semantic-ui-react'
 
 class Categories extends Component {
 	chunkArray(myArray, size) {
@@ -29,7 +36,7 @@ class Categories extends Component {
 			isFetchingCategory,
 			selectedCity
 		} = this.props
-		
+
 		let addCatButton
 		if (dataToEdit.newCategory) {
 			addCatButton = (
@@ -82,33 +89,36 @@ class Categories extends Component {
 						</div>
 					)
 				} else {
-					return (
-						<CategoryCard category={eachCat} i={countIndex} key={i} />
-					)
+					return <CategoryCard category={eachCat} i={countIndex} key={i} />
 				}
 			})
 		})
 
+		let catHeader = selectedCity.city_name
+			? selectedCity.city_name
+			: 'Pick a City...'
+
 		return (
-			<div>
-				{selectedCity.city_id && (
-					<div>
-						{isFetchingCategory && categories.length === 0 && (
-							<h2>Loading...</h2>
+			<Container style={{ margin: '0!important' }}>
+				{isFetchingCategory && categories.length === 0 && <Loader />}
+				<Grid columns={3} stackable>
+					<Grid.Row>
+						<Grid.Column>
+							<Header as='h2' color='grey'>
+								{catHeader}
+							</Header>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid.Row style={{ paddingTop: '0' }}>
+						{!isFetchingCategory && categories.length === 0 && (
+							<Grid.Column>{addCatButton}</Grid.Column>
 						)}
-						<Grid columns={3} stackable padded='vertically'>
-							<Grid.Row style={{paddingTop: '0'}}>
-								{!isFetchingCategory && categories.length === 0 && (
-									<Grid.Column>{addCatButton}</Grid.Column>
-								)}
-								{eachColumn.map((column, i) => (
-									<Grid.Column key={i}>{column}</Grid.Column>
-								))}
-							</Grid.Row>
-						</Grid>
-					</div>
-				)}
-			</div>
+						{eachColumn.map((column, i) => (
+							<Grid.Column key={i}>{column}</Grid.Column>
+						))}
+					</Grid.Row>
+				</Grid>
+			</Container>
 		)
 	}
 }

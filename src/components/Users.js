@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { fetchUsersIfNeeded } from '../actions'
 import UserCard from './UserCard'
 import HeaderMenu from './HeaderMenu'
-import { Header, Card, Container, Segment } from 'semantic-ui-react'
-
+import { Header, Card, Container, Segment, Menu } from 'semantic-ui-react'
 
 class Users extends Component {
 	componentDidMount() {
@@ -14,13 +13,11 @@ class Users extends Component {
 	}
 
 	render() {
-    const { allUsers } = this.props
-    const userElements = []
-    if (allUsers.users) {
+		const { allUsers } = this.props
+		const userElements = []
+		if (allUsers.users) {
 			allUsers.users.forEach((user, index) =>
-				userElements.push(
-						<UserCard user={user} key={index} />
-				)
+				userElements.push(<UserCard user={user} key={index} />)
 			)
 		}
 		console.log('AllUsers', allUsers)
@@ -28,15 +25,25 @@ class Users extends Component {
 			<div>
 				<HeaderMenu />
 				<Segment basic style={{ height: '100%' }}>
-				<Container>
-					<Header as='h2' color='grey' content='Users' />
-					{userElements.length && (
-						<Card.Group doubling stackable itemsPerRow={3}>
-							{userElements}
-						</Card.Group>
-					)}
-				</Container>
+					<Container>
+						<Header as='h2' color='grey' content='Users' />
+						{userElements.length && (
+							<Card.Group doubling stackable itemsPerRow={3}>
+								{userElements}
+							</Card.Group>
+						)}
+					</Container>
 				</Segment>
+				<Menu
+					borderless
+					fixed='bottom'
+					widths={3}
+					style={{
+						borderTopColor: 'white',
+						borderBottomColor: 'white'
+					}}>
+					<Menu.Item style={{ color: 'red' }}>ཀ</Menu.Item>
+				</Menu>
 			</div>
 		)
 	}

@@ -11,8 +11,7 @@ import {
 	Input,
 	Image,
 	Header,
-	Loader,
-	Segment
+	Loader
 } from 'semantic-ui-react'
 
 class LogIn extends Component {

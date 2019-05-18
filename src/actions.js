@@ -289,7 +289,7 @@ export function updateItem(cityId, catId, itemObj) {
 // LOGIN
 export function handleLogin(loginObj, history) {
 	let data = {
-		username: loginObj.email,
+		username: loginObj.email.toLowerCase(),
 		password: loginObj.password
 	}
 	return (dispatch, getState) => {
@@ -398,7 +398,7 @@ export function handleSignUp(loginObj, history) {
 		(loginObj.city || loginObj.cityId)
 	) {
 		let data = {
-			username: loginObj.email,
+			username: loginObj.email.toLowerCase(),
 			password: loginObj.password,
 			city: loginObj.city ? loginObj.city : loginObj.cityId
 		}

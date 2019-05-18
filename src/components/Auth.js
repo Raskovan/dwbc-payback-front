@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getUser } from '../actions'
+import { getUser, fetchCitiesIfNeeded } from '../actions'
 
 export default function(ComposedComponent) {
 	class Authentication extends Component {
@@ -14,6 +14,7 @@ export default function(ComposedComponent) {
 			}
       if (token && !this.props.authenticated) {
 				dispatch(getUser(token))
+				dispatch(fetchCitiesIfNeeded())
 			}
 		}
 

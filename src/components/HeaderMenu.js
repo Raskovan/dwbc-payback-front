@@ -5,11 +5,19 @@ import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Picker from '../components/Picker'
-import { Menu, Button, Header, Segment, Image } from 'semantic-ui-react'
+import {
+	Menu,
+	Button,
+	Header,
+	Segment,
+	Image,
+	Responsive,
+	Dropdown
+} from 'semantic-ui-react'
 
 class HeaderMenu extends Component {
 	render() {
-		const { dispatch, user, history, selectedCity } = this.props
+		const { dispatch, user, history, selectedCity, allCities } = this.props
 		let headerLink
 		let headerText
 		if (history.location.pathname === '/users') {
@@ -19,36 +27,84 @@ class HeaderMenu extends Component {
 			headerLink = '/users'
 			headerText = 'Manage Users'
 		}
+
 		return (
 			<div>
-				<Menu
-					attached='top'
-					borderless
-					fluid
-					style={{ background: '#e6e6e6' }}>
-					<Menu.Menu position='left'>
-						<Menu.Item as={Link} to='/'>
-							<Image src={logo} alt='Logo' />
-						</Menu.Item>
-						<Menu.Item>
-							<Header as='h1' style={{ fontWeight: '300' }} content='PaiBack' />
-						</Menu.Item>
-					</Menu.Menu>
+				<Menu attached='top' borderless fluid style={{ background: '#e6e6e6' }}>
+					<Menu.Item as={Link} to='/'>
+						<Image src={logo} alt='Logo' />
+					</Menu.Item>
+					<Menu.Item
+						header
+						fitted
+						as='h1'
+						style={{ fontWeight: '300' }}
+						content='PaiBack'
+					/>
+					{/* Show menu on desktop */}
 					{user.loggedIn && (
-						<Menu.Menu position='right'>
-							<Menu.Item>{user.is_admin && <Picker />}</Menu.Item>
+						<Responsive as={Menu.Menu} position='right' minWidth={665}>
 							{user.is_admin && (
 								<Menu.Item>
-									<Button
-										size='tiny'
-										as={Link}
-										to={headerLink}
-										color='blue'
-										style={{ marginRight: '-25px' }}>
+									<Picker />
+								</Menu.Item>
+							)}
+							{user.is_admin && (
+								<Menu.Item fitted>
+									<Button size='tiny' as={Link} to={headerLink} color='blue'>
 										{headerText}
 									</Button>
 								</Menu.Item>
 							)}
+							<Menu.Menu position='right'>
+								<Menu.Item>
+									<Button
+										size='tiny'
+										type='button'
+										color='grey'
+										onClick={() => dispatch(logOut())}>
+										Log Out
+									</Button>
+								</Menu.Item>
+							</Menu.Menu>
+						</Responsive>
+					)}
+					{/* Show Dropdown menu for Admin */}
+					{user.loggedIn && user.is_admin && (
+						<Responsive as={Menu.Menu} position='right' maxWidth={665}>
+							<Dropdown item text='Menu'>
+								<Dropdown.Menu>
+									<Dropdown.Item as={Link} to='/users'>
+										Users
+									</Dropdown.Item>
+
+									<Dropdown.Item>
+										<Dropdown text='Cities'>
+											<Dropdown.Menu>
+												{allCities.map((city, index) => {
+													return (
+														<Dropdown.Item
+															as={Link}
+															to={`/${city.city_name}`}
+															key={index}>
+															{city.city_name}
+														</Dropdown.Item>
+													)
+												})}
+											</Dropdown.Menu>
+										</Dropdown>
+									</Dropdown.Item>
+
+									<Dropdown.Item as={Button} onClick={() => dispatch(logOut())}>
+										Logout
+									</Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown>
+						</Responsive>
+					)}
+					{/* Show LOGOUT for phones if not ADMIN */}
+					{user.loggedIn && !user.is_admin && (
+						<Responsive as={Menu.Menu} position='right' maxWidth={380}>
 							<Menu.Item>
 								<Button
 									size='tiny'
@@ -58,9 +114,10 @@ class HeaderMenu extends Component {
 									Log Out
 								</Button>
 							</Menu.Item>
-						</Menu.Menu>
+						</Responsive>
 					)}
 				</Menu>
+
 				{user.username && (
 					<Segment
 						basic
@@ -82,11 +139,19 @@ HeaderMenu.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { user, selectedCity } = state
+	const { user, selectedCity, cities } = state
+
+	const { isFetchingCities, cityList: allCities } = cities || {
+		isFetchingCities: true,
+		cityList: []
+	}
 
 	return {
 		user,
-		selectedCity
+		selectedCity,
+		allCities,
+		cities,
+		isFetchingCities
 	}
 }
 
