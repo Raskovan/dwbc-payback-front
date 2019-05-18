@@ -27,7 +27,7 @@ class Users extends Component {
 				<Segment basic style={{ height: '100%' }}>
 					<Container>
 						<Header as='h2' color='grey' content='Users' />
-						{userElements.length && (
+						{userElements.length > 0 && (
 							<Card.Group doubling stackable itemsPerRow={3}>
 								{userElements}
 							</Card.Group>
