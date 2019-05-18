@@ -77,7 +77,6 @@ class HeaderMenu extends Component {
 									<Dropdown.Item as={Link} to='/users'>
 										Users
 									</Dropdown.Item>
-
 									<Dropdown.Item>
 										<Dropdown text='Cities'>
 											<Dropdown.Menu>
@@ -85,7 +84,9 @@ class HeaderMenu extends Component {
 													return (
 														<Dropdown.Item
 															as={Link}
-															to={`/${city.city_name}`}
+															to={`/${
+																city.city_name
+															}`}
 															key={index}>
 															{city.city_name}
 														</Dropdown.Item>

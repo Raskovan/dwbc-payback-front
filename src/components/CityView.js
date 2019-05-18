@@ -6,7 +6,8 @@ export default class CityView extends Component {
 	render() {
 		return (
 			<Segment basic style={{ height: '100%' }}>
-					<Categories />
+				<Categories />
+				<Segment basic/>
 			</Segment>
 		)
 	}

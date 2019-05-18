@@ -103,7 +103,8 @@ export function getUserFromApi(token) {
 		method: 'POST',
 		body: JSON.stringify(data),
 		headers: HeaderMenu
-	}).then(response => response.json())
+	})
+	.then(response => response.json())
 }
 
 export function sendSignUpDetails(data) {
