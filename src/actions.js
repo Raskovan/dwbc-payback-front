@@ -169,7 +169,6 @@ function fetchCities(matchName) {
 function selectingCity(allCities, matchName) {
 	return dispatch => {
 		if (matchName) {
-			console.log('object', allCities)
 			for (let i = 0; i < allCities.cityList.length; i++) {
 				if (allCities.cityList[i].city_name === matchName)
 					dispatch(selectCity(allCities.cityList[i]))
@@ -288,9 +287,12 @@ export function updateItem(cityId, catId, itemObj) {
 
 // LOGIN
 export function handleLogin(loginObj, history) {
-	let data = {
-		username: loginObj.email.toLowerCase(),
-		password: loginObj.password
+	let data
+	if (loginObj.email) {
+		data = {
+			username: loginObj.email.toLowerCase(),
+			password: loginObj.password
+		}
 	}
 	return (dispatch, getState) => {
 		dispatch(loggingIn(loginObj.email))

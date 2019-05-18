@@ -16,6 +16,10 @@ import {
 } from 'semantic-ui-react'
 
 class LogIn extends Component {
+	state ={
+		imageLoaded: false
+	}
+
 	componentDidMount() {
 		const { dispatch } = this.props
 
@@ -26,8 +30,18 @@ class LogIn extends Component {
 		}
 	}
 
+	imageLoad = () => {
+		console.log("Image Loaded")
+		this.setState({
+			imageLoaded: true
+		})
+		// if (!this.state.imageLoaded){
+		// }
+	}
+
 	render() {
 		const { dispatch, dataToEdit, history, error, cities } = this.props
+		const { imageLoaded } = this.state
 		return (
 			<div style={{ height: '100%' }}>
 				{error.message && alert(error.message)}
@@ -40,12 +54,12 @@ class LogIn extends Component {
 					columns={3}>
 					<Grid.Row>
 						<Grid.Column textAlign='center'>
+							<Image size='small' src={logo} centered onLoad={this.imageLoad}/>
 							<Transition
-								visible={this.props.cities.cityList.length > 0}
-								animation='scale'
-								duration={500}>
+								visible={this.props.cities.cityList.length > 0 && imageLoaded}
+								animation='slide up'
+								duration={300}>
 								<div>
-									<Image size='small' src={logo} centered />
 									<Header as='h2' color='grey' style={{ margin: '20px' }}>
 										Sign in to PaiBack
 									</Header>
