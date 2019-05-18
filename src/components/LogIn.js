@@ -31,12 +31,9 @@ class LogIn extends Component {
 	}
 
 	imageLoad = () => {
-		console.log("Image Loaded")
 		this.setState({
 			imageLoaded: true
 		})
-		// if (!this.state.imageLoaded){
-		// }
 	}
 
 	render() {
