@@ -87,6 +87,37 @@ function categoriesByCity(state = {}, action) {
       return Object.assign({}, state, {
         [action.cityId]: categories(state[action.cityId], action)
       });
+    case 'ITEM_REORDER':
+      const { destination, source, draggableId, selectedCityId } = action
+
+      var elementPos = state[selectedCityId].categories
+				.map(function(x) {
+					return x._id
+				})
+				.indexOf(source.droppableId)
+
+      let category = state[selectedCityId].categories.filter(cat => cat._id === source.droppableId)
+      let newItems = Array.from(category[0].items)
+      let movedItem = newItems.filter(item => item._id === draggableId)
+      newItems.splice(source.index, 1)
+      newItems.splice(destination.index, 0, movedItem[0])
+
+      let newCategory = {
+				...category[0],
+				items: newItems
+      }
+      
+      let newState = {
+				...state[selectedCityId],
+				categories: [
+					...state[selectedCityId].categories.slice(0, elementPos),
+          newCategory,
+          ...state[selectedCityId].categories.slice(elementPos+1)
+        ]
+			}
+      return Object.assign({}, state, {
+        [selectedCityId]: newState
+			})
     default:
       return state;
   }

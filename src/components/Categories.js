@@ -65,7 +65,7 @@ class Categories extends Component {
 				</Button>
 			)
 		}
-
+		// Splitting categories array into chunks of 3 
 		let countIndex = 0
 		let cardInRow = Math.ceil(categories.length / 3)
 		let copyArray = [...categories]
@@ -76,7 +76,10 @@ class Categories extends Component {
 				if (index === splitedArray.length - 1 && i === columnCat.length - 1) {
 					return (
 						<div key={i}>
-							<CategoryCard category={eachCat} i={countIndex} />
+							<CategoryCard
+								category={eachCat}
+								i={countIndex}
+							/>
 							{dataToEdit.newCategory ? (
 								<Card fluid>
 									<Card.Content>
@@ -89,7 +92,9 @@ class Categories extends Component {
 						</div>
 					)
 				} else {
-					return <CategoryCard category={eachCat} i={countIndex} key={i} />
+					return (
+						<CategoryCard category={eachCat} i={countIndex} key={i} />
+					)
 				}
 			})
 		})

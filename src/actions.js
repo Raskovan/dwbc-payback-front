@@ -507,3 +507,14 @@ function deletingUser(username) {
 		username
 	}
 }
+
+//REORDERING ACTIONS
+export function itemsReorder(destination, source, draggableId, selectedCityId) {
+	return {
+		type: 'ITEM_REORDER',
+		destination,
+		source,
+		draggableId,
+		selectedCityId
+	}
+}
