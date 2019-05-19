@@ -7,6 +7,7 @@ import {
 	selectCity,
 	editDataOnChange
 } from '../actions'
+import { Dropdown } from 'semantic-ui-react';
 
 class Picker extends Component {
 	constructor(props) {
@@ -14,14 +15,18 @@ class Picker extends Component {
 		this.handleChange = this.handleChange.bind(this)
 	}
 
-	handleChange(event) {
+	handleChange(event, data) {
+		// console.log('object', event.target.value, data)
 		if (this.props.match.path === '/signup'){
+			let combinedEvent = {
+				target: data
+			}
 			const { dispatch } = this.props
-			dispatch(editDataOnChange(event))
+			dispatch(editDataOnChange(combinedEvent))
 		} else {
 			let nextCity
 			for (let i = 0; i < this.props.allCities.length; i++) {
-				if (this.props.allCities[i].city_id === event.target.value) {
+				if (this.props.allCities[i].city_id === data.value) {
 					nextCity = this.props.allCities[i]
 				}
 			}
@@ -37,27 +42,34 @@ class Picker extends Component {
 
 	render() {
 		const { isFetchingCities, allCities, selectedCity } = this.props
+		let cityOptions = allCities.map(city => ({
+			value: city.city_id,
+			key: city._id,
+			text: city.city_name
+		}))
+		let fluidValue = false
+		if (this.props.match.path === '/signup') {
+			fluidValue = true
+		}
 		return (
 			<div>
-					<div>
-						{isFetchingCities && selectedCity && allCities.length === 0 && (
-							<h2>Loading...</h2>
-						)}
-						{!isFetchingCities && allCities.length === 0 && <h2>Empty.</h2>}
-						<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-							<select
-								name='cityId'
-								value={selectedCity.city_id}
-								onChange={this.handleChange}>
-								<option value=''>Select city...</option>
-								{allCities.map(city => (
-									<option value={city.city_id} key={city._id}>
-										{city.city_name}
-									</option>
-								))}
-							</select>
-						</div>
+				<div>
+					{isFetchingCities && selectedCity && allCities.length === 0 && (
+						<h2>Loading...</h2>
+					)}
+					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
+						<Dropdown
+							name='cityId'
+							placeholder={!isFetchingCities && allCities.length === 0 ? 'Empty' : 'Select a city to manage'}
+							fluid={fluidValue}
+							selection
+							clearable
+							value={selectedCity.city_id}
+							onChange={this.handleChange}
+							options={cityOptions}
+						/>
 					</div>
+				</div>
 			</div>
 		)
 	}

@@ -7,8 +7,8 @@ import {
 	fetchCategoriesForCityIfNeeded,
 	selectCity
 } from '../actions'
-import Header from '../components/Header'
-import CityView from '../components/CityView';
+import Categories from '../components/Categories'
+import { Segment } from 'semantic-ui-react'
 
 class App extends Component {
 	componentDidMount() {
@@ -65,15 +65,11 @@ class App extends Component {
 	}
 
 	render() {
-		// const { selectedCity, user } = this.props
 		return (
-			<div>
-				<Header />
-				<CityView/>
-				{/* <h1>{user.city_name ? user.city_name : selectedCity.city_name}</h1>
-				<Picker />
-				<Categories /> */}
-			</div>
+			<Segment basic style={{ height: '100%' }}>
+				<Categories />
+				<Segment basic />
+			</Segment>
 		)
 	}
 }

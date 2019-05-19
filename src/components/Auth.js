@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getUser } from '../actions'
+import { getUser, fetchCitiesIfNeeded } from '../actions'
+import { Loader } from 'semantic-ui-react';
 
 export default function(ComposedComponent) {
 	class Authentication extends Component {
@@ -14,6 +15,7 @@ export default function(ComposedComponent) {
 			}
       if (token && !this.props.authenticated) {
 				dispatch(getUser(token))
+				dispatch(fetchCitiesIfNeeded())
 			}
 		}
 
@@ -26,10 +28,10 @@ export default function(ComposedComponent) {
 
 		render() {
 			return (
-				<div>
-					{this.props.authenticated && (
+				<div style={{height: '70%'}}>
+					{this.props.authenticated ? (
 						<ComposedComponent {...this.props} />
-					)}
+					): <Loader active/>}
 				</div>
 			)
 		}

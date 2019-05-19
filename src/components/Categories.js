@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import Items from './Items'
-import Form from './Form'
+import FormEdit from './FormEdit'
+import CategoryCard from './CategoryCard'
 import {
 	deleteCategory,
 	updateCategory,
@@ -10,8 +10,24 @@ import {
 	editData,
 	addData
 } from '../actions'
+import {
+	Card,
+	Button,
+	Grid,
+	Header,
+	Container,
+	Loader
+} from 'semantic-ui-react'
 
 class Categories extends Component {
+	chunkArray(myArray, size) {
+		var results = []
+		while (myArray.length) {
+			results.push(myArray.splice(0, size))
+		}
+		return results
+	}
+
 	render() {
 		const {
 			dataToEdit,
@@ -20,105 +36,89 @@ class Categories extends Component {
 			isFetchingCategory,
 			selectedCity
 		} = this.props
-		return (
-			<div>
-				{selectedCity.city_id && (
-					<div>
-						{isFetchingCategory && categories.length === 0 && (
-							<h2>Loading...</h2>
-						)}
-						{!isFetchingCategory && categories.length === 0 && (
-							<h2>Empty.</h2>
-						)}
-						<div style={{ opacity: isFetchingCategory ? 0.5 : 1 }}>
-							<ul>
-								{categories.map((category, i) => (
-									<div key={i}>
-										{category._id !== dataToEdit._id ||
-										!dataToEdit.category_name ||
-										dataToEdit.newCategory ? (
-											<li>
-												{category.category_price
-													? `${category.category_name} - $${
-															category.category_price
-													  }`
-													: `${category.category_name}`}
-												<button
-													type='button'
-													onClick={() =>
-														dispatch(
-															editData(
-																Object.assign({}, category, {
-																	newCategory: false
-																})
-															)
-														)
-													}>
-													Edit
-												</button>
-												<button
-													type='button'
-													onClick={() =>
-														dispatch(
-															deleteCategory(
-																this.props.cityId,
-																category._id
-															)
-														)
-													}>
-													Delete
-												</button>
-												{!category.category_price ? (
-													<button
-														type='button'
-														onClick={() =>
-															dispatch(
-																editData({
-																	newCategory: false,
-																	cat_id: category._id,
-																	item_name: ' ',
-																	item_price: ' '
-																})
-															)
-														}>
-														Add Item
-													</button>
-												) : null}
-											</li>
-										) : (
-											<li>
-												<Form />
-											</li>
-										)}
-										<Items category={category} />
-										{category._id === dataToEdit.cat_id &&
-										!dataToEdit.newCategory ? (
-											<Form catId={dataToEdit.cat_id} />
-										) : null}
-									</div>
-								))}
-							</ul>
+
+		let addCatButton
+		if (dataToEdit.newCategory) {
+			addCatButton = (
+				<Card fluid>
+					<Card.Content>
+						<FormEdit />
+					</Card.Content>
+				</Card>
+			)
+		} else {
+			addCatButton = (
+				<Button
+					basic
+					fluid
+					type='button'
+					onClick={() =>
+						dispatch(
+							addData({
+								newCategory: true,
+								category_name: '',
+								category_price: ''
+							})
+						)
+					}>
+					Add Category
+				</Button>
+			)
+		}
+
+		let countIndex = 0
+		let cardInRow = Math.ceil(categories.length / 3)
+		let copyArray = [...categories]
+		let splitedArray = this.chunkArray(copyArray, cardInRow)
+		let eachColumn = splitedArray.map((columnCat, index) => {
+			return columnCat.map((eachCat, i) => {
+				countIndex++
+				if (index === splitedArray.length - 1 && i === columnCat.length - 1) {
+					return (
+						<div key={i}>
+							<CategoryCard category={eachCat} i={countIndex} />
+							{dataToEdit.newCategory ? (
+								<Card fluid>
+									<Card.Content>
+										<FormEdit />
+									</Card.Content>
+								</Card>
+							) : (
+								addCatButton
+							)}
 						</div>
-						{dataToEdit.newCategory ? (
-							<Form />
-						) : (
-							<button
-								type='button'
-								onClick={() =>
-									dispatch(
-										addData({
-											newCategory: true,
-											category_name: '',
-											category_price: ''
-										})
-									)
-								}>
-								Add Category
-							</button>
+					)
+				} else {
+					return <CategoryCard category={eachCat} i={countIndex} key={i} />
+				}
+			})
+		})
+
+		let catHeader = selectedCity.city_name
+			? selectedCity.city_name
+			: 'Pick a City...'
+
+		return (
+			<Container style={{ margin: '0!important' }}>
+				{isFetchingCategory && categories.length === 0 && <Loader />}
+				<Grid columns={3} stackable style={{ margin: '0' }}>
+					<Grid.Row>
+						<Grid.Column>
+							<Header as='h2' color='grey'>
+								{catHeader}
+							</Header>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid.Row style={{ paddingTop: '0' }}>
+						{!isFetchingCategory && categories.length === 0 && (
+							<Grid.Column>{addCatButton}</Grid.Column>
 						)}
-					</div>
-				)}
-			</div>
+						{eachColumn.map((column, i) => (
+							<Grid.Column key={i}>{column}</Grid.Column>
+						))}
+					</Grid.Row>
+				</Grid>
+			</Container>
 		)
 	}
 }
@@ -130,13 +130,12 @@ Categories.propTypes = {
 
 function mapStateToProps(state) {
 	const { selectedCity, categoriesByCity, dataToEdit } = state
-		const {
-			isFetchingCategory,
-			categories
-		} = categoriesByCity[selectedCity.city_id] || {
-			isFetchingCategory: true,
-			categories: []
-		}
+	const { isFetchingCategory, categories } = categoriesByCity[
+		selectedCity.city_id
+	] || {
+		isFetchingCategory: true,
+		categories: []
+	}
 	return {
 		dataToEdit,
 		categories,

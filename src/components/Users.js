@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchUsersIfNeeded } from '../actions'
 import UserCard from './UserCard'
-import Header from './Header'
+import { Header, Card, Container, Segment } from 'semantic-ui-react'
 
 class Users extends Component {
 	componentDidMount() {
@@ -12,23 +12,25 @@ class Users extends Component {
 	}
 
 	render() {
-    const { allUsers } = this.props
-    const userElements = []
-    if (allUsers.users) {
+		const { allUsers } = this.props
+		const userElements = []
+		if (allUsers.users) {
 			allUsers.users.forEach((user, index) =>
-				userElements.push(<UserCard user={user} key={index}/>)
+				userElements.push(<UserCard user={user} key={index} />)
 			)
 		}
-		console.log('AllUsers', allUsers)
 		return (
 			<div>
-				<Header />
-				{userElements.length && (
-					<div>
-						<h1>Users: </h1>
-						<div>{userElements}</div>
-					</div>
-				)}
+				<Segment basic style={{ height: '100%' }}>
+					<Container>
+						<Header as='h2' color='grey' content='Users' />
+						{userElements.length > 0 && (
+							<Card.Group doubling stackable itemsPerRow={3}>
+								{userElements}
+							</Card.Group>
+						)}
+					</Container>
+				</Segment>
 			</div>
 		)
 	}
