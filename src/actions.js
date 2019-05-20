@@ -231,6 +231,18 @@ export function updateCategory(cityId, category) {
 	}
 }
 
+export function updateItemsInCategory(cityId, category, newItems) {
+	let data = {
+		items: newItems
+	}
+	return dispatch => {
+		dispatch(updatingCategory(cityId, category.category_name))
+		updateCategoryToApi(cityId, category, data).then(json =>
+			dispatch(receiveCategories(cityId, json.categories))
+		)
+	}
+}
+
 function addingItem(cityId, catName) {
 	return {
 		type: 'ADD_CATEGORY',
@@ -509,12 +521,14 @@ function deletingUser(username) {
 }
 
 //REORDERING ACTIONS
-export function itemsReorder(destination, source, draggableId, selectedCityId) {
-	return {
-		type: 'ITEM_REORDER',
-		destination,
-		source,
-		draggableId,
-		selectedCityId
-	}
-}
+export function itemsReorder(
+					reordedItemsArr,
+					reorderedCategory, selectedCityId
+				) {
+					return {
+						type: 'ITEM_REORDER',
+						reordedItemsArr,
+						reorderedCategory,
+						selectedCityId
+					}
+				}

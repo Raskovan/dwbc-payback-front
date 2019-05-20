@@ -9,12 +9,10 @@ import { Draggable } from 'react-beautiful-dnd'
 class Items extends Component {
 	render() {
 		const { dispatch, dataToEdit, cityId, item, index } = this.props
+		
 		return (
-			<Draggable
-				draggableId={item._id}
-				key={item._id}
-				index={index}>
-				{provided => (
+			<Draggable draggableId={item._id} key={item._id} index={index}>
+				{(provided, snapshot) => (
 					<Ref innerRef={provided.innerRef}>
 						<Card
 							{...provided.draggableProps}
@@ -26,7 +24,10 @@ class Items extends Component {
 								</Card.Content>
 							) : (
 								// Card Item
-								<Card.Content>
+								<Card.Content
+									style={{
+										background: snapshot.isDragging ? '#ebf3f9' : 'white'
+									}}>
 									<strong>
 										{item.item_price
 											? item.item_name + ' - $' + item.item_price

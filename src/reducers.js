@@ -88,24 +88,22 @@ function categoriesByCity(state = {}, action) {
         [action.cityId]: categories(state[action.cityId], action)
       });
     case 'ITEM_REORDER':
-      const { destination, source, draggableId, selectedCityId } = action
-
+      const {
+				reordedItemsArr,
+				selectedCityId,
+				reorderedCategory
+      } = action
+      
       var elementPos = state[selectedCityId].categories
-				.map(function(x) {
-					return x._id
-				})
-				.indexOf(source.droppableId)
-
-      let category = state[selectedCityId].categories.filter(cat => cat._id === source.droppableId)
-      let newItems = Array.from(category[0].items)
-      let movedItem = newItems.filter(item => item._id === draggableId)
-      newItems.splice(source.index, 1)
-      newItems.splice(destination.index, 0, movedItem[0])
+      .map(function(cat) {
+        return cat._id
+      })
+      .indexOf(reorderedCategory[0]._id)
 
       let newCategory = {
-				...category[0],
-				items: newItems
-      }
+				...reorderedCategory[0],
+				items: reordedItemsArr
+			}
       
       let newState = {
 				...state[selectedCityId],
@@ -114,7 +112,8 @@ function categoriesByCity(state = {}, action) {
           newCategory,
           ...state[selectedCityId].categories.slice(elementPos+1)
         ]
-			}
+      }
+
       return Object.assign({}, state, {
         [selectedCityId]: newState
 			})
