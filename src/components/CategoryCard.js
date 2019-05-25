@@ -52,7 +52,7 @@ class CategoryCard extends Component {
 	}
 
 	render() {
-		const { dataToEdit, dispatch, isFetchingCategory, category, i, index } = this.props
+		const { dataToEdit, dispatch, isFetchingCategory, category, i } = this.props
 		return (
 			<Draggable draggableId={category._id} key={category._id} index={i}>
 				{(provided, snapshot) => (

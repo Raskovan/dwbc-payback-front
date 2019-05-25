@@ -12,7 +12,8 @@ import {
 	sendSignUpDetails,
 	getAllUsers,
 	updateUserToApi,
-	deleteUserFromApi
+	deleteUserFromApi,
+	updateCategoriesToApi
 } from './api'
 
 export function invalidateCity(cityId) {
@@ -543,3 +544,23 @@ export function categoryReorder(
 						selectedCityId
 					}
 				}
+
+export function updatingCityCategoriesOrder(cityId, categories) {
+	return {
+		type: 'CATEGORIES_REORDER_UPDATE',
+		cityId, 
+		categories
+	}
+}
+
+export function updateCategoriesOrder(cityId, categories) {
+	let data = {
+		categories: categories
+	}
+	return dispatch => {
+		dispatch(updatingCityCategoriesOrder(cityId, categories))
+		updateCategoriesToApi(cityId, data).then(json =>
+			dispatch(receiveCategories(cityId, json.categories))
+		)
+	}
+}

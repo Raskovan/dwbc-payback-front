@@ -10,7 +10,8 @@ import {
 	addItem,
 	editData,
 	addData,
-	categoryReorder
+	categoryReorder,
+	updateCategoriesOrder
 } from '../actions'
 import {
 	Card,
@@ -22,7 +23,7 @@ import {
 	Ref
 } from 'semantic-ui-react'
 
-class Categories extends React.PureComponent {
+class Categories extends Component {
 	chunkArray(myArray, size) {
 		var results = []
 		while (myArray.length) {
@@ -60,13 +61,9 @@ class Categories extends React.PureComponent {
 			movedCategory[0]
 		)
 
-		// dispatch(
-		// 	updateItemsInCategory(
-		// 		selectedCity.city_id,
-		// 		reorderedCategory[0],
-		// 		reordedItemsArr
-		// 	)
-		// )
+		dispatch(
+			updateCategoriesOrder(selectedCity.city_id, categoriesToReorderArr)
+		)
 
 		dispatch(categoryReorder(categoriesToReorderArr, selectedCity.city_id))
 	}
@@ -117,7 +114,7 @@ class Categories extends React.PureComponent {
 				<Droppable droppableId={`column+${index}`}>
 					{provided => (
 						<Ref innerRef={provided.innerRef}>
-							<Grid.Column {...provided.droppableProps}>
+							<div {...provided.droppableProps}>
 								{columnCat.map((eachCat, i) => {
 										return (
 												<CategoryCard
@@ -145,7 +142,7 @@ class Categories extends React.PureComponent {
 										)}
 									</div>
 								) : null}
-							</Grid.Column>
+							</div>
 						</Ref>
 					)}
 				</Droppable>
@@ -172,13 +169,23 @@ class Categories extends React.PureComponent {
 						{!isFetchingCategory && categories.length === 0 && (
 							<Grid.Column>{addCatButton}</Grid.Column>
 						)}
-						{eachColumn.map((column, i) => (
-							<DragDropContext
-								onDragEnd={result => this.onDragEnd(result, cardInRow)}
-								key={i}>
-								{column}
-							</DragDropContext>
-						))}
+						<DragDropContext
+							onDragEnd={result => this.onDragEnd(result, cardInRow)}>
+							{eachColumn.map((column, index) => (
+								<Droppable
+									droppableId='all-columns'
+									direction='horizontal'
+									type='column'
+									key={index}>
+									{provided => (
+										<Grid.Column {...provided.droppableProps}>
+											<Ref innerRef={provided.innerRef}>{column}</Ref>
+											{provided.placeholder}
+										</Grid.Column>
+									)}
+								</Droppable>
+							))}
+						</DragDropContext>
 					</Grid.Row>
 				</Grid>
 			</Container>

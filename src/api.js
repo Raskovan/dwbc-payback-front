@@ -18,6 +18,14 @@ export function fetchCategoryFromApi(cityId) {
 	}).then(response => response.json())
 }
 
+export function updateCategoriesToApi(cityId, data) {
+	return fetch(process.env.REACT_APP_API_HOST + `/api/v1/cities/${cityId}`, {
+		method: 'PUT',
+		body: JSON.stringify(data),
+		headers: HeaderMenu
+	}).then(response => response.json())
+}
+
 export function saveCategoryToApi(cityId, data) {
 	return fetch(
 		process.env.REACT_APP_API_HOST + `/api/v1/cities/${cityId}/categories`,
