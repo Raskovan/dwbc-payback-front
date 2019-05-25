@@ -81,45 +81,51 @@ function cities(
 
 function categoriesByCity(state = {}, action) {
   switch (action.type) {
-    case 'INVALIDATE_CITY':
-    case 'RECEIVE_CATEGORIES':
-    case 'REQUEST_CATEGORIES':
-      return Object.assign({}, state, {
-        [action.cityId]: categories(state[action.cityId], action)
-      });
-    case 'ITEM_REORDER':
-      const {
-				reordedItemsArr,
-				selectedCityId,
-				reorderedCategory
-      } = action
-      
-      var elementPos = state[selectedCityId].categories
-      .map(function(cat) {
-        return cat._id
-      })
-      .indexOf(reorderedCategory[0]._id)
-
-      let newCategory = {
-				...reorderedCategory[0],
-				items: reordedItemsArr
-			}
-      
-      let newState = {
-				...state[selectedCityId],
-				categories: [
-					...state[selectedCityId].categories.slice(0, elementPos),
-          newCategory,
-          ...state[selectedCityId].categories.slice(elementPos+1)
-        ]
-      }
-
-      return Object.assign({}, state, {
-        [selectedCityId]: newState
+		case 'INVALIDATE_CITY':
+		case 'RECEIVE_CATEGORIES':
+		case 'REQUEST_CATEGORIES':
+			return Object.assign({}, state, {
+				[action.cityId]: categories(state[action.cityId], action)
 			})
-    default:
-      return state;
-  }
+		case 'ITEM_REORDER':
+
+			var elementPos = state[action.selectedCityId].categories
+				.map(function(cat) {
+					return cat._id
+				})
+				.indexOf(action.reorderedCategory[0]._id)
+
+			let newCategory = {
+				...action.reorderedCategory[0],
+				items: action.reordedItemsArr
+			}
+
+			let newState = {
+				...state[action.selectedCityId],
+				categories: [
+					...state[action.selectedCityId].categories.slice(0, elementPos),
+					newCategory,
+					...state[action.selectedCityId].categories.slice(elementPos + 1)
+				]
+			}
+
+			return Object.assign({}, state, {
+				[action.selectedCityId]: newState
+      })
+      
+		case 'CATEGORY_REORDER':
+			let { categoriesToReorderArr } = action
+      newState = {
+        ...state[action.selectedCityId],
+        categories: 
+					categoriesToReorderArr
+			}
+			return Object.assign({}, state, {
+				[action.selectedCityId]: newState
+			})
+		default:
+			return state
+	}
 }
 
 function dataToEdit(state = {}, action) {

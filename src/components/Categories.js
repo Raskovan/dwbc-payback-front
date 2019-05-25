@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import FormEdit from './FormEdit'
 import CategoryCard from './CategoryCard'
 import {
@@ -8,7 +9,8 @@ import {
 	updateCategory,
 	addItem,
 	editData,
-	addData
+	addData,
+	categoryReorder
 } from '../actions'
 import {
 	Card,
@@ -16,16 +18,57 @@ import {
 	Grid,
 	Header,
 	Container,
-	Loader
+	Loader,
+	Ref
 } from 'semantic-ui-react'
 
-class Categories extends Component {
+class Categories extends React.PureComponent {
 	chunkArray(myArray, size) {
 		var results = []
 		while (myArray.length) {
 			results.push(myArray.splice(0, size))
 		}
 		return results
+	}
+
+	onDragEnd = (result, cardInRow) => {
+		const { selectedCity, dispatch, categories } = this.props
+		const { destination, source, draggableId } = result
+
+		if (!destination) {
+			return
+		}
+
+		if (
+			destination.droppableId === source.droppableId &&
+			destination.index === source.index
+		) {
+			return
+		}
+
+		let categoriesToReorderArr = Array.from(categories)
+
+		let movedCategory = categoriesToReorderArr.filter(
+			category => category._id === draggableId
+		)
+		let columnNum = destination.droppableId.split('+')[1]
+
+		categoriesToReorderArr.splice(source.index, 1)
+		categoriesToReorderArr.splice(
+			destination.index + cardInRow * parseInt(columnNum),
+			0,
+			movedCategory[0]
+		)
+
+		// dispatch(
+		// 	updateItemsInCategory(
+		// 		selectedCity.city_id,
+		// 		reorderedCategory[0],
+		// 		reordedItemsArr
+		// 	)
+		// )
+
+		dispatch(categoryReorder(categoriesToReorderArr, selectedCity.city_id))
 	}
 
 	render() {
@@ -65,38 +108,48 @@ class Categories extends Component {
 				</Button>
 			)
 		}
-		// Splitting categories array into chunks of 3 
-		let countIndex = 0
+		// Splitting categories array into 3 columns
 		let cardInRow = Math.ceil(categories.length / 3)
 		let copyArray = [...categories]
 		let splitedArray = this.chunkArray(copyArray, cardInRow)
 		let eachColumn = splitedArray.map((columnCat, index) => {
-			return columnCat.map((eachCat, i) => {
-				countIndex++
-				if (index === splitedArray.length - 1 && i === columnCat.length - 1) {
-					return (
-						<div key={i}>
-							<CategoryCard
-								category={eachCat}
-								i={countIndex}
-							/>
-							{dataToEdit.newCategory ? (
-								<Card fluid>
-									<Card.Content>
-										<FormEdit />
-									</Card.Content>
-								</Card>
-							) : (
-								addCatButton
-							)}
-						</div>
-					)
-				} else {
-					return (
-						<CategoryCard category={eachCat} i={countIndex} key={i} />
-					)
-				}
-			})
+			return (
+				<Droppable droppableId={`column+${index}`}>
+					{provided => (
+						<Ref innerRef={provided.innerRef}>
+							<Grid.Column {...provided.droppableProps}>
+								{columnCat.map((eachCat, i) => {
+										return (
+												<CategoryCard
+													{...provided.droppableProps}
+													category={eachCat}
+													index={i}
+													key={i}
+													i={categories.findIndex(
+														element => element._id === eachCat._id
+													)}
+												/>
+										)
+								})}
+								{provided.placeholder}
+								{index === splitedArray.length - 1 ? (
+									<div>
+										{dataToEdit.newCategory ? (
+											<Card fluid>
+												<Card.Content>
+													<FormEdit />
+												</Card.Content>
+											</Card>
+										) : (
+											addCatButton
+										)}
+									</div>
+								) : null}
+							</Grid.Column>
+						</Ref>
+					)}
+				</Droppable>
+			)
 		})
 
 		let catHeader = selectedCity.city_name
@@ -115,11 +168,16 @@ class Categories extends Component {
 						</Grid.Column>
 					</Grid.Row>
 					<Grid.Row style={{ paddingTop: '0' }}>
+						{/* If there no categories show add button */}
 						{!isFetchingCategory && categories.length === 0 && (
 							<Grid.Column>{addCatButton}</Grid.Column>
 						)}
 						{eachColumn.map((column, i) => (
-							<Grid.Column key={i}>{column}</Grid.Column>
+							<DragDropContext
+								onDragEnd={result => this.onDragEnd(result, cardInRow)}
+								key={i}>
+								{column}
+							</DragDropContext>
 						))}
 					</Grid.Row>
 				</Grid>

@@ -532,3 +532,14 @@ export function itemsReorder(
 						selectedCityId
 					}
 				}
+
+export function categoryReorder(
+					categoriesToReorderArr,
+					selectedCityId
+				) {
+					return {
+						type: 'CATEGORY_REORDER',
+						categoriesToReorderArr,
+						selectedCityId
+					}
+				}
