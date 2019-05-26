@@ -59,7 +59,6 @@ class CategoryCard extends Component {
 					<Ref innerRef={provided.innerRef}>
 						<Card
 							{...provided.draggableProps}
-							{...provided.dragHandleProps}
 							fluid>
 							{category._id !== dataToEdit._id || dataToEdit.newCategory ? (
 								<Card.Content
@@ -95,7 +94,7 @@ class CategoryCard extends Component {
 											Delete
 										</Button>
 									</Button.Group>
-									<Card.Header>
+									<Card.Header {...provided.dragHandleProps}>
 										{category.category_price
 											? `${i + 1}. ${category.category_name} - $${
 													category.category_price
@@ -140,8 +139,7 @@ class CategoryCard extends Component {
 							) : null}
 
 							{!category.category_price ? (
-								<Card.Content
-									>
+								<Card.Content>
 									<Button
 										fluid
 										type='button'

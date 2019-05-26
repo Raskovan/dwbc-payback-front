@@ -111,21 +111,23 @@ class Categories extends Component {
 		let splitedArray = this.chunkArray(copyArray, cardInRow)
 		let eachColumn = splitedArray.map((columnCat, index) => {
 			return (
-				<Droppable droppableId={`column+${index}`}>
+				<Droppable droppableId={`column+${index}`} index={index}>
 					{provided => (
 						<Ref innerRef={provided.innerRef}>
 							<div {...provided.droppableProps}>
 								{columnCat.map((eachCat, i) => {
 										return (
-												<CategoryCard
-													{...provided.droppableProps}
-													category={eachCat}
-													index={i}
-													key={i}
-													i={categories.findIndex(
-														element => element._id === eachCat._id
-													)}
-												/>
+											<CategoryCard
+												{...provided.droppableProps}
+												{...provided.dragHandleProps}
+												category={eachCat}
+												index={i}
+												key={i}
+												i={categories.findIndex(
+													element =>
+														element._id === eachCat._id
+												)}
+											/>
 										)
 								})}
 								{provided.placeholder}
@@ -176,7 +178,8 @@ class Categories extends Component {
 									droppableId='all-columns'
 									direction='horizontal'
 									type='column'
-									key={index}>
+									key={index}
+									index={index}>
 									{provided => (
 										<Grid.Column {...provided.droppableProps}>
 											<Ref innerRef={provided.innerRef}>{column}</Ref>

@@ -14,10 +14,7 @@ class Items extends Component {
 			<Draggable draggableId={item._id} key={item._id} index={index}>
 				{(provided, snapshot) => (
 					<Ref innerRef={provided.innerRef}>
-						<Card
-							{...provided.draggableProps}
-							{...provided.dragHandleProps}
-							fluid>
+						<Card {...provided.draggableProps} fluid>
 							{dataToEdit._id === item._id && !dataToEdit.newCategory ? (
 								<Card.Content>
 									<FormEdit catId={this.props.category._id} />
@@ -28,7 +25,7 @@ class Items extends Component {
 									style={{
 										background: snapshot.isDragging ? '#ebf3f9' : 'white'
 									}}>
-									<strong>
+									<strong {...provided.dragHandleProps}>
 										{item.item_price
 											? item.item_name + ' - $' + item.item_price
 											: item.item_name}
