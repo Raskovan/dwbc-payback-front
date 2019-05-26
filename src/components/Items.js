@@ -67,11 +67,12 @@ Items.propTypes = {
 }
 
 function mapStateToProps(state) {
-	const { selectedCity, dataToEdit } = state
+	const { selectedCity, dataToEdit, error } = state
 
 	return {
 		cityId: selectedCity.city_id,
-		dataToEdit
+		dataToEdit,
+		error
 	}
 }
 

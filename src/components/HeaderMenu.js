@@ -39,7 +39,7 @@ class HeaderMenu extends Component {
 						fitted
 						as='h1'
 						style={{ fontWeight: '300' }}
-						content='PaiBack'
+						content='PeiBack'
 					/>
 					{/* Show menu on desktop */}
 					{user.loggedIn && (

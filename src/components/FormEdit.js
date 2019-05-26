@@ -68,7 +68,7 @@ class FormEdit extends Component {
 									? 'category_price'
 									: 'item_price'
 							}
-							type='text'
+							type='number'
 							value={dataToEdit.item_price || dataToEdit.category_price || ''}
 							onChange={e => dispatch(editDataOnChange(e))}
 						/>

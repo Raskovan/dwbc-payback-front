@@ -58,7 +58,7 @@ class LogIn extends Component {
 								duration={300}>
 								<div>
 									<Header as='h2' color='grey' style={{ margin: '20px' }}>
-										Sign in to PaiBack
+										Sign in to PeiBack
 									</Header>
 
 									<Form
