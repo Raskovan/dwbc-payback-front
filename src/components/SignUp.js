@@ -6,10 +6,18 @@ import {
 	handleSignUp,
 	fetchCitiesIfNeeded
 } from '../actions'
-import { Grid, Form, Header, Button } from 'semantic-ui-react'
+import { Grid, Form, Header, Button, Icon } from 'semantic-ui-react'
 
 class SignUp extends Component {
+	state = {
+		showAddCity: false
+	}
 
+	handleAddCityClick() {
+		this.setState({
+			showAddCity: !this.state.showAddCity
+		})
+	}
 	componentDidMount() {
 		const { dispatch, match } = this.props
 		dispatch(fetchCitiesIfNeeded(match.params.name))
@@ -58,20 +66,30 @@ class SignUp extends Component {
 										onChange={e => dispatch(editDataOnChange(e))}
 									/>
 								</Form.Field>
+								{!this.state.showAddCity ? (
+									<Form.Field>
+										{/* <label>Select a city:</label> */}
+										<Picker />
+									</Form.Field>
+								) : null}
 								<Form.Field>
-									{/* <label>Select a city:</label> */}
-									<Picker />
+									<label onClick={()=>this.handleAddCityClick()} style={{color: 'grey'}}>
+										<Icon name={this.state.showAddCity ? 'minus square' : 'plus square'} color='grey'/>
+										add a new city
+									</label>
 								</Form.Field>
-								<Form.Field>
-									<label>...or add a new city:</label>
-									<input
-										name='city'
-										type='text'
-										placeholder='Add a city'
-										value={dataToEdit.city ? dataToEdit.city : ''}
-										onChange={e => dispatch(editDataOnChange(e))}
-									/>
-								</Form.Field>
+								{this.state.showAddCity ? (
+									<Form.Field>
+										<input
+											name='city'
+											type='text'
+											placeholder='Add a city'
+											value={dataToEdit.city ? dataToEdit.city : ''}
+											onChange={e => dispatch(editDataOnChange(e))}
+										/>
+									</Form.Field>
+								) : null}
+
 								<Button fluid size='big' type='submit' value='Request'>
 									Request Access
 								</Button>

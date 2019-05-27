@@ -1,7 +1,7 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 
 function selectedCity(state = {}, action) {
-  switch (action.type) {
+	switch (action.type) {
 		case 'SELECT_CITY':
 			return Object.assign({}, state, {
 				city_id:
@@ -13,74 +13,74 @@ function selectedCity(state = {}, action) {
 						? action.cityObj.city_name
 						: ''
 			})
-    case 'LOG_OUT':
-      return Object.assign({}, state, {
-        city_id: '',
-        city_name: ''
-      })
+		case 'LOG_OUT':
+			return Object.assign({}, state, {
+				city_id: '',
+				city_name: ''
+			})
 		default:
 			return state
 	}
 }
 
 function categories(
-  state = {
-    isFetchingCategory: false,
-    didInvalidateCategory: false,
-    categories: []
-  },
-  action
+	state = {
+		isFetchingCategory: false,
+		didInvalidateCategory: false,
+		categories: []
+	},
+	action
 ) {
-  switch (action.type) {
-    case 'INVALIDATE_CITY':
-      return Object.assign({}, state, {
-        didInvalidateCategory: true
-      });
-    case 'REQUEST_CATEGORIES':
-      return Object.assign({}, state, {
-        isFetchingCategory: true,
-        didInvalidateCategory: false
-      });
-    case 'RECEIVE_CATEGORIES':
-    return Object.assign({}, state, {
-      isFetchingCategory: false,
-      didInvalidateCategory: false,
-      categories: action.categories,
-      lastUpdatedCategory: action.receivedAt
-    });
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case 'INVALIDATE_CITY':
+			return Object.assign({}, state, {
+				didInvalidateCategory: true
+			})
+		case 'REQUEST_CATEGORIES':
+			return Object.assign({}, state, {
+				isFetchingCategory: true,
+				didInvalidateCategory: false
+			})
+		case 'RECEIVE_CATEGORIES':
+			return Object.assign({}, state, {
+				isFetchingCategory: false,
+				didInvalidateCategory: false,
+				categories: action.categories,
+				lastUpdatedCategory: action.receivedAt
+			})
+		default:
+			return state
+	}
 }
 
 function cities(
-  state = {
-    isFetchingCities: false,
-    didInvalidateCities: false,
-    cityList: []
-  },
-  action
+	state = {
+		isFetchingCities: false,
+		didInvalidateCities: false,
+		cityList: []
+	},
+	action
 ) {
-  switch (action.type) {
-    case 'REQUEST_CITIES':
-      return Object.assign({}, state, {
-        isFetchingCities: true,
-        didInvalidateCities: false
-      });
-    case 'RECEIVE_CITIES':
-      return Object.assign({}, state, {
-        isFetchingCities: false,
-        didInvalidateCities: false,
-        cityList: action.cityList,
-        lastUpdatedCities: action.receivedAt,
-      });
-    default:
-      return state;
-  }
+	switch (action.type) {
+		case 'REQUEST_CITIES':
+			return Object.assign({}, state, {
+				isFetchingCities: true,
+				didInvalidateCities: false
+			})
+		case 'RECEIVE_CITIES':
+			return Object.assign({}, state, {
+				isFetchingCities: false,
+				didInvalidateCities: false,
+				cityList: action.cityList,
+				lastUpdatedCities: action.receivedAt
+			})
+		default:
+			return state
+	}
 }
 
 function categoriesByCity(state = {}, action) {
-  switch (action.type) {
+	switch (action.type) {
 		case 'INVALIDATE_CITY':
 		case 'RECEIVE_CATEGORIES':
 		case 'REQUEST_CATEGORIES':
@@ -88,7 +88,6 @@ function categoriesByCity(state = {}, action) {
 				[action.cityId]: categories(state[action.cityId], action)
 			})
 		case 'ITEM_REORDER':
-
 			var elementPos = state[action.selectedCityId].categories
 				.map(function(cat) {
 					return cat._id
@@ -111,14 +110,13 @@ function categoriesByCity(state = {}, action) {
 
 			return Object.assign({}, state, {
 				[action.selectedCityId]: newState
-      })
-      
+			})
+
 		case 'CATEGORY_REORDER':
 			let { categoriesToReorderArr } = action
-      newState = {
-        ...state[action.selectedCityId],
-        categories: 
-					categoriesToReorderArr
+			newState = {
+				...state[action.selectedCityId],
+				categories: categoriesToReorderArr
 			}
 			return Object.assign({}, state, {
 				[action.selectedCityId]: newState
@@ -129,26 +127,28 @@ function categoriesByCity(state = {}, action) {
 }
 
 function dataToEdit(state = {}, action) {
-  switch (action.type) {
-    case 'EDIT_DATA':
-    case 'ADD_DATA':
-    case 'CLEAR_DATA':
-      state = {}
-      return Object.assign({}, state, action.data)
-    case 'ON_CHANGE_DATA':
-      // if (!action.event.target.value) {
-      //   let deletedKey = Object.assign({}, state)
-      //   delete deletedKey[action.event.target.name]
-      //   return deletedKey
-      // } else {
-				return Object.assign({}, state, {
-					[action.event.target.name]: action.event.target.value
-				})
-      // }
-    case 'LOG_IN':
-      return Object.assign({})
-    case 'SIGN_UP':
-      return Object.assign({}, state)
+	switch (action.type) {
+		case 'EDIT_DATA':
+		case 'ADD_DATA':
+		case 'CLEAR_DATA':
+			if (!action.data || (!action.data.city && action.data.city !== '')) {
+				state = {}
+			} 
+			return Object.assign({}, state, action.data)
+		case 'ON_CHANGE_DATA':
+			// if (!action.event.target.value) {
+			//   let deletedKey = Object.assign({}, state)
+			//   delete deletedKey[action.event.target.name]
+			//   return deletedKey
+			// } else {
+			return Object.assign({}, state, {
+				[action.event.target.name]: action.event.target.value
+			})
+		// }
+		case 'LOG_IN':
+			return Object.assign({})
+		case 'SIGN_UP':
+			return Object.assign({}, state)
 		default:
 			return state
 	}
@@ -156,15 +156,16 @@ function dataToEdit(state = {}, action) {
 
 function user(
 	state = {
-      loading: false,
-      loggedIn: false,
-      is_approved: false
-	}, action) {
+		loading: false,
+		loggedIn: false,
+		is_approved: false
+	},
+	action
+) {
 	switch (action.type) {
-
-    case 'LOGED_IN':
-    localStorage.setItem('token', action.userObj.token)
-    return {
+		case 'LOGED_IN':
+			localStorage.setItem('token', action.userObj.token)
+			return {
 				...state,
 				loading: false,
 				loggedIn: true,
@@ -176,9 +177,9 @@ function user(
 				is_admin: action.userObj.user.is_admin
 			}
 
-      case 'LOG_OUT':
-      localStorage.removeItem('token')
-      return {
+		case 'LOG_OUT':
+			localStorage.removeItem('token')
+			return {
 				...state,
 				loading: false,
 				loggedIn: false,
@@ -186,9 +187,9 @@ function user(
 				token: undefined
 			}
 
-      case 'SIGNUP_USER':
-      localStorage.setItem('token', action.payload.token)
-      return {
+		case 'SIGNUP_USER':
+			localStorage.setItem('token', action.payload.token)
+			return {
 				...state,
 				user: {
 					loading: false,
@@ -196,47 +197,46 @@ function user(
 					username: action.payload.user,
 					token: action.payload.token
 				}
-      }
-      
-      case 'GETTING_USER':
-      return {
-        ...state,
-        loading: true
-      }
+			}
+
+		case 'GETTING_USER':
+			return {
+				...state,
+				loading: true
+			}
 		default:
 			return state
 	}
 }
 
-function allUsers(state=[], action) {
-  switch(action.type) {
-    case 'RECIEVE_USERS':
-    return {
-      ...state,
-      users: action.users
-    }
-    default:
-    return state
-  }
+function allUsers(state = [], action) {
+	switch (action.type) {
+		case 'RECIEVE_USERS':
+			return {
+				...state,
+				users: action.users
+			}
+		default:
+			return state
+	}
 }
 
-function error(state={}, action){
-  switch(action.type) {
-    case 'API_ERROR':
-      return {
-        ...state,
-        message: action.message
-      }
-    case 'CLEAR_ERROR':
-      return {
-        ...state,
-        message: ''
-      }
-    default:
-      return state
-  }
+function error(state = {}, action) {
+	switch (action.type) {
+		case 'API_ERROR':
+			return {
+				...state,
+				message: action.message
+			}
+		case 'CLEAR_ERROR':
+			return {
+				...state,
+				message: ''
+			}
+		default:
+			return state
+	}
 }
-
 
 const rootReducer = combineReducers({
 	selectedCity,
@@ -248,4 +248,4 @@ const rootReducer = combineReducers({
 	error
 })
 
-export default rootReducer;
+export default rootReducer

@@ -405,6 +405,14 @@ export function logOut() {
 	}
 }
 
+function cityExists(state, loginObj){
+	if (loginObj.city){
+		let foundCity = state.cities.cityList.filter(city => city.city_name === loginObj.city)
+		if (foundCity.length > 0) return true
+		else return false
+	} else return false
+}
+
 export function handleSignUp(loginObj, history) {
 	if (
 		loginObj.email &&
@@ -417,18 +425,27 @@ export function handleSignUp(loginObj, history) {
 			password: loginObj.password,
 			city: loginObj.city ? loginObj.city : loginObj.cityId
 		}
-		return dispatch => {
-			dispatch(signingUp(loginObj))
-			sendSignUpDetails(data).then(json => {
-				if (json.message) {
-					dispatch(errorHandling(json.message))
-					dispatch(clearError())
-				} else {
-          dispatch(errorHandling('Request has been sent. Sit tight!'))
-					dispatch(clearError())
-        }
-			})
-			history.push('/login')
+		return (dispatch, getState) => {
+			if (!cityExists(getState(), loginObj)){
+				dispatch(signingUp(loginObj))
+				sendSignUpDetails(data).then(json => {
+					if (json.message) {
+						dispatch(errorHandling(json.message))
+						dispatch(clearError())
+					} else {
+						dispatch(errorHandling('Request has been sent. Sit tight!'))
+						dispatch(clearError())
+					}
+				})
+				history.push('/login')
+			} else {
+					data = {city: ''}
+					dispatch(clearData(data))
+					dispatch(errorHandling('The city exists, select it from the dropdown.'))
+					setTimeout(() => {
+						dispatch(clearError())
+					}, 1000)
+			}
 		}
 	} else {
 		return dispatch => {
