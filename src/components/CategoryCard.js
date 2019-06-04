@@ -88,7 +88,7 @@ function CategoryCard(props) {
 										content='Delete'
 										onClick={() =>
 											dispatch(
-												deleteCategory(this.props.cityId, category._id)
+												deleteCategory(props.cityId, category._id)
 											)
 										}
 									/>
