@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Items from './Items'
@@ -13,10 +13,19 @@ import {
 } from '../actions'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-class CategoryCard extends Component {
-	onDragEnd = result => {
+function CategoryCard(props) {
+	const {
+		selectedCity,
+		categories,
+		dataToEdit,
+		dispatch,
+		isFetchingCategory,
+		category,
+		i
+	} = props
+
+	function onDragEnd(result) {
 		// REODERING
-		const { selectedCity, dispatch, categories } = this.props
 		const { destination, source, draggableId } = result
 
 		if (!destination) {
@@ -44,130 +53,122 @@ class CategoryCard extends Component {
 				reorderedCategory[0],
 				reordedItemsArr
 			)
-		)
-
-		dispatch(
-			itemsReorder(reordedItemsArr, reorderedCategory, selectedCity.city_id)
-		)
+			)
+			dispatch(
+				itemsReorder(reordedItemsArr, reorderedCategory, selectedCity.city_id)
+			)
 	}
-
-	render() {
-		const { dataToEdit, dispatch, isFetchingCategory, category, i } = this.props
-		return (
-			<Draggable draggableId={category._id} key={category._id} index={i}>
-				{(provided, snapshot) => (
-					<Ref innerRef={provided.innerRef}>
-						<Card
-							{...provided.draggableProps}
-							fluid>
-							{category._id !== dataToEdit._id || dataToEdit.newCategory ? (
-								<Card.Content
-									style={{
-										background: '#f5f2f2',
-										opacity: isFetchingCategory ? 0.5 : 1
-									}}>
-									<Button.Group size='mini' floated='right'>
-										<Button
-											basic
-											color='green'
-											type='button'
-											onClick={() =>
-												dispatch(
-													editData(
-														Object.assign({}, category, {
-															newCategory: false
-														})
-													)
-												)
-											}>
-											Edit
-										</Button>
-										<Button
-											basic
-											color='red'
-											type='button'
-											onClick={() =>
-												dispatch(
-													deleteCategory(this.props.cityId, category._id)
-												)
-											}>
-											Delete
-										</Button>
-									</Button.Group>
-									<Card.Header {...provided.dragHandleProps}>
-										{category.category_price
-											? `${i + 1}. ${category.category_name} - $${
-													category.category_price
-											  }`
-											: `${i + 1}. ${category.category_name}`}
-									</Card.Header>
-								</Card.Content>
-							) : (
-								<Card.Content>
-									<FormEdit />
-								</Card.Content>
-							)}
-							{/* Items in Category */}
-							{category.items.length > 0 ? (
-								<DragDropContext onDragEnd={this.onDragEnd}>
-									<Droppable droppableId={category._id}>
-										{provided => (
-											<Ref innerRef={provided.innerRef}>
-												<Card.Content {...provided.droppableProps}>
-													{category.items.map((item, i) => (
-														<Items
-															{...provided.droppableProps}
-															item={item}
-															index={i}
-															key={i}
-															category={category}
-														/>
-													))}
-													{provided.placeholder}
-												</Card.Content>
-											</Ref>
-										)}
-									</Droppable>
-								</DragDropContext>
-							) : null}
-
-							{category._id === dataToEdit.cat_id &&
-							!dataToEdit.newCategory ? (
-								<Card.Content>
-									<FormEdit catId={dataToEdit.cat_id} />
-								</Card.Content>
-							) : null}
-
-							{!category.category_price ? (
-								<Card.Content>
+	return (
+		<Draggable draggableId={category._id} key={category._id} index={i}>
+			{(provided, snapshot) => (
+				<Ref innerRef={provided.innerRef}>
+					<Card {...provided.draggableProps} fluid>
+						{category._id !== dataToEdit._id || dataToEdit.newCategory ? (
+							<Card.Content
+								style={{
+									background: '#f5f2f2',
+									opacity: isFetchingCategory ? 0.5 : 1
+								}}>
+								<Button.Group size='mini' floated='right'>
 									<Button
-										fluid
+										basic
+										color='green'
 										type='button'
+										content='Edit'
 										onClick={() =>
 											dispatch(
-												editData({
-													newCategory: false,
-													cat_id: category._id,
-													item_name: '',
-													item_price: ''
-												})
+												editData(category)
 											)
-										}>
-										Add Item
-									</Button>
-								</Card.Content>
-							) : null}
-						</Card>
-					</Ref>
-				)}
-			</Draggable>
-		)
-	}
+										}
+									/>
+									<Button
+										basic
+										color='red'
+										type='button'
+										content='Delete'
+										onClick={() =>
+											dispatch(
+												deleteCategory(this.props.cityId, category._id)
+											)
+										}
+									/>
+								</Button.Group>
+								<Card.Header {...provided.dragHandleProps}>
+									{category.category_price
+										? `${i + 1}. ${category.category_name} - $${
+												category.category_price
+										  }`
+										: `${i + 1}. ${category.category_name}`}
+								</Card.Header>
+							</Card.Content>
+						) : (
+							<Card.Content>
+								<FormEdit />
+							</Card.Content>
+						)}
+						{/* Items in Category */}
+						{category.items.length > 0 ? (
+							<DragDropContext onDragEnd={onDragEnd}>
+								<Droppable droppableId={category._id}>
+									{provided => (
+										<Ref innerRef={provided.innerRef}>
+											<Card.Content {...provided.droppableProps}>
+												{category.items.map((item, i) => (
+													<Items
+														{...provided.droppableProps}
+														item={item}
+														index={i}
+														key={i}
+														category={category}
+													/>
+												))}
+												{provided.placeholder}
+											</Card.Content>
+										</Ref>
+									)}
+								</Droppable>
+							</DragDropContext>
+						) : null}
+
+						{category._id === dataToEdit.cat_id && !dataToEdit.newCategory ? (
+							<Card.Content>
+								<FormEdit catId={dataToEdit.cat_id} />
+							</Card.Content>
+						) : null}
+
+						{!category.category_price ? (
+							<Card.Content>
+								<Button
+									fluid
+									type='button'
+									content='Add Item'
+									onClick={() =>
+										dispatch(
+											editData({
+												newCategory: false,
+												cat_id: category._id,
+												item_name: '',
+												item_price: ''
+											})
+										)
+									}
+								/>
+							</Card.Content>
+						) : null}
+					</Card>
+				</Ref>
+			)}
+		</Draggable>
+	)
 }
 
 CategoryCard.propTypes = {
 	categories: PropTypes.array.isRequired,
-	dispatch: PropTypes.func.isRequired
+	dispatch: PropTypes.func.isRequired,
+	selectedCity: PropTypes.object.isRequired,
+	dataToEdit: PropTypes.object.isRequired,
+	category: PropTypes.object.isRequired,
+	isFetchingCategory: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {

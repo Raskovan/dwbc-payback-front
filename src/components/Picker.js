@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -7,78 +7,78 @@ import {
 	selectCity,
 	editDataOnChange
 } from '../actions'
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react'
 
-class Picker extends Component {
-	constructor(props) {
-		super(props)
-		this.handleChange = this.handleChange.bind(this)
-	}
+function Picker(props) {
+	const { dispatch, isFetchingCities, allCities, selectedCity } = props
 
-	handleChange(event, data) {
-		// console.log('object', event.target.value, data)
-		if (this.props.match.path === '/signup'){
+	const handleChange = (event, data) => {
+		//event and data are semantic specs passed from onChange
+		if (props.match.path === '/signup') {
 			let combinedEvent = {
-				target: data
+				target: {
+					name: data.name,
+					value: data.value
+				}
 			}
-			const { dispatch } = this.props
 			dispatch(editDataOnChange(combinedEvent))
 		} else {
 			let nextCity
-			for (let i = 0; i < this.props.allCities.length; i++) {
-				if (this.props.allCities[i].city_id === data.value) {
-					nextCity = this.props.allCities[i]
+			for (let i = 0; i < props.allCities.length; i++) {
+				if (props.allCities[i].city_id === data.value) {
+					nextCity = props.allCities[i]
 				}
 			}
-			this.props.dispatch(selectCity(nextCity))
+			dispatch(selectCity(nextCity))
 			if (nextCity) {
-				this.props.dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
-				this.props.history.push(
+				dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
+				props.history.push(
 					`/${nextCity.city_name.replace(' ', '_').toLowerCase()}`
 				)
-			} else this.props.history.push(`/`)
+			} else props.history.push(`/`)
 		}
 	}
 
-	render() {
-		const { isFetchingCities, allCities, selectedCity } = this.props
-		let cityOptions = allCities.map(city => ({
-			value: city.city_id,
-			key: city._id,
-			text: city.city_name
-		}))
-		let fluidValue = false
-		if (this.props.match.path === '/signup') {
-			fluidValue = true
-		}
-		return (
+	let cityOptions = allCities.map(city => ({
+		value: city.city_id,
+		key: city._id,
+		text: city.city_name
+	}))
+	let fluidValue = false
+	if (props.match.path === '/signup') {
+		fluidValue = true
+	}
+	return (
+		<div>
 			<div>
-				<div>
-					{isFetchingCities && selectedCity && allCities.length === 0 && (
-						<h2>Loading...</h2>
-					)}
-					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-						<Dropdown
-							name='cityId'
-							placeholder={!isFetchingCities && allCities.length === 0 ? 'Empty' : 'Select a city to manage'}
-							fluid={fluidValue}
-							selection
-							clearable
-							value={selectedCity.city_id}
-							onChange={this.handleChange}
-							options={cityOptions}
-						/>
-					</div>
+				{isFetchingCities && selectedCity && allCities.length === 0 && (
+					<h2>Loading...</h2>
+				)}
+				<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
+					<Dropdown
+						name='cityId'
+						placeholder={
+							!isFetchingCities && allCities.length === 0
+								? 'Empty'
+								: 'Select a city to manage'
+						}
+						fluid={fluidValue}
+						selection
+						clearable
+						value={selectedCity.city_id}
+						onChange={handleChange}
+						options={cityOptions}
+					/>
 				</div>
 			</div>
-		)
-	}
+		</div>
+	)
 }
 
 Picker.propTypes = {
 	selectedCity: PropTypes.object.isRequired,
 	allCities: PropTypes.array.isRequired,
-	isFetchingCities: PropTypes.bool.isRequired,
+	isFetchingCities: PropTypes.bool.isRequired
 }
 
 function mapStateToProps(state) {

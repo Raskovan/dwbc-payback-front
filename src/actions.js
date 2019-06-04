@@ -1,20 +1,4 @@
-import {
-	fetchCategoryFromApi,
-	saveCategoryToApi,
-	fetchCityListFromApi,
-	deleteCategoryFromApi,
-	updateCategoryToApi,
-	addItemToCategoryInApi,
-	deleteItemInCategoryInApi,
-	updateItemInCategoryInApi,
-	sendLoginDetails,
-	getUserFromApi,
-	sendSignUpDetails,
-	getAllUsers,
-	updateUserToApi,
-	deleteUserFromApi,
-	updateCategoriesToApi
-} from './api'
+import * as api from './api'
 
 export function invalidateCity(cityId) {
 	return {
@@ -42,9 +26,9 @@ function requestCategories(cityId) {
 function fetchCategories(cityId) {
 	return dispatch => {
 		dispatch(requestCategories(cityId))
-		fetchCategoryFromApi(cityId).then(json =>
-			dispatch(receiveCategories(cityId, json))
-		)
+		api
+			.fetchCategoryFromApi(cityId)
+			.then(json => dispatch(receiveCategories(cityId, json)))
 	}
 }
 
@@ -70,13 +54,11 @@ export function fetchCategoriesForCityIfNeeded(cityId) {
 	}
 }
 
-function savingCategory(cityId, catName) {
-	return {
-		type: 'SAVE_CATEGORY',
-		cityId,
-		catName
-	}
-}
+const savingCategory = (cityId, catName) => ({
+	type: 'SAVE_CATEGORY',
+	cityId,
+	catName
+})
 
 function saveCategory(cityId, catName, catPrice) {
 	let data = {
@@ -85,9 +67,9 @@ function saveCategory(cityId, catName, catPrice) {
 	}
 	return dispatch => {
 		dispatch(savingCategory(cityId, catName))
-		saveCategoryToApi(cityId, data).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.saveCategoryToApi(cityId, data)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -131,9 +113,11 @@ export function addData(data) {
 }
 
 export function editDataOnChange(event) {
+	// event.persist()
 	return {
 		type: 'ON_CHANGE_DATA',
-		event
+		name: event.target.name,
+		value: event.target.value
 	}
 }
 
@@ -161,7 +145,8 @@ function receiveCities(allCities) {
 function fetchCities(matchName) {
 	return dispatch => {
 		dispatch(requestCities())
-		fetchCityListFromApi()
+		api
+			.fetchCityListFromApi()
 			.then(allCities => dispatch(receiveCities(allCities)))
 			.then(allCities => dispatch(selectingCity(allCities, matchName)))
 	}
@@ -205,9 +190,9 @@ function deletingCategory() {
 export function deleteCategory(cityId, catId) {
 	return dispatch => {
 		dispatch(deletingCategory())
-		deleteCategoryFromApi(cityId, catId).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.deleteCategoryFromApi(cityId, catId)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -226,9 +211,9 @@ export function updateCategory(cityId, category) {
 	}
 	return dispatch => {
 		dispatch(updatingCategory(cityId, category.category_name))
-		updateCategoryToApi(cityId, category, data).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.updateCategoryToApi(cityId, category, data)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -238,9 +223,9 @@ export function updateItemsInCategory(cityId, category, newItems) {
 	}
 	return dispatch => {
 		dispatch(updatingCategory(cityId, category.category_name))
-		updateCategoryToApi(cityId, category, data).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.updateCategoryToApi(cityId, category, data)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -255,9 +240,9 @@ function addingItem(cityId, catName) {
 export function addItem(cityId, catId, itemObj) {
 	return dispatch => {
 		dispatch(addingItem(cityId, catId))
-		addItemToCategoryInApi(cityId, catId, itemObj).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.addItemToCategoryInApi(cityId, catId, itemObj)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -270,9 +255,9 @@ function deletingItem() {
 export function deleteItem(cityId, catId, itemId) {
 	return dispatch => {
 		dispatch(deletingItem())
-		deleteItemInCategoryInApi(cityId, catId, itemId).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.deleteItemInCategoryInApi(cityId, catId, itemId)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
 
@@ -292,9 +277,9 @@ export function updateItem(cityId, catId, itemObj) {
 	}
 	return dispatch => {
 		dispatch(updatingItem(cityId, catId, itemObj))
-		updateItemInCategoryInApi(cityId, catId, itemObj, data).then(json =>
-			dispatch(fetchCategories(cityId))
-		)
+		api
+			.updateItemInCategoryInApi(cityId, catId, itemObj, data)
+			.then(json => dispatch(fetchCategories(cityId)))
 	}
 }
 
@@ -309,7 +294,8 @@ export function handleLogin(loginObj, history) {
 	}
 	return (dispatch, getState) => {
 		dispatch(loggingIn(loginObj.email))
-		sendLoginDetails(data)
+		api
+			.sendLoginDetails(data)
 			.then(data => {
 				if (data.message) {
 					dispatch(errorHandling(data.message))
@@ -377,7 +363,7 @@ function logedIn(userObj, history, city) {
 export function getUser(token) {
 	return dispatch => {
 		dispatch(gettingUser())
-		getUserFromApi(token).then(res => {
+		api.getUserFromApi(token).then(res => {
 			let userObj = {
 				user: {
 					username: res.username,
@@ -405,9 +391,11 @@ export function logOut() {
 	}
 }
 
-function cityExists(state, loginObj){
-	if (loginObj.city){
-		let foundCity = state.cities.cityList.filter(city => city.city_name === loginObj.city)
+function cityExists(state, loginObj) {
+	if (loginObj.city) {
+		let foundCity = state.cities.cityList.filter(
+			city => city.city_name === loginObj.city
+		)
 		if (foundCity.length > 0) return true
 		else return false
 	} else return false
@@ -426,9 +414,9 @@ export function handleSignUp(loginObj, history) {
 			city: loginObj.city ? loginObj.city : loginObj.cityId
 		}
 		return (dispatch, getState) => {
-			if (!cityExists(getState(), loginObj)){
+			if (!cityExists(getState(), loginObj)) {
 				dispatch(signingUp(loginObj))
-				sendSignUpDetails(data).then(json => {
+				api.sendSignUpDetails(data).then(json => {
 					if (json.message) {
 						dispatch(errorHandling(json.message))
 						dispatch(clearError())
@@ -439,12 +427,12 @@ export function handleSignUp(loginObj, history) {
 				})
 				history.push('/login')
 			} else {
-					data = {city: ''}
-					dispatch(clearData(data))
-					dispatch(errorHandling('The city exists, select it from the dropdown.'))
-					setTimeout(() => {
-						dispatch(clearError())
-					}, 1000)
+				data = { city: '' }
+				dispatch(clearData(data))
+				dispatch(errorHandling('The city exists, select it from the dropdown.'))
+				setTimeout(() => {
+					dispatch(clearError())
+				}, 1000)
 			}
 		}
 	} else {
@@ -477,12 +465,28 @@ function signingUp(user) {
 	}
 }
 
-export function fetchUsersIfNeeded() {
+export function fetchUsersIfNeeded(action) {
+	return (dispatch, getState) => {
+		if (shouldFetchUsers(getState(), action)) {
+			return dispatch(fetchUsers())
+		}
+	}
+}
+
+function fetchUsers() {
 	return dispatch => {
 		dispatch(fetchingUsers())
-		getAllUsers().then(users => {
+		api.getAllUsers().then(users => {
 			dispatch(recievedAllUsers(users))
 		})
+	}
+}
+
+function shouldFetchUsers(state, action) {
+	if (state.allUsers && state.allUsers.users && !action) {
+		return false
+	} else {
+		return true
 	}
 }
 
@@ -506,20 +510,22 @@ export function userUpdate(user, action) {
 				is_approved: !user.is_approved
 			}
 			dispatch(updatingUser(user.username))
-			updateUserToApi(user._id, data).then(json =>
-				dispatch(fetchUsersIfNeeded())
-			)
+			api
+				.updateUserToApi(user._id, data)
+				.then(json => dispatch(fetchUsersIfNeeded('update')))
 		} else if (action === 'delete') {
 			dispatch(deletingUser(user.username))
-			deleteUserFromApi(user._id).then(json => dispatch(fetchUsersIfNeeded()))
+			api
+				.deleteUserFromApi(user._id)
+				.then(json => dispatch(fetchUsersIfNeeded('delete')))
 		} else if (action === 'admin') {
 			let data = {
 				is_admin: !user.is_admin
 			}
 			dispatch(updatingUser(user.username))
-			updateUserToApi(user._id, data).then(json =>
-				dispatch(fetchUsersIfNeeded())
-			)
+			api
+				.updateUserToApi(user._id, data)
+				.then(json => dispatch(fetchUsersIfNeeded('admin')))
 		}
 	}
 }
@@ -540,32 +546,30 @@ function deletingUser(username) {
 
 //REORDERING ACTIONS
 export function itemsReorder(
-					reordedItemsArr,
-					reorderedCategory, selectedCityId
-				) {
-					return {
-						type: 'ITEM_REORDER',
-						reordedItemsArr,
-						reorderedCategory,
-						selectedCityId
-					}
-				}
+	reordedItemsArr,
+	reorderedCategory,
+	selectedCityId
+) {
+	return {
+		type: 'ITEM_REORDER',
+		reordedItemsArr,
+		reorderedCategory,
+		selectedCityId
+	}
+}
 
-export function categoryReorder(
-					categoriesToReorderArr,
-					selectedCityId
-				) {
-					return {
-						type: 'CATEGORY_REORDER',
-						categoriesToReorderArr,
-						selectedCityId
-					}
-				}
+export function categoryReorder(categoriesToReorderArr, selectedCityId) {
+	return {
+		type: 'CATEGORY_REORDER',
+		categoriesToReorderArr,
+		selectedCityId
+	}
+}
 
 export function updatingCityCategoriesOrder(cityId, categories) {
 	return {
 		type: 'CATEGORIES_REORDER_UPDATE',
-		cityId, 
+		cityId,
 		categories
 	}
 }
@@ -576,8 +580,8 @@ export function updateCategoriesOrder(cityId, categories) {
 	}
 	return dispatch => {
 		dispatch(updatingCityCategoriesOrder(cityId, categories))
-		updateCategoriesToApi(cityId, data).then(json =>
-			dispatch(receiveCategories(cityId, json.categories))
-		)
+		api
+			.updateCategoriesToApi(cityId, data)
+			.then(json => dispatch(receiveCategories(cityId, json.categories)))
 	}
 }
