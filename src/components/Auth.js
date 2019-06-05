@@ -15,7 +15,7 @@ export default function(ComposedComponent) {
 			}
       if (token && !this.props.authenticated) {
 				dispatch(getUser(token))
-				dispatch(fetchCitiesIfNeeded())
+				// dispatch(fetchCitiesIfNeeded())
 			}
 		}
 
