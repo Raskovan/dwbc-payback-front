@@ -164,7 +164,7 @@ function selectingCity(allCities, matchName) {
 }
 
 function shouldFetchCities(state) {
-	if (state.cities.cityList.length === 0) {
+	if (!state.cities.cityList.length && !state.cities.isFetchingCities) {
 		return true
 	} else if (state.cities.isFetchingCities) {
 		return false
