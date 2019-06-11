@@ -363,19 +363,22 @@ function logedIn(userObj, history, city) {
 export function getUser(token) {
 	return dispatch => {
 		dispatch(gettingUser())
-		api.getUserFromApi(token).then(res => {
-			let userObj = {
-				user: {
-					username: res.username,
-					city_id: res.city_id,
-					city_name: res.city_name,
-					is_approved: res.is_approved,
-					is_admin: res.is_admin
-				},
-				token: token
-			}
-			dispatch(logedIn(userObj))
-		})
+		api
+			.getUserFromApi(token)
+			.then(res => {
+				let userObj = {
+					user: {
+						username: res.username,
+						city_id: res.city_id,
+						city_name: res.city_name,
+						is_approved: res.is_approved,
+						is_admin: res.is_admin
+					},
+					token: token
+				}
+				dispatch(logedIn(userObj))
+			})
+			.catch(err => dispatch(logOut()))
 	}
 }
 

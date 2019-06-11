@@ -58,7 +58,6 @@ function SignUp(props) {
 
 							<Form.Field>
 								<label
-									basic
 									onClick={() => handleAddCityClick(!showAddCity)}
 									style={{ color: 'grey', cursor: 'pointer' }}>
 									<Icon

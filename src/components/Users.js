@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchUsersIfNeeded, userUpdate } from '../actions'
 import UserCard from './UserCard'
-import { Header, Card, Container, Segment } from 'semantic-ui-react'
+import { Header, Card, Container, Segment, Loader } from 'semantic-ui-react'
 
 function Users(props) {
 	const { dispatch, allUsers } = props
@@ -27,6 +27,7 @@ function Users(props) {
 		<div>
 			<Segment basic style={{ height: '100%' }}>
 				<Container>
+					{userElements.length === 0 && <Loader />}
 					<Header as='h2' color='grey' content='Users' />
 					{userElements.length > 0 && (
 						<Card.Group doubling stackable itemsPerRow={3}>

@@ -5,10 +5,6 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import FormEdit from './FormEdit'
 import CategoryCard from './CategoryCard'
 import {
-	deleteCategory,
-	updateCategory,
-	addItem,
-	editData,
 	addData,
 	categoryReorder,
 	updateCategoriesOrder
@@ -213,11 +209,7 @@ function mapStateToProps(state) {
 		dataToEdit,
 		categories,
 		cityId: selectedCity.city_id,
-		deleteCategory,
 		isFetchingCategory,
-		updateCategory,
-		addItem,
-		editData,
 		selectedCity
 	}
 }

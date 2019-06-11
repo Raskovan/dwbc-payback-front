@@ -48,31 +48,28 @@ function Picker(props) {
 	if (props.match.path === '/signup') {
 		fluidValue = true
 	}
-	return (
-		<div>
+
+		return (
 			<div>
-				{isFetchingCities && selectedCity && allCities.length === 0 && (
-					<h2>Loading...</h2>
-				)}
-				<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-					<Dropdown
-						name='cityId'
-						placeholder={
-							!isFetchingCities && allCities.length === 0
-								? 'Empty'
-								: 'Select a city to manage'
-						}
-						fluid={fluidValue}
-						selection
-						clearable
-						value={selectedCity.city_id}
-						onChange={handleChange}
-						options={cityOptions}
-					/>
-				</div>
+					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
+						<Dropdown
+							loading = {isFetchingCities && selectedCity && allCities.length === 0 ? true : false}
+							name='cityId'
+							placeholder={
+								!isFetchingCities && allCities.length === 0
+									? 'Empty'
+									: 'Select a city to manage'
+							}
+							fluid={fluidValue}
+							selection
+							clearable
+							value={selectedCity.city_id}
+							onChange={handleChange}
+							options={cityOptions}
+						/>
+					</div>
 			</div>
-		</div>
-	)
+		)
 }
 
 Picker.propTypes = {
