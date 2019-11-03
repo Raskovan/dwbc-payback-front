@@ -1,6 +1,7 @@
 import React from 'react'
 import { logOut } from '../actions'
 import logo from '../assets/logo.svg'
+import '../styles/header-menu.css'
 import { withRouter, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -28,8 +29,8 @@ function HeaderMenu(props) {
 	}
 
 	return (
-		<div>
-			<Menu attached='top' borderless fluid style={{ background: '#e6e6e6' }}>
+		<React.Fragment>
+			<Menu attached='top' borderless fluid className='header-menu'>
 				<Menu.Item as={Link} to='/'>
 					<Image src={logo} alt='Logo' />
 				</Menu.Item>
@@ -37,7 +38,7 @@ function HeaderMenu(props) {
 					header
 					fitted
 					as='h1'
-					style={{ fontWeight: '300' }}
+					className='header-title'
 					content='PeiBack'
 				/>
 				{/* Show menu on desktop */}
@@ -121,12 +122,12 @@ function HeaderMenu(props) {
 					basic
 					size='tiny'
 					style={{ paddingTop: '0', marginTop: '5px' }}>
-					<Header as='h5' floated='right' style={{ fontWeight: '300' }}>
+					<Header as='h5' floated='right' className='header-user'>
 						Logged in as {user.username}
 					</Header>
 				</Segment>
 			)}
-		</div>
+		</React.Fragment>
 	)
 }
 

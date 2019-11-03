@@ -13,7 +13,7 @@ function SignUp(props) {
 	})
 
 	return (
-		<div style={{ height: '100%' }}>
+		<React.Fragment>
 			{error.message && alert(error.message)}
 			<Grid
 				stackable
@@ -90,7 +90,7 @@ function SignUp(props) {
 					</Grid.Column>
 				</Grid.Row>
 			</Grid>
-		</div>
+		</React.Fragment>
 	)
 }
 

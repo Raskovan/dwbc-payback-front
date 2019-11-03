@@ -1,11 +1,12 @@
 import React from 'react'
 import { Card, Button } from 'semantic-ui-react'
+import '../styles/categories.css'
 
 export default function UserCard(props) {
 	const { user, handleClick } = props
 	let approveButtonColor = user.is_approved ? 'red' : 'green'
 	return (
-		<Card>
+		<Card className='item_color'>
 			<Card.Content>
 				<Button
 					basic={!user.is_admin}

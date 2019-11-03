@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Items from './Items'
 import FormEdit from './FormEdit'
 import { Card, Button, Ref } from 'semantic-ui-react'
+import '../styles/categories.css'
 import {
 	deleteCategory,
 	updateCategory,
@@ -53,20 +54,21 @@ function CategoryCard(props) {
 				reorderedCategory[0],
 				reordedItemsArr
 			)
-			)
-			dispatch(
-				itemsReorder(reordedItemsArr, reorderedCategory, selectedCity.city_id)
-			)
+		)
+		dispatch(
+			itemsReorder(reordedItemsArr, reorderedCategory, selectedCity.city_id)
+		)
 	}
+
 	return (
 		<Draggable draggableId={category._id} key={category._id} index={i}>
 			{(provided, snapshot) => (
 				<Ref innerRef={provided.innerRef}>
-					<Card {...provided.draggableProps} fluid>
+					<Card {...provided.draggableProps} fluid className='card_color'>
 						{category._id !== dataToEdit._id || dataToEdit.newCategory ? (
 							<Card.Content
+								className='header_color'
 								style={{
-									background: '#f5f2f2',
 									opacity: isFetchingCategory ? 0.5 : 1
 								}}>
 								<Button.Group size='mini' floated='right'>
@@ -75,11 +77,7 @@ function CategoryCard(props) {
 										color='green'
 										type='button'
 										content='Edit'
-										onClick={() =>
-											dispatch(
-												editData(category)
-											)
-										}
+										onClick={() => dispatch(editData(category))}
 									/>
 									<Button
 										basic
@@ -87,9 +85,7 @@ function CategoryCard(props) {
 										type='button'
 										content='Delete'
 										onClick={() =>
-											dispatch(
-												deleteCategory(props.cityId, category._id)
-											)
+											dispatch(deleteCategory(props.cityId, category._id))
 										}
 									/>
 								</Button.Group>
@@ -131,7 +127,7 @@ function CategoryCard(props) {
 						) : null}
 
 						{category._id === dataToEdit.cat_id && !dataToEdit.newCategory ? (
-							<Card.Content>
+							<Card.Content className='item_color'>
 								<FormEdit catId={dataToEdit.cat_id} />
 							</Card.Content>
 						) : null}

@@ -1,0 +1,17 @@
+@media (prefers-color-scheme: dark) {
+  .footer-menu {
+    background-color: #5b5b5b!important;
+    border: 0!important;
+    color: red;
+    border-top-color: #5b5b5b;
+    border-bottom-color: #5b5b5b;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .footer {
+    background-color: #e6e6e6!important;
+    color: red;
+    border-top-color: white;
+    border-bottom-color: white;
+  }
+}

@@ -29,8 +29,8 @@ function Picker(props) {
 					nextCity = props.allCities[i]
 				}
 			}
-			dispatch(selectCity(nextCity))
 			if (nextCity) {
+				dispatch(selectCity(nextCity))
 				dispatch(fetchCategoriesForCityIfNeeded(nextCity.city_id))
 				props.history.push(
 					`/${nextCity.city_name.replace(' ', '_').toLowerCase()}`
@@ -49,27 +49,27 @@ function Picker(props) {
 		fluidValue = true
 	}
 
-		return (
-			<div>
-					<div style={{ opacity: isFetchingCities ? 0.5 : 1 }}>
-						<Dropdown
-							loading = {isFetchingCities && selectedCity && allCities.length === 0 ? true : false}
-							name='cityId'
-							placeholder={
-								!isFetchingCities && allCities.length === 0
-									? 'Empty'
-									: 'Select a city to manage'
-							}
-							fluid={fluidValue}
-							selection
-							clearable
-							value={selectedCity.city_id}
-							onChange={handleChange}
-							options={cityOptions}
-						/>
-					</div>
-			</div>
-		)
+	return (
+			<Dropdown
+				loading={
+					isFetchingCities && selectedCity && allCities.length === 0
+						? true
+						: false
+				}
+				name='cityId'
+				placeholder={
+					!isFetchingCities && allCities.length === 0
+						? 'Empty'
+						: 'Select a city to manage'
+				}
+				fluid={fluidValue}
+				selection
+				clearable
+				value={selectedCity.city_id}
+				onChange={handleChange}
+				options={cityOptions}
+			/>
+	)
 }
 
 Picker.propTypes = {

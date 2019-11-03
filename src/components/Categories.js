@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import '../styles/categories.css'
+import '../styles/header-menu.css'
 import { connect } from 'react-redux'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import FormEdit from './FormEdit'
 import CategoryCard from './CategoryCard'
-import {
-	addData,
-	categoryReorder,
-	updateCategoriesOrder
-} from '../actions'
+import { addData, categoryReorder, updateCategoriesOrder } from '../actions'
 import {
 	Card,
 	Button,
@@ -72,6 +70,7 @@ class Categories extends Component {
 			isFetchingCategory,
 			selectedCity
 		} = this.props
+		let darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
 
 		let addCatButton
 		if (dataToEdit.newCategory) {
@@ -85,7 +84,7 @@ class Categories extends Component {
 		} else {
 			addCatButton = (
 				<Button
-					basic
+					basic={darkMode ? false : darkMode}
 					fluid
 					type='button'
 					onClick={() =>
@@ -112,26 +111,25 @@ class Categories extends Component {
 						<Ref innerRef={provided.innerRef}>
 							<div {...provided.droppableProps}>
 								{columnCat.map((eachCat, i) => {
-										return (
-											<CategoryCard
-												{...provided.droppableProps}
-												{...provided.dragHandleProps}
-												category={eachCat}
-												index={i}
-												key={i}
-												i={categories.findIndex(
-													element =>
-														element._id === eachCat._id
-												)}
-											/>
-										)
+									return (
+										<CategoryCard
+											{...provided.droppableProps}
+											{...provided.dragHandleProps}
+											category={eachCat}
+											index={i}
+											key={i}
+											i={categories.findIndex(
+												element => element._id === eachCat._id
+											)}
+										/>
+									)
 								})}
 								{provided.placeholder}
 								{index === splitedArray.length - 1 ? (
 									<div>
 										{dataToEdit.newCategory ? (
 											<Card fluid>
-												<Card.Content>
+												<Card.Content className='item_color'>
 													<FormEdit />
 												</Card.Content>
 											</Card>
@@ -157,13 +155,16 @@ class Categories extends Component {
 				<Grid columns={3} stackable style={{ margin: '0' }}>
 					<Grid.Row>
 						<Grid.Column>
-							<Header as='h2' color='grey'>
+							<Header
+								className='header-title'
+								as='h2'
+								color={darkMode ? 'white' : '#d5d5d5'}>
 								{catHeader}
 							</Header>
 						</Grid.Column>
 					</Grid.Row>
 					<Grid.Row style={{ paddingTop: '0' }}>
-						{/* If there no categories show add button */}
+						{/* If there are no categories show add button */}
 						{!isFetchingCategory && categories.length === 0 && (
 							<Grid.Column>{addCatButton}</Grid.Column>
 						)}

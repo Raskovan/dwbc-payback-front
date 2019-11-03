@@ -1,0 +1,28 @@
+@media (prefers-color-scheme: dark) {
+	.add-button {
+		background: white !important;
+	}
+	.card_color {
+		background-color: rgb(150, 150, 150) !important;
+	}
+	.header_color {
+		background: #cccccc !important;
+	}
+	.item_color {
+		background: #d6d6d6 !important;
+	}
+}
+@media (prefers-color-scheme: light) {
+	.header_color {
+		background: #f5f2f2 !important;
+	}
+	.item_color {
+		background: white !important;
+	}
+	.add-button {
+		background-color: #e6e6e6 !important;
+		color: red;
+		border-top-color: white;
+		border-bottom-color: white;
+	}
+}

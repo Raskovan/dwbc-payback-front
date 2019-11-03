@@ -44,8 +44,10 @@ class App extends Component {
 				let newCity = cities.cityList.find(city => {
 					return decodedName === city.city_name
 				})
-				// dispatch(selectCity(newCity))
-				if (newCity) dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+				if (newCity) {
+					dispatch(selectCity(newCity))
+					dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+				}
 			}
 		} else {
 			if (this.props.match.params.name === prevProps.match.params.name) {

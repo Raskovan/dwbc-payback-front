@@ -24,19 +24,17 @@ function Users(props) {
 		)
 	}
 	return (
-		<div>
-			<Segment basic style={{ height: '100%' }}>
-				<Container>
-					{userElements.length === 0 && <Loader />}
-					<Header as='h2' color='grey' content='Users' />
-					{userElements.length > 0 && (
-						<Card.Group doubling stackable itemsPerRow={3}>
-							{userElements}
-						</Card.Group>
-					)}
-				</Container>
-			</Segment>
-		</div>
+		<Segment basic style={{ height: '100%' }}>
+			<Container>
+				{userElements.length === 0 && <Loader />}
+				<Header as='h2' color='grey' content='Users' />
+				{userElements.length > 0 && (
+					<Card.Group doubling stackable itemsPerRow={3}>
+						{userElements}
+					</Card.Group>
+				)}
+			</Container>
+		</Segment>
 	)
 }
 

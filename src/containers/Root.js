@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import configureStore from '../configureStore'
 import App from './App'
+import '../styles/footer.css'
 import LogIn from '../components/LogIn'
 import SignUp from '../components/SignUp'
 import Auth from '../components/Auth'
@@ -17,20 +18,21 @@ export default class Root extends Component {
 		function createPage(Component) {
 			return function(props) {
 				return (
-					<div style={{ height: '100%' }}>
+					<React.Fragment>
 						<HeaderMenu />
 						<Component {...props} />
 						<Menu
 							borderless
 							fixed='bottom'
 							widths={3}
+							className='footer-menu'
 							style={{
 								borderTopColor: 'white',
 								borderBottomColor: 'white'
 							}}>
 							<Menu.Item style={{ color: 'red' }}>ཀ</Menu.Item>
 						</Menu>
-					</div>
+					</React.Fragment>
 				)
 			}
 		}

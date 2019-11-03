@@ -5,23 +5,26 @@ import { deleteItem, editData } from '../actions'
 import FormEdit from './FormEdit'
 import { Card, Button, Ref } from 'semantic-ui-react'
 import { Draggable } from 'react-beautiful-dnd'
+import '../styles/categories.css'
 
 function Items(props) {
 	const { dispatch, dataToEdit, cityId, item, index } = props
+
 	return (
 		<Draggable draggableId={item._id} key={item._id} index={index}>
 			{(provided, snapshot) => (
 				<Ref innerRef={provided.innerRef}>
 					<Card {...provided.draggableProps} fluid>
 						{dataToEdit._id === item._id && !dataToEdit.newCategory ? (
-							<Card.Content>
+							<Card.Content className='item_color'>
 								<FormEdit catId={props.category._id} />
 							</Card.Content>
 						) : (
 							// Card Item
 							<Card.Content
+								className='item_color'
 								style={{
-									background: snapshot.isDragging ? '#ebf3f9' : 'white'
+									background: snapshot.isDragging ? '#ebf3f9' : null
 								}}>
 								<strong {...provided.dragHandleProps}>
 									{item.item_price
@@ -40,9 +43,7 @@ function Items(props) {
 										color='red'
 										content='Delete'
 										onClick={() =>
-											dispatch(
-												deleteItem(cityId, props.category._id, item._id)
-											)
+											dispatch(deleteItem(cityId, props.category._id, item._id))
 										}
 									/>
 								</Button.Group>

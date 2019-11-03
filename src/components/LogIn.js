@@ -28,7 +28,7 @@ function LogIn(props) {
 	})
 
 	return (
-		<div style={{ height: '100%' }}>
+		<React.Fragment>
 			{error.message && alert(error.message)}
 			<Grid
 				style={{ height: '100%' }}
@@ -101,7 +101,7 @@ function LogIn(props) {
 					</Grid.Column>
 				</Grid.Row>
 			</Grid>
-		</div>
+		</React.Fragment>
 	)
 }
 
