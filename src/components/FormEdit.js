@@ -64,15 +64,18 @@ function FormEdit(props) {
               />
             </Form.Field>
           )}
-          <Form.Field>
-            <input
-              placeholder="URL"
-              name="url"
-              type="text"
-              value={dataToEdit.url || ''}
-              onChange={e => dispatch(editDataOnChange(e))}
-            />
-          </Form.Field>
+
+          {!dataToEdit.item_price && !dataToEdit.category_price && (
+            <Form.Field>
+              <input
+                placeholder="URL"
+                name="url"
+                type="text"
+                value={dataToEdit.url || ''}
+                onChange={e => dispatch(editDataOnChange(e))}
+              />
+            </Form.Field>
+          )}
         </>
       ) : null}
       <Button.Group fluid size="small">

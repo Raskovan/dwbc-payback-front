@@ -4,21 +4,21 @@
   "private": true,
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "cross-fetch": "^3.0.2",
+    "cross-fetch": "^3.0.5",
     "gulp": "^4.0.2",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
+    "react": "^16.13.1",
     "react-beautiful-dnd": "^11.0.3",
-    "react-dom": "^16.8.6",
-    "react-redux": "^7.0.3",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.0.1",
-    "redux": "^4.0.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
+    "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "semantic-ui-react": "^0.87.1",
-    "typescript": "^3.4.1"
+    "semantic-ui-react": "^1.1.1",
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,7 +37,6 @@
   ],
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint-plugin-react": "^7.20.5"
   }
 }
