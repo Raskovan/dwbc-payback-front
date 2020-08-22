@@ -59,6 +59,7 @@ function FormEdit(props) {
                     : 'item_price'
                 }
                 type="number"
+                step="0.01"
                 value={dataToEdit.item_price || dataToEdit.category_price || ''}
                 onChange={e => dispatch(editDataOnChange(e))}
               />
