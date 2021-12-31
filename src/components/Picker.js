@@ -65,7 +65,7 @@ function Picker(props) {
 				fluid={fluidValue}
 				selection
 				clearable
-				value={selectedCity.city_id}
+				// value={selectedCity.city_id}
 				onChange={handleChange}
 				options={cityOptions}
 			/>
