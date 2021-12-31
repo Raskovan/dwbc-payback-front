@@ -1,3 +1,14 @@
 body > div {
   height: 90%;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #2d2d2d;
+  }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: white;
+  }
+}

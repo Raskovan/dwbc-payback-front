@@ -23,8 +23,11 @@ class App extends Component {
 			} else {
 				this.props.history.push('/')
 			}
+		} else if (user.is_approved) {
+			dispatch(selectCity({ city_id: user.city_id, city_name: user.city_name }))
+			dispatch(fetchCategoriesForCityIfNeeded(user.city_id))
 		} else {
-			dispatch(fetchCitiesIfNeeded(user.city_name))
+			// dispatch(fetchCitiesIfNeeded(user.city_name))
 			this.props.history.push(
 				`/${user.city_name.replace(' ', '_').toLowerCase()}`
 			)
@@ -41,8 +44,10 @@ class App extends Component {
 				let newCity = cities.cityList.find(city => {
 					return decodedName === city.city_name
 				})
-				dispatch(selectCity(newCity))
-				if (newCity) dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+				if (newCity) {
+					dispatch(selectCity(newCity))
+					dispatch(fetchCategoriesForCityIfNeeded(newCity.city_id))
+				}
 			}
 		} else {
 			if (this.props.match.params.name === prevProps.match.params.name) {

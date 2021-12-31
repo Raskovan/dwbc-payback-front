@@ -1,0 +1,23 @@
+@media (prefers-color-scheme: dark) {
+  .header-menu {
+    background-color: #5b5b5b!important;
+    border: 0!important;
+    color: white!important;
+  }
+  .header-title {
+    color: rgb(213, 213, 213)!important;
+    font-weight: 300!important;
+  }
+  .header-user {
+    color: rgb(213, 213, 213)!important;
+    font-weight: 300!important;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .header-menu {
+    background-color: #e6e6e6!important;
+  }
+  .header-title {
+    font-weight: 300!important;
+  }
+}

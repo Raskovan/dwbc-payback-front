@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getUser, fetchCitiesIfNeeded } from '../actions'
+import { getUser } from '../actions'
 import { Loader } from 'semantic-ui-react';
 
 export default function(ComposedComponent) {
@@ -15,7 +15,7 @@ export default function(ComposedComponent) {
 			}
       if (token && !this.props.authenticated) {
 				dispatch(getUser(token))
-				dispatch(fetchCitiesIfNeeded())
+				// dispatch(fetchCitiesIfNeeded())
 			}
 		}
 

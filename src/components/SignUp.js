@@ -1,87 +1,100 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Picker from '../components/Picker'
-import {
-	editDataOnChange,
-	handleSignUp,
-	fetchCitiesIfNeeded
-} from '../actions'
-import { Grid, Form, Header, Button } from 'semantic-ui-react'
+import { editDataOnChange, handleSignUp, fetchCitiesIfNeeded } from '../actions'
+import { Grid, Form, Header, Button, Icon } from 'semantic-ui-react'
 
-class SignUp extends Component {
+function SignUp(props) {
+  const [showAddCity, handleAddCityClick] = useState(false)
+  const { dispatch, dataToEdit, history, error, match } = props
 
-	componentDidMount() {
-		const { dispatch, match } = this.props
-		dispatch(fetchCitiesIfNeeded(match.params.name))
-	}
+  useEffect(() => {
+    dispatch(fetchCitiesIfNeeded(match.params.name))
+  }, [])
 
-	render() {
-    const { dispatch, dataToEdit, history, error } = this.props
-		return (
-			<div style={{ height: '100%' }}>
-				{error.message && alert(error.message)}
-				<Grid
-					stackable
-					style={{ height: '90%' }}
-					verticalAlign='middle'
-					centered
-					doubling
-					columns={3}>
-					<Grid.Row>
-						<Grid.Column>
-							<Header as='h2' color='grey'>
-								Request Access
-							</Header>
-							<Form
-								size='big'
-								onSubmit={e => {
-									e.preventDefault()
-									dispatch(handleSignUp(dataToEdit, history))
-								}}>
-								<Form.Field>
-									{/* <label>Your E-mail:</label> */}
-									<input
-										name='email'
-										type='text'
-										placeholder='Email'
-										value={dataToEdit.email ? dataToEdit.email : ''}
-										onChange={e => dispatch(editDataOnChange(e))}
-									/>
-								</Form.Field>
-								<Form.Field>
-									{/* <label>Your Password:</label> */}
-									<input
-										name='password'
-										type='password'
-										placeholder='Password'
-										value={dataToEdit.password ? dataToEdit.password : ''}
-										onChange={e => dispatch(editDataOnChange(e))}
-									/>
-								</Form.Field>
-								<Form.Field>
-									{/* <label>Select a city:</label> */}
-									<Picker />
-								</Form.Field>
-								<Form.Field>
-									<label>...or add a new city:</label>
-									<input
-										name='city'
-										type='text'
-										placeholder='Add a city'
-										value={dataToEdit.city ? dataToEdit.city : ''}
-										onChange={e => dispatch(editDataOnChange(e))}
-									/>
-								</Form.Field>
-								<Button fluid size='big' type='submit' value='Request'>
-									Request Access
-								</Button>
-							</Form>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</div>
-		)
-	}
+  return (
+    <React.Fragment>
+      {error.message && alert(error.message)}
+      <Grid
+        stackable
+        style={{ height: '90%' }}
+        verticalAlign="middle"
+        centered
+        doubling
+        columns={3}
+      >
+        <Grid.Row>
+          <Grid.Column>
+            <Header as="h2" color="grey">
+              Request Access
+            </Header>
+            <Form
+              size="big"
+              onSubmit={e => {
+                e.preventDefault()
+                dispatch(handleSignUp(dataToEdit, history))
+              }}
+            >
+              <Form.Field>
+                <input
+                  name="email"
+                  type="text"
+                  placeholder="Email"
+                  value={dataToEdit.email ? dataToEdit.email : ''}
+                  onChange={e => dispatch(editDataOnChange(e))}
+                />
+              </Form.Field>
+              <Form.Field>
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  value={dataToEdit.password ? dataToEdit.password : ''}
+                  onChange={e => dispatch(editDataOnChange(e))}
+                />
+              </Form.Field>
+
+              <Form.Field>
+                <Picker />
+              </Form.Field>
+
+              <Form.Field>
+                <label
+                  onClick={() => handleAddCityClick(!showAddCity)}
+                  style={{ color: 'grey', cursor: 'pointer' }}
+                >
+                  <Icon
+                    name={showAddCity ? 'minus square' : 'plus square'}
+                    color="grey"
+                  />
+                  add a new city
+                </label>
+              </Form.Field>
+              {showAddCity ? (
+                <Form.Field>
+                  <input
+                    name="city"
+                    type="text"
+                    placeholder="Add a city"
+                    value={dataToEdit.city ? dataToEdit.city : ''}
+                    onChange={e => dispatch(editDataOnChange(e))}
+                  />
+                </Form.Field>
+              ) : null}
+
+              <Button
+                fluid
+                size="big"
+                type="submit"
+                value="Request"
+                content="Request Access"
+              />
+            </Form>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </React.Fragment>
+  )
 }
 
 function mapStateToProps(state) {
@@ -90,19 +103,19 @@ function mapStateToProps(state) {
   const {
     isFetchingCities,
     lastUpdatedCities,
-    cityList: allCities
+    cityList: allCities,
   } = cities || {
     isFetchingCities: true,
-    cityList: []
+    cityList: [],
   }
 
-	return {
-		dataToEdit,
-		isFetchingCities,
-		lastUpdatedCities,
-		allCities,
-		error
-	}
+  return {
+    dataToEdit,
+    isFetchingCities,
+    lastUpdatedCities,
+    allCities,
+    error,
+  }
 }
 
 export default connect(mapStateToProps)(SignUp)

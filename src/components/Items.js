@@ -1,71 +1,75 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { deleteItem, editData } from '../actions'
 import FormEdit from './FormEdit'
-import { Card, Button } from 'semantic-ui-react'
+import { Card, Button, Ref } from 'semantic-ui-react'
+import { Draggable } from 'react-beautiful-dnd'
+import '../styles/categories.css'
 
-class Items extends Component {
-	render() {
-		const { dispatch, dataToEdit, cityId } = this.props
-		return (
-			<div>
-				{this.props.category.items.map((item, i) => (
-					<Card key={i} fluid>
+function Items(props) {
+	const { dispatch, dataToEdit, cityId, item, index } = props
+
+	return (
+		<Draggable draggableId={item._id} key={item._id} index={index}>
+			{(provided, snapshot) => (
+				<Ref innerRef={provided.innerRef}>
+					<Card {...provided.draggableProps} fluid>
 						{dataToEdit._id === item._id && !dataToEdit.newCategory ? (
-							<Card.Content>
-								<FormEdit catId={this.props.category._id} />
+							<Card.Content className='item_color'>
+								<FormEdit catId={props.category._id} />
 							</Card.Content>
 						) : (
-							<Card.Content>
-								<strong>
-								{item.item_price
-									? item.item_name + ' - $' + item.item_price
-									: item.item_name}
-
+							// Card Item
+							<Card.Content
+								className='item_color'
+								style={{
+									background: snapshot.isDragging ? '#ebf3f9' : null
+								}}>
+								<strong {...provided.dragHandleProps}>
+									{item.item_price
+										? item.item_name + ' - $' + item.item_price
+										: item.item_name}
 								</strong>
 								<Button.Group size='mini' floated='right'>
 									<Button
 										basic
 										color='green'
-										onClick={() => dispatch(editData(item))}>
-										Edit
-									</Button>
+										content='Edit'
+										onClick={() => dispatch(editData(item))}
+									/>
 									<Button
 										basic
 										color='red'
+										content='Delete'
 										onClick={() =>
-											dispatch(
-												deleteItem(
-													cityId,
-													this.props.category._id,
-													item._id
-												)
-											)
-										}>
-										Delete
-									</Button>
+											dispatch(deleteItem(cityId, props.category._id, item._id))
+										}
+									/>
 								</Button.Group>
 							</Card.Content>
 						)}
 					</Card>
-				))}
-			</div>
-		)
-	}
+				</Ref>
+			)}
+		</Draggable>
+	)
 }
 
 Items.propTypes = {
-	category: PropTypes.object.isRequired,
-	dispatch: PropTypes.func.isRequired
+	dispatch: PropTypes.func.isRequired,
+	dataToEdit: PropTypes.object.isRequired,
+	item: PropTypes.object.isRequired,
+	cityId: PropTypes.string.isRequired
 }
 
 function mapStateToProps(state) {
-	const { selectedCity, dataToEdit } = state
+	const { selectedCity, dataToEdit, error } = state
 
 	return {
 		cityId: selectedCity.city_id,
-		dataToEdit
+		dataToEdit,
+		error
 	}
 }
 

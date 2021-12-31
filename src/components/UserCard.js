@@ -1,69 +1,47 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { userUpdate } from '../actions'
-import { Card, Button } from 'semantic-ui-react';
+import React from 'react'
+import { Card, Button } from 'semantic-ui-react'
+import '../styles/categories.css'
 
-class UserCard extends Component {
-	handleClick(user, action) {
-    const {dispatch} = this.props
-    dispatch(userUpdate(user, action))
-	}
-
-	render() {
-		const { user } = this.props
-		let approveButtonColor = user.is_approved ? 'red' : 'green'
-		return (
-			<Card>
-				<Card.Content>
-						<Button
-							basic = {!user.is_admin}
-							size='mini'
-							color='grey'
-							content='Admin'
-							style={{ float: 'right' }}
-							value={user}
-							onClick={() => this.handleClick(user, 'admin')}
-						/>
-					<Card.Header>{user.username}</Card.Header>
-					<Card.Meta>{user.city_name}</Card.Meta>
-				</Card.Content>
-				<Card.Content extra>
-					<div className='ui two buttons'>
-						<Button
-							basic
-							color={approveButtonColor}
-							value={user}
-							type='button'
-							onClick={() => this.handleClick(user, 'update')}>
-							{user.is_approved ? 'Revoke Access' : 'Approve'}
-						</Button>
-						<Button
-							basic
-							color='black'
-							value={user}
-							type='button'
-							onClick={() => this.handleClick(user, 'delete')}>
-							Delete User
-						</Button>
-					</div>
-				</Card.Content>
-			</Card>
-		)
-	}
+export default function UserCard(props) {
+  const { user, handleClick } = props
+  const approveButtonColor = user.is_approved ? 'red' : 'green'
+  return (
+    <Card className="item_color">
+      <Card.Content>
+        <Button
+          basic={!user.is_admin}
+          size="mini"
+          color="grey"
+          content="Admin"
+          style={{ float: 'right' }}
+          value={user}
+          onClick={() => handleClick(user, 'admin')}
+        />
+        <Card.Header>{user.username}</Card.Header>
+        <Card.Meta>{user.city_name}</Card.Meta>
+      </Card.Content>
+      <Card.Content extra>
+        <div className="ui two buttons">
+          <Button
+            basic
+            color={approveButtonColor}
+            value={user}
+            type="button"
+            onClick={() => handleClick(user, 'update')}
+          >
+            {user.is_approved ? 'Revoke Access' : 'Approve'}
+          </Button>
+          <Button
+            basic
+            color="black"
+            value={user}
+            type="button"
+            onClick={() => handleClick(user, 'delete')}
+          >
+            Delete User
+          </Button>
+        </div>
+      </Card.Content>
+    </Card>
+  )
 }
-
-UserCard.propTypes = {
-	dispatch: PropTypes.func.isRequired
-}
-
-function mapStateToProps(state) {
-	const { selectedCity, dataToEdit } = state
-
-	return {
-		cityId: selectedCity.city_id,
-		dataToEdit
-	}
-}
-
-export default connect(mapStateToProps)(UserCard)
