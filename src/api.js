@@ -1,9 +1,10 @@
 import fetch from 'cross-fetch'
 
 const HeaderMenu = {
-  'Content-Type': 'application/json',
-  'x-api-key': process.env.REACT_APP_API_KEY
-}
+  "Content-Type": "application/json",
+  "x-api-key": process.env.REACT_APP_API_KEY,
+  "ngrok-skip-browser-warning": "69420"
+};
 
 export function fetchCityListFromApi() {
   return fetch(process.env.REACT_APP_API_HOST + `/api/v1/cities/list`, {
